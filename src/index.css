@@ -1,0 +1,51 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Override Cloudscape button colors using CSS custom properties */
+.awsui-context-top-navigation,
+.awsui-context-content-header,
+.awsui-context-default,
+#root {
+  --color-background-button-primary-default: #ff9900;
+  --color-background-button-primary-hover: #ec7211;
+  --color-background-button-primary-active: #eb5f07;
+  --color-border-button-primary-default: #ff9900;
+  --color-border-button-primary-hover: #ec7211;
+  --color-border-button-primary-active: #eb5f07;
+  --color-text-button-primary-default: #000000;
+  --color-text-button-primary-hover: #000000;
+  --color-text-button-primary-active: #000000;
+}
+
+/* Direct CSS override as fallback */
+button[class*="awsui_button"][class*="variant-primary"] {
+  background-color: #ff9900 !important;
+  border-color: #ff9900 !important;
+  color: #000000 !important;
+}
+
+button[class*="awsui_button"][class*="variant-primary"]:hover:not(:disabled) {
+  background-color: #ec7211 !important;
+  border-color: #ec7211 !important;
+  color: #000000 !important;
+}
+
+button[class*="awsui_button"][class*="variant-primary"]:active:not(:disabled) {
+  background-color: #eb5f07 !important;
+  border-color: #eb5f07 !important;
+  color: #000000 !important;
+}

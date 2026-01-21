@@ -1,0 +1,9 @@
+/* Override Cloudscape primary button colors to AWS orange */
+:root {
+  --color-background-button-primary-default: #ff9900 !important;
+  --color-background-button-primary-hover: #ec7211 !important;
+  --color-background-button-primary-active: #eb5f07 !important;
+  --color-border-button-primary-default: #ff9900 !important;
+  --color-border-button-primary-hover: #ec7211 !important;
+  --color-border-button-primary-active: #eb5f07 !important;
+}
