@@ -216,54 +216,65 @@ const ALL_ITEMS = [
   }
 ];
 
-const COLUMN_DEFINITIONS = [
-  {
-    cell: (item) => <Link fontSize="inherit" href="#">{item.name}</Link>,
-    header: 'Collection name',
-    id: 'name',
-    minWidth: 180,
-    sortingField: 'name'
-  },
-  {
-    cell: () => <Link external fontSize="inherit" href="#">Dashboard</Link>,
-    header: 'OpenSearch Dashboards',
-    id: 'dashboard',
-    minWidth: 180
-  },
-  {
-    cell: (item) => <StatusIndicator type="success">{item.status}</StatusIndicator>,
-    header: 'Status',
-    id: 'status',
-    minWidth: 120
-  },
-  {
-    cell: (item) => item.type,
-    header: 'Collection type',
-    id: 'type',
-    minWidth: 150
-  },
-  {
-    cell: (item) => item.group,
-    header: 'Collection group',
-    id: 'group',
-    minWidth: 150
-  },
-  {
-    cell: (item) => item.creationDate,
-    header: 'Creation date',
-    id: 'creationDate',
-    minWidth: 200,
-    sortingField: 'creationDate'
-  },
-  {
-    cell: (item) => item.description,
-    header: 'Description',
-    id: 'description',
-    minWidth: 150
-  }
-];
+function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
+  const COLUMN_DEFINITIONS = [
+    {
+      cell: (item) => (
+        <Link 
+          fontSize="inherit" 
+          href="#" 
+          onFollow={(e) => {
+            e.preventDefault();
+            onViewCollection(item.name);
+          }}
+        >
+          {item.name}
+        </Link>
+      ),
+      header: 'Collection name',
+      id: 'name',
+      minWidth: 180,
+      sortingField: 'name'
+    },
+    {
+      cell: () => <Link external fontSize="inherit" href="#">Dashboard</Link>,
+      header: 'OpenSearch Dashboards',
+      id: 'dashboard',
+      minWidth: 180
+    },
+    {
+      cell: (item) => <StatusIndicator type="success">{item.status}</StatusIndicator>,
+      header: 'Status',
+      id: 'status',
+      minWidth: 120
+    },
+    {
+      cell: (item) => item.type,
+      header: 'Collection type',
+      id: 'type',
+      minWidth: 150
+    },
+    {
+      cell: (item) => item.group,
+      header: 'Collection group',
+      id: 'group',
+      minWidth: 150
+    },
+    {
+      cell: (item) => item.creationDate,
+      header: 'Creation date',
+      id: 'creationDate',
+      minWidth: 200,
+      sortingField: 'creationDate'
+    },
+    {
+      cell: (item) => item.description,
+      header: 'Description',
+      id: 'description',
+      minWidth: 150
+    }
+  ];
 
-function CollectionList({ onCreateClick, onViewCollection }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [filteringText, setFilteringText] = useState('');
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -320,6 +331,7 @@ function CollectionList({ onCreateClick, onViewCollection }) {
           onCreateClick();
         }
       }}
+      onNavigate={onNavigate}
     >
       <Table
         columnDefinitions={COLUMN_DEFINITIONS}
@@ -423,6 +435,6 @@ function CollectionList({ onCreateClick, onViewCollection }) {
       />
     </AWSLayout>
   );
-}
+};
 
 export default CollectionList;

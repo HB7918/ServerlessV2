@@ -7,8 +7,15 @@ import {
 } from '@cloudscape-design/components';
 import { useState } from 'react';
 
-function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick }) {
+function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick, onNavigate }) {
   const [navigationOpen, setNavigationOpen] = useState(false);
+
+  const handleNavigationClick = (event) => {
+    event.preventDefault();
+    if (onNavigate) {
+      onNavigate(event.detail.href);
+    }
+  };
 
   return (
     <div>
@@ -59,36 +66,18 @@ function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick }) {
         navigation={
           <SideNavigation
             activeHref={activeHref}
+            onFollow={handleNavigationClick}
             header={{
               href: '#',
               text: 'OpenSearch Service'
             }}
             items={[
-              { type: 'link', text: 'Dashboard', href: '#/dashboard' },
               {
                 type: 'section',
                 text: 'Serverless',
                 items: [
                   { type: 'link', text: 'Collections', href: '#/collections' },
-                  { type: 'link', text: 'Vector search collections', href: '#/vector-search' },
-                  { type: 'link', text: 'Getting started', href: '#/getting-started' }
-                ]
-              },
-              {
-                type: 'section',
-                text: 'Managed clusters',
-                items: [
-                  { type: 'link', text: 'Domains', href: '#/domains' },
-                  { type: 'link', text: 'Packages', href: '#/packages' }
-                ]
-              },
-              {
-                type: 'section',
-                text: 'Security',
-                items: [
-                  { type: 'link', text: 'Network policies', href: '#/network-policies' },
-                  { type: 'link', text: 'Encryption policies', href: '#/encryption-policies' },
-                  { type: 'link', text: 'Data access policies', href: '#/data-access-policies' }
+                  { type: 'link', text: 'Collection groups', href: '#/collection-groups' }
                 ]
               }
             ]}
@@ -99,26 +88,28 @@ function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick }) {
             display: 'flex', 
             alignItems: 'center', 
             gap: '8px',
-            padding: '12px 20px',
+            padding: '8px 40px',
             backgroundColor: '#ffffff',
             borderBottom: '1px solid #d5dbdb',
             marginLeft: '-20px',
             marginRight: '-20px',
-            paddingLeft: '40px',
-            paddingRight: '40px',
-            marginBottom: '20px'
+            marginBottom: '20px',
+            minWidth: 0
           }}>
-            <BreadcrumbGroup
-              items={breadcrumbs}
-              ariaLabel="Breadcrumbs"
-              onFollow={(event) => {
-                event.preventDefault();
-                if (onBreadcrumbClick) {
-                  onBreadcrumbClick(event.detail.href);
-                }
-              }}
-            />
-            <div style={{ marginLeft: 'auto' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <BreadcrumbGroup
+                items={breadcrumbs}
+                ariaLabel="Breadcrumbs"
+                expandAriaLabel="Show path"
+                onFollow={(event) => {
+                  event.preventDefault();
+                  if (onBreadcrumbClick) {
+                    onBreadcrumbClick(event.detail.href);
+                  }
+                }}
+              />
+            </div>
+            <div style={{ flexShrink: 0 }}>
               <Button iconName="status-info" variant="icon" />
             </div>
           </div>

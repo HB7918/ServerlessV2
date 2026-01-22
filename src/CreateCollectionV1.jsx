@@ -203,7 +203,7 @@ function ReviewStep({ formData }) {
   );
 }
 
-function CreateCollectionV1({ onCancel, onNavigateToV2 }) {
+function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [formData, setFormData] = useState({
     collectionName: '',
@@ -219,7 +219,8 @@ function CreateCollectionV1({ onCancel, onNavigateToV2 }) {
 
   const handleSubmit = () => {
     console.log('V1 Collection created:', formData);
-    onCancel();
+    // Navigate to collection details with the created collection name
+    onCollectionCreated(formData.collectionName || 'new-collection-v1');
   };
 
   const breadcrumbs = [

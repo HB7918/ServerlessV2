@@ -89,7 +89,11 @@ function ConfigureCollectionStep({ formData, setFormData, onNavigateToV1 }) {
                   selectedOption={formData.collectionGroup}
                   onChange={({ detail }) => setFormData({ ...formData, collectionGroup: detail.selectedOption })}
                 />
-                <Button iconName="external" iconAlign="right">
+                <Button 
+                  iconName="external" 
+                  iconAlign="right"
+                  onClick={() => window.open('/#/create-collection-group', '_blank')}
+                >
                   Create new group
                 </Button>
               </SpaceBetween>
@@ -287,7 +291,7 @@ function ReviewStep({ formData, onEdit }) {
   );
 }
 
-function CreateCollection({ onCancel, onNavigateToV1 }) {
+function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [formData, setFormData] = useState({
     collectionName: '',
@@ -306,7 +310,8 @@ function CreateCollection({ onCancel, onNavigateToV1 }) {
 
   const handleSubmit = () => {
     console.log('Collection created:', formData);
-    onCancel();
+    // Navigate to collection details with the created collection name
+    onCollectionCreated(formData.collectionName || 'new-collection');
   };
 
   const breadcrumbs = [
