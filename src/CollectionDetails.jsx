@@ -199,18 +199,18 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                   minWidth: 180
                 },
                 {
-                  id: 'dataRetention',
-                  header: 'Data retention',
-                  cell: item => item.dataRetention,
-                  sortingField: 'dataRetention',
-                  minWidth: 150
-                },
-                {
                   id: 'hotStorageRetention',
                   header: 'Hot storage retention',
                   cell: item => item.hotStorageRetention,
                   sortingField: 'hotStorageRetention',
                   minWidth: 180
+                },
+                {
+                  id: 'dataRetention',
+                  header: 'Data retention',
+                  cell: item => item.dataRetention,
+                  sortingField: 'dataRetention',
+                  minWidth: 150
                 },
                 {
                   id: 'size',
