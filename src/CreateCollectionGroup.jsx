@@ -16,6 +16,7 @@ import {
   Alert
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function CreateCollectionGroup({ onCancel, onGroupCreated }) {
   const [groupName, setGroupName] = useState('');
@@ -255,6 +256,7 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
           </Container>
         </SpaceBetween>
       </Form>
+      <CommentsPanel screenName="Create Collection Group" />
     </AWSLayout>
   );
 }

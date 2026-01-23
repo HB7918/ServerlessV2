@@ -17,6 +17,7 @@ import {
   ColumnLayout
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function ConfigureCollectionStep({ formData, setFormData, onNavigateToV1 }) {
   return (
@@ -360,6 +361,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
           optional: 'optional'
         }}
       />
+      <CommentsPanel screenName="Create Collection" />
     </AWSLayout>
   );
 }

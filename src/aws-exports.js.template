@@ -1,0 +1,12 @@
+// AWS Amplify Configuration
+// Copy this file to aws-exports.js and fill in your values from Amplify Console
+
+const awsconfig = {
+  aws_project_region: 'us-east-1', // Your AWS region
+  aws_appsync_graphqlEndpoint: 'https://YOUR_API_ID.appsync-api.us-east-1.amazonaws.com/graphql',
+  aws_appsync_region: 'us-east-1',
+  aws_appsync_authenticationType: 'API_KEY',
+  aws_appsync_apiKey: 'da2-YOUR_API_KEY_HERE',
+};
+
+export default awsconfig;

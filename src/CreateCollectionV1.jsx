@@ -16,6 +16,7 @@ import {
   Checkbox
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function ConfigureCollectionStep({ formData, setFormData, onNavigateToV2 }) {
   return (
@@ -273,6 +274,7 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
           optional: 'optional'
         }}
       />
+      <CommentsPanel screenName="Create Collection V1" />
     </AWSLayout>
   );
 }

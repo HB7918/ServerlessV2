@@ -17,6 +17,7 @@ import {
   ColumnLayout
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function CreateIndex({ collectionName, onCancel, onIndexCreated }) {
   const [indexName, setIndexName] = useState('');
@@ -288,6 +289,7 @@ function CreateIndex({ collectionName, onCancel, onIndexCreated }) {
           </Container>
         </SpaceBetween>
       </Form>
+      <CommentsPanel screenName="Create Index" />
     </AWSLayout>
   );
 }

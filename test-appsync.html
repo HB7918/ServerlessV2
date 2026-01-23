@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test AppSync Connection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background: #ff9900;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #ec7211;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>AWS AppSync Connection Test</h1>
+  
+  <div class="section">
+    <h2>Configuration</h2>
+    <p><strong>Endpoint:</strong> <span id="endpoint"></span></p>
+    <p><strong>Region:</strong> <span id="region"></span></p>
+    <p><strong>API Key:</strong> <span id="apiKey"></span></p>
+  </div>
+
+  <div class="section">
+    <h2>Test 1: List Comments</h2>
+    <button onclick="testListComments()">Run Test</button>
+    <pre id="listResult">Click button to test...</pre>
+  </div>
+
+  <div class="section">
+    <h2>Test 2: Create Comment</h2>
+    <button onclick="testCreateComment()">Run Test</button>
+    <pre id="createResult">Click button to test...</pre>
+  </div>
+
+  <div class="section">
+    <h2>Test 3: Query by Screen</h2>
+    <button onclick="testQueryByScreen()">Run Test</button>
+    <pre id="queryResult">Click button to test...</pre>
+  </div>
+
+  <script type="module">
+    // Import configuration
+    import awsconfig from './src/aws-exports.js';
+
+    const config = awsconfig.API.GraphQL;
+    document.getElementById('endpoint').textContent = config.endpoint;
+    document.getElementById('region').textContent = config.region;
+    document.getElementById('apiKey').textContent = config.apiKey.substring(0, 10) + '...';
+
+    // Make functions global
+    window.testListComments = async function() {
+      const result = document.getElementById('listResult');
+      result.textContent = 'Testing...';
+      
+      try {
+        const response = await fetch(config.endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': config.apiKey
+          },
+          body: JSON.stringify({
+            query: `
+              query ListComments {
+                listComments {
+                  items {
+                    id
+                    screenName
+                    text
+                    author
+                    timestamp
+                  }
+                }
+              }
+            `
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.errors) {
+          result.className = 'error';
+          result.textContent = '❌ Error:\n' + JSON.stringify(data.errors, null, 2);
+        } else {
+          result.className = 'success';
+          result.textContent = '✅ Success!\n' + JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = '❌ Network Error:\n' + error.message;
+      }
+    };
+
+    window.testCreateComment = async function() {
+      const result = document.getElementById('createResult');
+      result.textContent = 'Testing...';
+      
+      try {
+        const response = await fetch(config.endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': config.apiKey
+          },
+          body: JSON.stringify({
+            query: `
+              mutation CreateComment($input: CreateCommentInput!) {
+                createComment(input: $input) {
+                  id
+                  screenName
+                  text
+                  author
+                  timestamp
+                }
+              }
+            `,
+            variables: {
+              input: {
+                screenName: 'test-screen',
+                text: 'Test comment from test page',
+                author: 'Test User',
+                timestamp: Date.now()
+              }
+            }
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.errors) {
+          result.className = 'error';
+          result.textContent = '❌ Error:\n' + JSON.stringify(data.errors, null, 2);
+        } else {
+          result.className = 'success';
+          result.textContent = '✅ Success!\n' + JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = '❌ Network Error:\n' + error.message;
+      }
+    };
+
+    window.testQueryByScreen = async function() {
+      const result = document.getElementById('queryResult');
+      result.textContent = 'Testing...';
+      
+      try {
+        const response = await fetch(config.endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': config.apiKey
+          },
+          body: JSON.stringify({
+            query: `
+              query CommentsByScreen($screenName: String!) {
+                commentsByScreen(screenName: $screenName) {
+                  items {
+                    id
+                    screenName
+                    text
+                    author
+                    timestamp
+                  }
+                }
+              }
+            `,
+            variables: {
+              screenName: 'test-screen'
+            }
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.errors) {
+          result.className = 'error';
+          result.textContent = '❌ Error:\n' + JSON.stringify(data.errors, null, 2);
+        } else {
+          result.className = 'success';
+          result.textContent = '✅ Success!\n' + JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = '❌ Network Error:\n' + error.message;
+      }
+    };
+  </script>
+</body>
+</html>

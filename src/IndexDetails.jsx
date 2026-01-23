@@ -13,6 +13,7 @@ import {
   Flashbar
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function IndexDetails({ indexName, collectionName, onBack, showSuccessMessage }) {
   const [flashbarItems, setFlashbarItems] = useState(
@@ -197,6 +198,7 @@ function IndexDetails({ indexName, collectionName, onBack, showSuccessMessage })
           </Container>
         </SpaceBetween>
       </SpaceBetween>
+      <CommentsPanel screenName="Index Details" />
     </AWSLayout>
   );
 }

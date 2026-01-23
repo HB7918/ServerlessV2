@@ -12,6 +12,7 @@ import {
   ExpandableSection
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function CollectionGroup({ onCreateClick, onNavigate }) {
   const [selectedGroups, setSelectedGroups] = useState([]);
@@ -172,6 +173,7 @@ function CollectionGroup({ onCreateClick, onNavigate }) {
           variant="full-page"
         />
       </SpaceBetween>
+      <CommentsPanel screenName="Collection Groups" />
     </AWSLayout>
   );
 }

@@ -1,0 +1,10 @@
+# GraphQL Schema for Comments
+# Use this schema when setting up AWS Amplify API
+
+type Comment @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  screenName: String! @index(name: "byScreen", queryField: "commentsByScreen")
+  text: String!
+  author: String!
+  timestamp: AWSTimestamp!
+}

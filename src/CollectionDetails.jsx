@@ -16,6 +16,7 @@ import {
   Pagination
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex, indexes }) {
   const [activeTabId, setActiveTabId] = useState('overview');
@@ -310,6 +311,7 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
         )}
         </div>
       </ContentLayout>
+      <CommentsPanel screenName="Collection Details" />
     </AWSLayout>
   );
 }

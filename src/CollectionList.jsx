@@ -12,6 +12,7 @@ import {
   CollectionPreferences
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
+import CommentsPanel from './components/CommentsPanel';
 
 const ALL_ITEMS = [
   {
@@ -433,6 +434,7 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
         stripedRows={preferences.stripedRows}
         wrapLines={preferences.wrapLines}
       />
+      <CommentsPanel screenName="Collections" />
     </AWSLayout>
   );
 };
