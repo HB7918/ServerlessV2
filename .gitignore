@@ -26,5 +26,3 @@ dist-ssr
 # AWS Amplify
 amplify/
 .amplifyrc
-aws-exports.js
-src/aws-exports.js
