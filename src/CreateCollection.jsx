@@ -34,12 +34,23 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
   const [fixCollectionGroup, setFixCollectionGroup] = useState(false);
   const [customizeGroupSettings, setCustomizeGroupSettings] = useState(false);
+  const [groupSelection, setGroupSelection] = useState('create-new');
+  const [customizeAppSettings, setCustomizeAppSettings] = useState(false);
+  const [appSettings, setAppSettings] = useState({
+    applicationName: 'opensearchui-1769533298515',
+    workspace: 'workspace-1769533298515',
+    appSelection: 'create-new',
+    workspaceSelection: 'create-new',
+    selectedApp: null,
+    selectedWorkspace: null
+  });
   const [groupSettings, setGroupSettings] = useState({
     name: 'serverlessV2_27121',
     minIndexing: { label: '-', value: '-' },
     maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
     minSearch: { label: '-', value: '-' },
-    maxSearch: { label: '96', value: '96', description: '576 GB RAM' }
+    maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
+    selectedGroup: null
   });
 
   const handleSubmit = () => {
@@ -127,67 +138,96 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                 />
               </FormField>
 
-              {!fixCollectionGroup && (
-                <Alert
-                  type="error"
-                  header="Collection group error"
-                >
-                  No collection groups exist. You can have Amazon OpenSearch Serverless fix this for you by selecting <strong>Fix it for me</strong>, or you can manually create a collection group. <Link external>Learn more</Link>
-                </Alert>
-              )}
+              <SpaceBetween size="xs">
+                <FormField
+                  label={<span style={{ fontSize: '18px', fontWeight: '700' }}>Collection group</span>}
+                  description="Collections in the same group share OCUs and follow the group's min/max capacity settings. Each collection can only belong to one group."
+                  info={<Link variant="info">Info</Link>}
+                  stretch
+                />
 
-              <FormField
-                label="Collection group"
-                description="Collections in the same group share OCUs and follow the group's min/max capacity settings. Each collection can only belong to one group. To create a new group, select Create new group (opens in a new tab), then return here and refresh to see your new group in the list."
-                info={<Link variant="info">Info</Link>}
-                stretch
-              >
-                <SpaceBetween size="m">
-                  <SpaceBetween direction="horizontal" size="xs" alignItems="center">
-                    <Select
-                      options={[
-                        { label: 'Choose a collection group', value: '' }
-                      ]}
-                      placeholder="Choose a collection group"
-                      selectedOption={formData.collectionGroup}
-                      onChange={({ detail }) => setFormData({ ...formData, collectionGroup: detail.selectedOption })}
-                      disabled={fixCollectionGroup}
-                    />
-                    <Button 
-                      iconName="external" 
-                      iconAlign="right"
-                      onClick={() => window.open('/#/create-collection-group', '_blank')}
-                      disabled={fixCollectionGroup}
-                    >
-                      Create new group
-                    </Button>
-                  </SpaceBetween>
-                </SpaceBetween>
-              </FormField>
-
-              <Checkbox
-                checked={fixCollectionGroup}
-                onChange={({ detail }) => setFixCollectionGroup(detail.checked)}
-              >
-                <strong>Fix it for me</strong>
-                <Box variant="p" color="text-body-secondary" margin={{ top: 'xxs' }}>
-                  Amazon OpenSearch Serverless will fix this by automatically creating a collection group and adding this collection to it.
-                </Box>
-              </Checkbox>
-
-              {fixCollectionGroup && (
                 <ExpandableSection
                   headerText="Collection group settings"
                   defaultExpanded={true}
                 >
-                  <SpaceBetween size="l">
-                    {!customizeGroupSettings ? (
-                      <>
-                        <ColumnLayout columns={3} variant="text-grid">
-                          <div>
-                            <Box variant="awsui-key-label">Collection group name</Box>
-                            <div>{groupSettings.name}</div>
-                          </div>
+                <SpaceBetween size="l">
+                  {!customizeGroupSettings ? (
+                    <>
+                      <ColumnLayout columns={3} variant="text-grid">
+                        <div>
+                          <Box variant="awsui-key-label">Collection group name</Box>
+                          <div>{groupSettings.name}</div>
+                        </div>
+                        <div>
+                          <SpaceBetween size="s">
+                            <div>
+                              <Box variant="awsui-key-label">Minimum indexing capacity (OCUs)</Box>
+                              <div>0</div>
+                            </div>
+                            <div>
+                              <Box variant="awsui-key-label">Maximum indexing capacity (OCUs)</Box>
+                              <div>96</div>
+                            </div>
+                          </SpaceBetween>
+                        </div>
+                        <div>
+                          <SpaceBetween size="s">
+                            <div>
+                              <Box variant="awsui-key-label">Minimum Search capacity (OCUs)</Box>
+                              <div>0</div>
+                            </div>
+                            <div>
+                              <Box variant="awsui-key-label">Maximum Search capacity (OCUs)</Box>
+                              <div>96</div>
+                            </div>
+                          </SpaceBetween>
+                        </div>
+                      </ColumnLayout>
+                      <Box>
+                        <Button onClick={() => setCustomizeGroupSettings(true)}>Customize</Button>
+                      </Box>
+                    </>
+                  ) : (
+                    <SpaceBetween size="l">
+                      <FormField label="Collection group selection">
+                        <Tiles
+                          columns={2}
+                          items={[
+                            {
+                              label: 'Select existing collection group',
+                              value: 'select-existing'
+                            },
+                            {
+                              label: 'Create new collection group',
+                              value: 'create-new'
+                            }
+                          ]}
+                          value={groupSelection}
+                          onChange={({ detail }) => setGroupSelection(detail.value)}
+                        />
+                      </FormField>
+                      <FormField label="Collection group name">
+                        <div style={{ width: '50%' }}>
+                          {groupSelection === 'select-existing' ? (
+                            <Select
+                              selectedOption={groupSettings.selectedGroup}
+                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, selectedGroup: detail.selectedOption, name: detail.selectedOption.value })}
+                              options={[
+                                { label: 'serverlessV2_27121', value: 'serverlessV2_27121' },
+                                { label: 'serverlessV2_27122', value: 'serverlessV2_27122' }
+                              ]}
+                              placeholder="Select a collection group"
+                            />
+                          ) : (
+                            <Input
+                              value={groupSettings.name}
+                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, name: detail.value })}
+                            />
+                          )}
+                        </div>
+                      </FormField>
+                      {groupSelection === 'select-existing' ? (
+                        <ColumnLayout columns={2} variant="text-grid">
                           <div>
                             <SpaceBetween size="s">
                               <div>
@@ -213,81 +253,203 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                             </SpaceBetween>
                           </div>
                         </ColumnLayout>
-                        <Box>
-                          <Button onClick={() => setCustomizeGroupSettings(true)}>Customize settings</Button>
-                        </Box>
-                      </>
-                    ) : (
-                      <SpaceBetween size="l">
-                        <ColumnLayout columns={2}>
-                          <FormField label="Collection group name">
+                      ) : (
+                        <>
+                          <ColumnLayout columns={2}>
+                            <FormField label="Minimum indexing capacity (OCUs)">
+                              <Select
+                                selectedOption={groupSettings.minIndexing}
+                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, minIndexing: detail.selectedOption })}
+                                options={[
+                                  { label: '-', value: '-' },
+                                  { label: '96', value: '96', description: '576 GB RAM' }
+                                ]}
+                              />
+                            </FormField>
+                            <FormField label="Maximum indexing capacity (OCUs)">
+                              <Select
+                                selectedOption={groupSettings.maxIndexing}
+                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
+                                options={[
+                                  { label: '96', value: '96', description: '576 GB RAM' }
+                                ]}
+                              />
+                            </FormField>
+                          </ColumnLayout>
+                          <ColumnLayout columns={2}>
+                            <FormField label="Minimum Search capacity (OCUs)">
+                              <Select
+                                selectedOption={groupSettings.minSearch}
+                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, minSearch: detail.selectedOption })}
+                                options={[
+                                  { label: '-', value: '-' },
+                                  { label: '96', value: '96', description: '576 GB RAM' }
+                                ]}
+                              />
+                            </FormField>
+                            <FormField label="Maximum Search capacity (OCUs)">
+                              <Select
+                                selectedOption={groupSettings.maxSearch}
+                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
+                                options={[
+                                  { label: '96', value: '96', description: '576 GB RAM' }
+                                ]}
+                              />
+                            </FormField>
+                          </ColumnLayout>
+                        </>
+                      )}
+                      <Box>
+                        <Button onClick={() => {
+                          setGroupSettings({
+                            name: 'serverlessV2_27121',
+                            minIndexing: { label: '-', value: '-' },
+                            maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
+                            minSearch: { label: '-', value: '-' },
+                            maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
+                            selectedGroup: null
+                          });
+                          setGroupSelection('create-new');
+                          setCustomizeGroupSettings(false);
+                        }}>
+                          Reset to default
+                        </Button>
+                      </Box>
+                    </SpaceBetween>
+                  )}
+                </SpaceBetween>
+              </ExpandableSection>
+              </SpaceBetween>
+
+              <hr style={{ border: 'none', borderTop: '1px solid #e9ebed', margin: '0' }} />
+
+              <SpaceBetween size="xs">
+                <FormField
+                  label={<span style={{ fontSize: '18px', fontWeight: '700' }}>OpenSearch UI</span>}
+                  description="OpenSearch UI (Dashboards) is the next generation and redesigned OpenSearch Dashboards experience that can connect to multiple data sources. An OpenSearch application has its own Endpoint and can be easily shared to others for collaboration, and each collaborator can login via AWS Identity and Access Management (IAM), and/or IAM Identity Center credentials."
+                  info={<Link variant="info">Info</Link>}
+                  stretch
+                />
+
+                <ExpandableSection
+                  headerText="OpenSearch UI settings"
+                  defaultExpanded={true}
+                >
+                <SpaceBetween size="l">
+                  {!customizeAppSettings ? (
+                    <>
+                      <ColumnLayout columns={3} variant="text-grid">
+                        <div>
+                          <Box variant="awsui-key-label">OpenSearch application name</Box>
+                          <div>{appSettings.applicationName}</div>
+                        </div>
+                        <div>
+                          <Box variant="awsui-key-label">Workspace</Box>
+                          <div>{appSettings.workspace}</div>
+                        </div>
+                        <div></div>
+                      </ColumnLayout>
+                      <Box>
+                        <Button onClick={() => setCustomizeAppSettings(true)}>Customize</Button>
+                      </Box>
+                    </>
+                  ) : (
+                    <SpaceBetween size="l">
+                      <FormField label="OpenSearch application selection">
+                        <Tiles
+                          columns={2}
+                          items={[
+                            {
+                              label: 'Select existing OpenSearch application',
+                              value: 'select-existing'
+                            },
+                            {
+                              label: 'Create new OpenSearch application',
+                              value: 'create-new'
+                            }
+                          ]}
+                          value={appSettings.appSelection}
+                          onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
+                        />
+                      </FormField>
+                      <FormField label="OpenSearch application name">
+                        <div style={{ width: '50%' }}>
+                          {appSettings.appSelection === 'select-existing' ? (
+                            <Select
+                              selectedOption={appSettings.selectedApp}
+                              onChange={({ detail }) => setAppSettings({ ...appSettings, selectedApp: detail.selectedOption, applicationName: detail.selectedOption.value })}
+                              options={[
+                                { label: 'opensearchui-1769533298515', value: 'opensearchui-1769533298515' },
+                                { label: 'opensearchui-1769533298516', value: 'opensearchui-1769533298516' }
+                              ]}
+                              placeholder="Select an OpenSearch application"
+                            />
+                          ) : (
                             <Input
-                              value={groupSettings.name}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, name: detail.value })}
+                              value={appSettings.applicationName}
+                              onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
                             />
-                          </FormField>
-                        </ColumnLayout>
-                        <ColumnLayout columns={2}>
-                          <FormField label="Minimum indexing capacity (OCUs)">
+                          )}
+                        </div>
+                      </FormField>
+                      <FormField label="Workspace selection">
+                        <Tiles
+                          columns={2}
+                          items={[
+                            {
+                              label: 'Select existing workspace',
+                              value: 'select-existing',
+                              disabled: appSettings.appSelection === 'create-new'
+                            },
+                            {
+                              label: 'Create new workspace',
+                              value: 'create-new'
+                            }
+                          ]}
+                          value={appSettings.workspaceSelection}
+                          onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
+                        />
+                      </FormField>
+                      <FormField label="Workspace">
+                        <div style={{ width: '50%' }}>
+                          {appSettings.workspaceSelection === 'select-existing' ? (
                             <Select
-                              selectedOption={groupSettings.minIndexing}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, minIndexing: detail.selectedOption })}
+                              selectedOption={appSettings.selectedWorkspace}
+                              onChange={({ detail }) => setAppSettings({ ...appSettings, selectedWorkspace: detail.selectedOption, workspace: detail.selectedOption.value })}
                               options={[
-                                { label: '-', value: '-' },
-                                { label: '96', value: '96', description: '576 GB RAM' }
+                                { label: 'workspace-1769533298515', value: 'workspace-1769533298515' },
+                                { label: 'workspace-1769533298516', value: 'workspace-1769533298516' }
                               ]}
+                              placeholder="Select a workspace"
                             />
-                          </FormField>
-                          <FormField label="Maximum indexing capacity (OCUs)">
-                            <Select
-                              selectedOption={groupSettings.maxIndexing}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
-                              options={[
-                                { label: '96', value: '96', description: '576 GB RAM' }
-                              ]}
+                          ) : (
+                            <Input
+                              value={appSettings.workspace}
+                              onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
                             />
-                          </FormField>
-                        </ColumnLayout>
-                        <ColumnLayout columns={2}>
-                          <FormField label="Minimum Search capacity (OCUs)">
-                            <Select
-                              selectedOption={groupSettings.minSearch}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, minSearch: detail.selectedOption })}
-                              options={[
-                                { label: '-', value: '-' },
-                                { label: '96', value: '96', description: '576 GB RAM' }
-                              ]}
-                            />
-                          </FormField>
-                          <FormField label="Maximum Search capacity (OCUs)">
-                            <Select
-                              selectedOption={groupSettings.maxSearch}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
-                              options={[
-                                { label: '96', value: '96', description: '576 GB RAM' }
-                              ]}
-                            />
-                          </FormField>
-                        </ColumnLayout>
-                        <Box>
-                          <Button onClick={() => {
-                            setGroupSettings({
-                              name: 'serverlessV2_27121',
-                              minIndexing: { label: '-', value: '-' },
-                              maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
-                              minSearch: { label: '-', value: '-' },
-                              maxSearch: { label: '96', value: '96', description: '576 GB RAM' }
-                            });
-                            setCustomizeGroupSettings(false);
-                          }}>
-                            Reset to default
-                          </Button>
-                        </Box>
-                      </SpaceBetween>
-                    )}
-                  </SpaceBetween>
-                </ExpandableSection>
-              )}
+                          )}
+                        </div>
+                      </FormField>
+                      <Box>
+                        <Button onClick={() => {
+                          setAppSettings({
+                            applicationName: 'opensearchui-1769533298515',
+                            workspace: 'workspace-1769533298515',
+                            appSelection: 'create-new',
+                            workspaceSelection: 'create-new',
+                            selectedApp: null,
+                            selectedWorkspace: null
+                          });
+                          setCustomizeAppSettings(false);
+                        }}>
+                          Reset to default
+                        </Button>
+                      </Box>
+                    </SpaceBetween>
+                  )}
+                </SpaceBetween>
+              </ExpandableSection>
+              </SpaceBetween>
             </SpaceBetween>
           </Container>
 
@@ -313,11 +475,13 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                 checked={formData.customizeEncryption}
                 onChange={({ detail }) => setFormData({ ...formData, customizeEncryption: detail.checked })}
               >
-                Customize encryption settings (advanced)
+                <div>
+                  <strong>Customize encryption settings (advanced)</strong>
+                  <div style={{ color: '#5f6b7a', fontSize: '12px' }}>
+                    To use the default key, clear this option.
+                  </div>
+                </div>
               </Checkbox>
-              <Box variant="small" color="text-body-secondary">
-                To use the default key, clear this option.
-              </Box>
 
               {formData.customizeEncryption && (
                 <SpaceBetween size="l">
