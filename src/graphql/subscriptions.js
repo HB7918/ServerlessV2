@@ -16,6 +16,8 @@ export const onCreateComment = /* GraphQL */ `
       text
       author
       timestamp
+      pinX
+      pinY
     }
   }
 `;
@@ -37,6 +39,8 @@ export const onUpdateComment = /* GraphQL */ `
       text
       author
       timestamp
+      pinX
+      pinY
     }
   }
 `;
@@ -58,6 +62,8 @@ export const onDeleteComment = /* GraphQL */ `
       text
       author
       timestamp
+      pinX
+      pinY
     }
   }
 `;

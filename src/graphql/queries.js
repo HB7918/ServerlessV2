@@ -11,6 +11,8 @@ export const listComments = /* GraphQL */ `
         text
         author
         timestamp
+        pinX
+        pinY
       }
       nextToken
     }
@@ -33,6 +35,8 @@ export const commentsByScreen = /* GraphQL */ `
         text
         author
         timestamp
+        pinX
+        pinY
       }
       nextToken
     }
@@ -46,6 +50,8 @@ export const getComment = /* GraphQL */ `
       text
       author
       timestamp
+      pinX
+      pinY
     }
   }
 `;

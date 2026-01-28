@@ -144,84 +144,14 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                   headerText="Collection group settings"
                   defaultExpanded={true}
                 >
-                <SpaceBetween size="l">
-                  {!customizeGroupSettings ? (
-                    <>
-                      <ColumnLayout columns={3} variant="text-grid">
-                        <div>
-                          <Box variant="awsui-key-label">Collection group name</Box>
-                          <div>{groupSettings.name}</div>
-                        </div>
-                        <div>
-                          <SpaceBetween size="s">
-                            <div>
-                              <Box variant="awsui-key-label">Minimum indexing capacity (OCUs)</Box>
-                              <div>0</div>
-                            </div>
-                            <div>
-                              <Box variant="awsui-key-label">Maximum indexing capacity (OCUs)</Box>
-                              <div>96</div>
-                            </div>
-                          </SpaceBetween>
-                        </div>
-                        <div>
-                          <SpaceBetween size="s">
-                            <div>
-                              <Box variant="awsui-key-label">Minimum Search capacity (OCUs)</Box>
-                              <div>0</div>
-                            </div>
-                            <div>
-                              <Box variant="awsui-key-label">Maximum Search capacity (OCUs)</Box>
-                              <div>96</div>
-                            </div>
-                          </SpaceBetween>
-                        </div>
-                      </ColumnLayout>
-                      <Box>
-                        <Button onClick={() => setCustomizeGroupSettings(true)}>Customize</Button>
-                      </Box>
-                    </>
-                  ) : (
-                    <SpaceBetween size="l">
-                      <FormField label="Collection group selection">
-                        <Tiles
-                          columns={2}
-                          items={[
-                            {
-                              label: 'Select existing collection group',
-                              value: 'select-existing'
-                            },
-                            {
-                              label: 'Create new collection group',
-                              value: 'create-new'
-                            }
-                          ]}
-                          value={groupSelection}
-                          onChange={({ detail }) => setGroupSelection(detail.value)}
-                        />
-                      </FormField>
-                      <FormField label="Collection group name">
-                        <div style={{ width: '50%' }}>
-                          {groupSelection === 'select-existing' ? (
-                            <Select
-                              selectedOption={groupSettings.selectedGroup}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, selectedGroup: detail.selectedOption, name: detail.selectedOption.value })}
-                              options={[
-                                { label: 'serverlessV2_27121', value: 'serverlessV2_27121' },
-                                { label: 'serverlessV2_27122', value: 'serverlessV2_27122' }
-                              ]}
-                              placeholder="Select a collection group"
-                            />
-                          ) : (
-                            <Input
-                              value={groupSettings.name}
-                              onChange={({ detail }) => setGroupSettings({ ...groupSettings, name: detail.value })}
-                            />
-                          )}
-                        </div>
-                      </FormField>
-                      {groupSelection === 'select-existing' ? (
-                        <ColumnLayout columns={2} variant="text-grid">
+                  <SpaceBetween size="l">
+                    {!customizeGroupSettings ? (
+                      <>
+                        <ColumnLayout columns={3} variant="text-grid">
+                          <div>
+                            <Box variant="awsui-key-label">Collection group name</Box>
+                            <div>{groupSettings.name}</div>
+                          </div>
                           <div>
                             <SpaceBetween size="s">
                               <div>
@@ -247,72 +177,142 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                             </SpaceBetween>
                           </div>
                         </ColumnLayout>
-                      ) : (
-                        <>
-                          <ColumnLayout columns={2}>
-                            <FormField label="Minimum indexing capacity (OCUs)">
+                        <Box>
+                          <Button onClick={() => setCustomizeGroupSettings(true)}>Customize</Button>
+                        </Box>
+                      </>
+                    ) : (
+                      <SpaceBetween size="l">
+                        <FormField label="Collection group selection">
+                          <Tiles
+                            columns={2}
+                            items={[
+                              {
+                                label: 'Select existing collection group',
+                                value: 'select-existing'
+                              },
+                              {
+                                label: 'Create new collection group',
+                                value: 'create-new'
+                              }
+                            ]}
+                            value={groupSelection}
+                            onChange={({ detail }) => setGroupSelection(detail.value)}
+                          />
+                        </FormField>
+                        <FormField label="Collection group name">
+                          <div style={{ width: '50%' }}>
+                            {groupSelection === 'select-existing' ? (
                               <Select
-                                selectedOption={groupSettings.minIndexing}
-                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, minIndexing: detail.selectedOption })}
+                                selectedOption={groupSettings.selectedGroup}
+                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, selectedGroup: detail.selectedOption, name: detail.selectedOption.value })}
                                 options={[
-                                  { label: '-', value: '-' },
-                                  { label: '96', value: '96', description: '576 GB RAM' }
+                                  { label: 'serverlessV2_27121', value: 'serverlessV2_27121' },
+                                  { label: 'serverlessV2_27122', value: 'serverlessV2_27122' }
                                 ]}
+                                placeholder="Select a collection group"
                               />
-                            </FormField>
-                            <FormField label="Maximum indexing capacity (OCUs)">
-                              <Select
-                                selectedOption={groupSettings.maxIndexing}
-                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
-                                options={[
-                                  { label: '96', value: '96', description: '576 GB RAM' }
-                                ]}
+                            ) : (
+                              <Input
+                                value={groupSettings.name}
+                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, name: detail.value })}
                               />
-                            </FormField>
+                            )}
+                          </div>
+                        </FormField>
+                        {groupSelection === 'select-existing' ? (
+                          <ColumnLayout columns={2} variant="text-grid">
+                            <div>
+                              <SpaceBetween size="s">
+                                <div>
+                                  <Box variant="awsui-key-label">Minimum indexing capacity (OCUs)</Box>
+                                  <div>0</div>
+                                </div>
+                                <div>
+                                  <Box variant="awsui-key-label">Maximum indexing capacity (OCUs)</Box>
+                                  <div>96</div>
+                                </div>
+                              </SpaceBetween>
+                            </div>
+                            <div>
+                              <SpaceBetween size="s">
+                                <div>
+                                  <Box variant="awsui-key-label">Minimum Search capacity (OCUs)</Box>
+                                  <div>0</div>
+                                </div>
+                                <div>
+                                  <Box variant="awsui-key-label">Maximum Search capacity (OCUs)</Box>
+                                  <div>96</div>
+                                </div>
+                              </SpaceBetween>
+                            </div>
                           </ColumnLayout>
-                          <ColumnLayout columns={2}>
-                            <FormField label="Minimum Search capacity (OCUs)">
-                              <Select
-                                selectedOption={groupSettings.minSearch}
-                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, minSearch: detail.selectedOption })}
-                                options={[
-                                  { label: '-', value: '-' },
-                                  { label: '96', value: '96', description: '576 GB RAM' }
-                                ]}
-                              />
-                            </FormField>
-                            <FormField label="Maximum Search capacity (OCUs)">
-                              <Select
-                                selectedOption={groupSettings.maxSearch}
-                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
-                                options={[
-                                  { label: '96', value: '96', description: '576 GB RAM' }
-                                ]}
-                              />
-                            </FormField>
-                          </ColumnLayout>
-                        </>
-                      )}
-                      <Box>
-                        <Button onClick={() => {
-                          setGroupSettings({
-                            name: 'serverlessV2_27121',
-                            minIndexing: { label: '-', value: '-' },
-                            maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
-                            minSearch: { label: '-', value: '-' },
-                            maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
-                            selectedGroup: null
-                          });
-                          setGroupSelection('create-new');
-                          setCustomizeGroupSettings(false);
-                        }}>
-                          Reset to default
-                        </Button>
-                      </Box>
-                    </SpaceBetween>
-                  )}
-                </SpaceBetween>
-              </ExpandableSection>
+                        ) : (
+                          <>
+                            <ColumnLayout columns={2}>
+                              <FormField label="Minimum indexing capacity (OCUs)">
+                                <Select
+                                  selectedOption={groupSettings.minIndexing}
+                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, minIndexing: detail.selectedOption })}
+                                  options={[
+                                    { label: '-', value: '-' },
+                                    { label: '96', value: '96', description: '576 GB RAM' }
+                                  ]}
+                                />
+                              </FormField>
+                              <FormField label="Maximum indexing capacity (OCUs)">
+                                <Select
+                                  selectedOption={groupSettings.maxIndexing}
+                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
+                                  options={[
+                                    { label: '96', value: '96', description: '576 GB RAM' }
+                                  ]}
+                                />
+                              </FormField>
+                            </ColumnLayout>
+                            <ColumnLayout columns={2}>
+                              <FormField label="Minimum Search capacity (OCUs)">
+                                <Select
+                                  selectedOption={groupSettings.minSearch}
+                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, minSearch: detail.selectedOption })}
+                                  options={[
+                                    { label: '-', value: '-' },
+                                    { label: '96', value: '96', description: '576 GB RAM' }
+                                  ]}
+                                />
+                              </FormField>
+                              <FormField label="Maximum Search capacity (OCUs)">
+                                <Select
+                                  selectedOption={groupSettings.maxSearch}
+                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
+                                  options={[
+                                    { label: '96', value: '96', description: '576 GB RAM' }
+                                  ]}
+                                />
+                              </FormField>
+                            </ColumnLayout>
+                          </>
+                        )}
+                        <Box>
+                          <Button onClick={() => {
+                            setGroupSettings({
+                              name: 'serverlessV2_27121',
+                              minIndexing: { label: '-', value: '-' },
+                              maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
+                              minSearch: { label: '-', value: '-' },
+                              maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
+                              selectedGroup: null
+                            });
+                            setGroupSelection('create-new');
+                            setCustomizeGroupSettings(false);
+                          }}>
+                            Reset to default
+                          </Button>
+                        </Box>
+                      </SpaceBetween>
+                    )}
+                  </SpaceBetween>
+                </ExpandableSection>
               </SpaceBetween>
             </SpaceBetween>
           </Container>

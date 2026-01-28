@@ -1,10 +1,369 @@
+# Comments Feature Playbook
+
+A step-by-step guide for adding Figma-style visual feedback comments to your React prototype projects.
+
+## Overview
+
+This feature adds pin-based comments to any screen, allowing designers and stakeholders to click anywhere on the prototype to drop a pin and leave feedback at that exact location. Comments are stored in AWS AppSync (GraphQL) with real-time sync across users.
+
+### Features
+- 📍 Click anywhere to drop a comment pin
+- 💬 Inline comment input at pin location
+- 👁️ Toggle pin visibility
+- 🔄 Real-time sync across users
+- 📱 Hover to preview, click to expand
+
+---
+
+## Prerequisites
+
+- React project (Vite or Create React App)
+- AWS Account
+- Node.js 18+
+
+---
+
+## Step 1: Install Dependencies
+
+```bash
+npm install aws-amplify @aws-amplify/ui-react
+```
+
+If using Cloudscape Design System:
+```bash
+npm install @cloudscape-design/components @cloudscape-design/global-styles
+```
+
+---
+
+## Step 2: Set Up AWS AppSync
+
+### 2.1 Create AppSync API
+
+1. Go to AWS Console → AppSync → Create API
+2. Choose "Build from scratch"
+3. Name it (e.g., `prototype-comments-api`)
+4. Click Create
+
+### 2.2 Define Schema
+
+In AppSync Console → Schema, paste:
+
+```graphql
+type Comment {
+  screenname: String!
+  timestamp: AWSDateTime!
+  text: String!
+  author: String!
+  pinX: Float
+  pinY: Float
+}
+
+type CommentConnection {
+  items: [Comment]
+  nextToken: String
+}
+
+input CreateCommentInput {
+  screenname: String!
+  text: String!
+  author: String!
+  timestamp: AWSDateTime!
+  pinX: Float
+  pinY: Float
+}
+
+input DeleteCommentInput {
+  screenname: String!
+  timestamp: AWSDateTime!
+}
+
+input UpdateCommentInput {
+  screenname: String!
+  timestamp: AWSDateTime!
+  text: String
+  author: String
+  pinX: Float
+  pinY: Float
+}
+
+input TableCommentFilterInput {
+  screenname: TableStringFilterInput
+  timestamp: TableStringFilterInput
+  text: TableStringFilterInput
+  author: TableStringFilterInput
+}
+
+input TableStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+type Query {
+  getComment(screenname: String!, timestamp: AWSDateTime!): Comment
+  listComments(filter: TableCommentFilterInput, limit: Int, nextToken: String): CommentConnection
+}
+
+type Mutation {
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: UpdateCommentInput!): Comment
+  deleteComment(input: DeleteCommentInput!): Comment
+}
+
+type Subscription {
+  onCreateComment(screenname: String, text: String, author: String, timestamp: AWSDateTime): Comment
+    @aws_subscribe(mutations: ["createComment"])
+  onUpdateComment(screenname: String, text: String, author: String, timestamp: AWSDateTime): Comment
+    @aws_subscribe(mutations: ["updateComment"])
+  onDeleteComment(screenname: String, text: String, author: String, timestamp: AWSDateTime): Comment
+    @aws_subscribe(mutations: ["deleteComment"])
+}
+```
+
+Click "Save Schema"
+
+### 2.3 Create DynamoDB Data Source
+
+1. Go to Data Sources → Create data source
+2. Name: `CommentsTable`
+3. Type: Amazon DynamoDB
+4. Create new table or use existing
+5. Table name: `comments`
+6. Primary key: `screenname` (String)
+7. Sort key: `timestamp` (String)
+
+### 2.4 Attach Resolvers
+
+For each Query/Mutation, attach resolvers to the DynamoDB data source:
+
+**listComments resolver (Request mapping):**
+```velocity
+{
+  "version": "2017-02-28",
+  "operation": "Scan",
+  #if($ctx.args.filter)
+    "filter": $util.transform.toDynamoDBFilterExpression($ctx.args.filter)
+  #end
+  #if($ctx.args.limit)
+    ,"limit": $ctx.args.limit
+  #end
+  #if($ctx.args.nextToken)
+    ,"nextToken": "$ctx.args.nextToken"
+  #end
+}
+```
+
+**listComments resolver (Response mapping):**
+```velocity
+$util.toJson($ctx.result)
+```
+
+**createComment resolver (Request mapping):**
+```velocity
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": {
+    "screenname": $util.dynamodb.toDynamoDBJson($ctx.args.input.screenname),
+    "timestamp": $util.dynamodb.toDynamoDBJson($ctx.args.input.timestamp)
+  },
+  "attributeValues": {
+    "text": $util.dynamodb.toDynamoDBJson($ctx.args.input.text),
+    "author": $util.dynamodb.toDynamoDBJson($ctx.args.input.author),
+    "pinX": $util.dynamodb.toDynamoDBJson($ctx.args.input.pinX),
+    "pinY": $util.dynamodb.toDynamoDBJson($ctx.args.input.pinY)
+  }
+}
+```
+
+**createComment resolver (Response mapping):**
+```velocity
+$util.toJson($ctx.result)
+```
+
+**deleteComment resolver (Request mapping):**
+```velocity
+{
+  "version": "2017-02-28",
+  "operation": "DeleteItem",
+  "key": {
+    "screenname": $util.dynamodb.toDynamoDBJson($ctx.args.input.screenname),
+    "timestamp": $util.dynamodb.toDynamoDBJson($ctx.args.input.timestamp)
+  }
+}
+```
+
+**deleteComment resolver (Response mapping):**
+```velocity
+$util.toJson($ctx.result)
+```
+
+### 2.5 Configure API Key Authentication
+
+1. Go to Settings → Default authorization mode
+2. Select "API Key"
+3. Create or note your API key
+
+### 2.6 Get Your API Details
+
+From AppSync Console, note:
+- GraphQL endpoint URL
+- API Key
+- Region
+
+---
+
+## Step 3: Add Project Files
+
+### 3.1 Create `src/aws-exports.js`
+
+```javascript
+const awsconfig = {
+  API: {
+    GraphQL: {
+      endpoint: 'YOUR_APPSYNC_ENDPOINT',
+      region: 'us-east-1',
+      defaultAuthMode: 'apiKey',
+      apiKey: 'YOUR_API_KEY'
+    }
+  }
+};
+
+export default awsconfig;
+```
+
+### 3.2 Create `src/graphql/queries.js`
+
+```javascript
+export const listComments = /* GraphQL */ `
+  query ListComments(
+    $filter: TableCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        screenname
+        text
+        author
+        timestamp
+        pinX
+        pinY
+      }
+      nextToken
+    }
+  }
+`;
+
+export const getComment = /* GraphQL */ `
+  query GetComment($screenname: String!, $timestamp: AWSDateTime!) {
+    getComment(screenname: $screenname, timestamp: $timestamp) {
+      screenname
+      text
+      author
+      timestamp
+      pinX
+      pinY
+    }
+  }
+`;
+```
+
+### 3.3 Create `src/graphql/mutations.js`
+
+```javascript
+export const createComment = /* GraphQL */ `
+  mutation CreateComment($input: CreateCommentInput!) {
+    createComment(input: $input) {
+      screenname
+      text
+      author
+      timestamp
+      pinX
+      pinY
+    }
+  }
+`;
+
+export const updateComment = /* GraphQL */ `
+  mutation UpdateComment($input: UpdateCommentInput!) {
+    updateComment(input: $input) {
+      screenname
+      text
+      author
+      timestamp
+      pinX
+      pinY
+    }
+  }
+`;
+
+export const deleteComment = /* GraphQL */ `
+  mutation DeleteComment($input: DeleteCommentInput!) {
+    deleteComment(input: $input) {
+      screenname
+      text
+      author
+      timestamp
+      pinX
+      pinY
+    }
+  }
+`;
+```
+
+### 3.4 Create `src/graphql/subscriptions.js`
+
+```javascript
+export const onCreateComment = /* GraphQL */ `
+  subscription OnCreateComment(
+    $screenname: String
+    $text: String
+    $author: String
+    $timestamp: AWSDateTime
+  ) {
+    onCreateComment(
+      screenname: $screenname
+      text: $text
+      author: $author
+      timestamp: $timestamp
+    ) {
+      screenname
+      text
+      author
+      timestamp
+      pinX
+      pinY
+    }
+  }
+`;
+
+export const onDeleteComment = /* GraphQL */ `
+  subscription OnDeleteComment(
+    $screenname: String
+  ) {
+    onDeleteComment(
+      screenname: $screenname
+    ) {
+      screenname
+      timestamp
+    }
+  }
+`;
+```
+
+### 3.5 Create `src/components/CommentsPanel.jsx`
+
+```jsx
 import { useState, useEffect, useRef } from 'react';
-import {
-  Button,
-  Textarea,
-  Box,
-  Spinner
-} from '@cloudscape-design/components';
 import { generateClient } from 'aws-amplify/api';
 import * as mutations from '../graphql/mutations';
 import * as queries from '../graphql/queries';
@@ -246,7 +605,8 @@ function CommentsPanel({ screenName }) {
                   resize: 'none',
                   outline: 'none',
                   fontFamily: 'inherit',
-                  minHeight: '60px'
+                  minHeight: '60px',
+                  boxSizing: 'border-box'
                 }}
                 rows={2}
               />
@@ -487,3 +847,172 @@ function CommentsPanel({ screenName }) {
 }
 
 export default CommentsPanel;
+```
+
+---
+
+## Step 4: Configure Your App
+
+### 4.1 Update `src/main.jsx`
+
+```jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import '@cloudscape-design/global-styles/index.css'
+import './index.css'
+import App from './App.jsx'
+import { Amplify } from 'aws-amplify'
+import awsconfig from './aws-exports.js'
+
+Amplify.configure(awsconfig);
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+```
+
+---
+
+## Step 5: Add Comments to Your Screens
+
+Import and add the CommentsPanel to any screen:
+
+```jsx
+import CommentsPanel from './components/CommentsPanel';
+
+function MyScreen() {
+  return (
+    <div>
+      {/* Your screen content */}
+      
+      <CommentsPanel screenName="My Screen Name" />
+    </div>
+  );
+}
+```
+
+The `screenName` prop identifies which screen the comments belong to. Use unique names for each screen.
+
+---
+
+## How It Works
+
+1. Click **"📍 Add comment"** button to enter comment mode
+2. Click anywhere on the screen to drop a pin
+3. An inline comment box appears at that location
+4. Type your comment and press **Enter** (or click Comment)
+5. Press **Esc** to cancel
+6. Click on existing pins to view/delete comments
+7. Hover over pins to see a preview
+8. Use **"👁️ Hide/View comments"** to toggle pin visibility
+
+---
+
+## Step 6: Optional - Email Notifications
+
+To receive email notifications when comments are added:
+
+### 6.1 Create SNS Topic
+
+1. Go to AWS Console → SNS → Create topic
+2. Type: Standard
+3. Name: `comment-notifications`
+4. Create subscription → Email → Your email
+5. Confirm the subscription email
+
+### 6.2 Enable DynamoDB Streams
+
+1. Go to DynamoDB → Your comments table
+2. Exports and streams → Turn on DynamoDB stream
+3. Select "New image"
+
+### 6.3 Create Lambda Function
+
+1. Go to Lambda → Create function
+2. Name: `comment-notification`
+3. Runtime: Node.js 20.x
+4. Add this code:
+
+```javascript
+import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
+
+const sns = new SNSClient({});
+
+export const handler = async (event) => {
+    const topicArn = process.env.SNS_TOPIC_ARN;
+    
+    for (const record of event.Records) {
+        if (record.eventName === "INSERT") {
+            const newImage = record.dynamodb.NewImage;
+            const screenName = newImage.screenname?.S || 'Unknown';
+            const text = newImage.text?.S || '';
+            const author = newImage.author?.S || 'Anonymous';
+            
+            const message = `New comment on "${screenName}" by ${author}:\n\n${text}`;
+            
+            await sns.send(new PublishCommand({
+                TopicArn: topicArn,
+                Subject: `New Comment on ${screenName}`,
+                Message: message
+            }));
+        }
+    }
+    
+    return { statusCode: 200 };
+};
+```
+
+5. Add environment variable: `SNS_TOPIC_ARN` = your topic ARN
+6. Add DynamoDB trigger → Select your comments table stream
+7. Attach IAM policies: `AWSLambdaDynamoDBExecutionRole` and `AmazonSNSFullAccess`
+
+---
+
+## Troubleshooting
+
+### Comments not loading
+- Check browser console for errors
+- Verify AppSync endpoint and API key in `aws-exports.js`
+- Ensure DynamoDB table exists with correct schema
+
+### Pin positions not saving
+- Ensure `pinX` and `pinY` are in your AppSync schema
+- Update the createComment resolver to include pinX and pinY
+
+### Real-time updates not working
+- Verify subscriptions are enabled in AppSync
+- Check WebSocket connection in browser Network tab
+
+### Build fails on deployment
+- Add `aws-exports.js` to `.gitignore`
+- Use environment variables for production:
+  - `VITE_APPSYNC_ENDPOINT`
+  - `VITE_APPSYNC_REGION`
+  - `VITE_APPSYNC_API_KEY`
+
+---
+
+## File Structure
+
+```
+src/
+├── components/
+│   └── CommentsPanel.jsx
+├── graphql/
+│   ├── mutations.js
+│   ├── queries.js
+│   └── subscriptions.js
+├── aws-exports.js
+└── main.jsx
+```
+
+---
+
+## Security Notes
+
+- API keys are suitable for prototypes but not production
+- For production, use Cognito authentication
+- Never commit `aws-exports.js` with real credentials to public repos
+- Use environment variables for deployed applications
