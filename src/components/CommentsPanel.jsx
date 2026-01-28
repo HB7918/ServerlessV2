@@ -19,7 +19,10 @@ function CommentsPanel({ screenName }) {
   const [commentMode, setCommentMode] = useState(false);
   const [pendingPin, setPendingPin] = useState(null);
   const [hoveredPin, setHoveredPin] = useState(null);
-  const [showPins, setShowPins] = useState(true);
+  const [showPins, setShowPins] = useState(() => {
+    const saved = localStorage.getItem('comments-show-pins');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const [expandedComment, setExpandedComment] = useState(null);
   const textareaRef = useRef(null);
 
@@ -445,7 +448,7 @@ function CommentsPanel({ screenName }) {
             gap: '8px',
             backgroundColor: commentMode ? '#0972d3' : '#ffffff',
             color: commentMode ? '#ffffff' : '#16191f',
-            border: 'none',
+            border: '1px solid #0972d3',
             padding: '10px 16px',
             borderRadius: '20px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
@@ -456,15 +459,19 @@ function CommentsPanel({ screenName }) {
           }}
         >
           <span style={{ fontSize: '16px' }}>📍</span>
-          {commentMode ? 'Click to place pin' : 'Add comment'}
+                    {commentMode ? 'Click on screen to place a pin' : 'Add comment'}
         </button>
         
         {pinnedComments.length > 0 && (
           <button
-            onClick={() => setShowPins(!showPins)}
+            onClick={() => {
+              const newValue = !showPins;
+              setShowPins(newValue);
+              localStorage.setItem('comments-show-pins', JSON.stringify(newValue));
+            }}
             style={{
               backgroundColor: '#ffffff',
-              border: 'none',
+              border: '1px solid #0972d3',
               padding: '10px 16px',
               borderRadius: '20px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
