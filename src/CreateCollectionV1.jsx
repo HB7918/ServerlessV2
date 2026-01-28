@@ -40,15 +40,9 @@ function ConfigureCollectionStep({ formData, setFormData, onNavigateToV2 }) {
               />
             </FormField>
 
-            <Alert
-              type="info"
-              action={<Button onClick={onNavigateToV2}>Create Serverless v2 collection</Button>}
-            >
-              <strong>Context? Title?</strong> This is the previous generation serverless v1 collections create flow. To create the latest generation of serverless v2 collections, switch to create serverless v2 flow.
-            </Alert>
-
             <FormField
               label="Serverless version"
+              description={<>This is the previous generation serverless v1 collections create flow. To create the latest generation of serverless v2 collections, <Link href="#" onFollow={(e) => { e.preventDefault(); onNavigateToV2(); }}>Create Serverless v2 collection</Link>.</>}
               info={<Link variant="info">Info</Link>}
             >
               <Box>Serverless v1</Box>

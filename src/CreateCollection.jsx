@@ -85,13 +85,6 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
         }
       >
         <SpaceBetween size="l">
-          <Alert
-            action={<Button onClick={onNavigateToV1}>Create Serverless v1 collection</Button>}
-            type="info"
-          >
-            Creating latest generation of Amazon OpenSearch Serverless with instant auto scaling and scale-to-zero for cost optimization. To create previous generation of serverless collections, switch to create serverless v1 flow.
-          </Alert>
-
           <Container header={<Header variant="h2">Collection details</Header>}>
             <SpaceBetween size="l">
               <FormField label="Collection name">
@@ -104,6 +97,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
               <FormField
                 label="Serverless version"
+                description={<>Creating latest generation of Amazon OpenSearch Serverless with instant auto scaling and scale-to-zero for cost optimization. To create previous generation of serverless collections, <Link href="#" onFollow={(e) => { e.preventDefault(); onNavigateToV1(); }}>Create Serverless v1 collection</Link>.</>}
                 info={<Link variant="info">Info</Link>}
               >
                 <Box>Serverless v2</Box>
@@ -320,136 +314,132 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                 </SpaceBetween>
               </ExpandableSection>
               </SpaceBetween>
+            </SpaceBetween>
+          </Container>
 
-              <hr style={{ border: 'none', borderTop: '1px solid #e9ebed', margin: '0' }} />
-
-              <SpaceBetween size="xs">
-                <FormField
-                  label={<span style={{ fontSize: '18px', fontWeight: '700' }}>OpenSearch UI</span>}
-                  description="OpenSearch UI (Dashboards) is the next generation and redesigned OpenSearch Dashboards experience that can connect to multiple data sources. An OpenSearch application has its own Endpoint and can be easily shared to others for collaboration, and each collaborator can login via AWS Identity and Access Management (IAM), and/or IAM Identity Center credentials."
-                  info={<Link variant="info">Info</Link>}
-                  stretch
-                />
-
-                <ExpandableSection
-                  headerText="OpenSearch UI settings"
-                  defaultExpanded={true}
-                >
+          <Container
+            header={
+              <Header
+                variant="h2"
+                description="OpenSearch UI (Dashboards) is the next generation and redesigned OpenSearch Dashboards experience that can connect to multiple data sources. An OpenSearch application has its own Endpoint and can be easily shared to others for collaboration, and each collaborator can login via AWS Identity and Access Management (IAM), and/or IAM Identity Center credentials."
+                info={<Link variant="info">Info</Link>}
+              >
+                OpenSearch UI
+              </Header>
+            }
+          >
+            <SpaceBetween size="l">
+              {!customizeAppSettings ? (
+                <>
+                  <ColumnLayout columns={3} variant="text-grid">
+                    <div>
+                      <Box variant="awsui-key-label">OpenSearch application name</Box>
+                      <div>{appSettings.applicationName}</div>
+                    </div>
+                    <div>
+                      <Box variant="awsui-key-label">Workspace</Box>
+                      <div>{appSettings.workspace}</div>
+                    </div>
+                    <div></div>
+                  </ColumnLayout>
+                  <Box>
+                    <Button onClick={() => setCustomizeAppSettings(true)}>Customize</Button>
+                  </Box>
+                </>
+              ) : (
                 <SpaceBetween size="l">
-                  {!customizeAppSettings ? (
-                    <>
-                      <ColumnLayout columns={3} variant="text-grid">
-                        <div>
-                          <Box variant="awsui-key-label">OpenSearch application name</Box>
-                          <div>{appSettings.applicationName}</div>
-                        </div>
-                        <div>
-                          <Box variant="awsui-key-label">Workspace</Box>
-                          <div>{appSettings.workspace}</div>
-                        </div>
-                        <div></div>
-                      </ColumnLayout>
-                      <Box>
-                        <Button onClick={() => setCustomizeAppSettings(true)}>Customize</Button>
-                      </Box>
-                    </>
-                  ) : (
-                    <SpaceBetween size="l">
-                      <FormField label="OpenSearch application selection">
-                        <Tiles
-                          columns={2}
-                          items={[
-                            {
-                              label: 'Select existing OpenSearch application',
-                              value: 'select-existing'
-                            },
-                            {
-                              label: 'Create new OpenSearch application',
-                              value: 'create-new'
-                            }
+                  <FormField label="OpenSearch application selection">
+                    <Tiles
+                      columns={2}
+                      items={[
+                        {
+                          label: 'Select existing OpenSearch application',
+                          value: 'select-existing'
+                        },
+                        {
+                          label: 'Create new OpenSearch application',
+                          value: 'create-new'
+                        }
+                      ]}
+                      value={appSettings.appSelection}
+                      onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
+                    />
+                  </FormField>
+                  <FormField label="OpenSearch application name">
+                    <div style={{ width: '50%' }}>
+                      {appSettings.appSelection === 'select-existing' ? (
+                        <Select
+                          selectedOption={appSettings.selectedApp}
+                          onChange={({ detail }) => setAppSettings({ ...appSettings, selectedApp: detail.selectedOption, applicationName: detail.selectedOption.value })}
+                          options={[
+                            { label: 'opensearchui-1769533298515', value: 'opensearchui-1769533298515' },
+                            { label: 'opensearchui-1769533298516', value: 'opensearchui-1769533298516' }
                           ]}
-                          value={appSettings.appSelection}
-                          onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
+                          placeholder="Select an OpenSearch application"
                         />
-                      </FormField>
-                      <FormField label="OpenSearch application name">
-                        <div style={{ width: '50%' }}>
-                          {appSettings.appSelection === 'select-existing' ? (
-                            <Select
-                              selectedOption={appSettings.selectedApp}
-                              onChange={({ detail }) => setAppSettings({ ...appSettings, selectedApp: detail.selectedOption, applicationName: detail.selectedOption.value })}
-                              options={[
-                                { label: 'opensearchui-1769533298515', value: 'opensearchui-1769533298515' },
-                                { label: 'opensearchui-1769533298516', value: 'opensearchui-1769533298516' }
-                              ]}
-                              placeholder="Select an OpenSearch application"
-                            />
-                          ) : (
-                            <Input
-                              value={appSettings.applicationName}
-                              onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
-                            />
-                          )}
-                        </div>
-                      </FormField>
-                      <FormField label="Workspace selection">
-                        <Tiles
-                          columns={2}
-                          items={[
-                            {
-                              label: 'Select existing workspace',
-                              value: 'select-existing',
-                              disabled: appSettings.appSelection === 'create-new'
-                            },
-                            {
-                              label: 'Create new workspace',
-                              value: 'create-new'
-                            }
+                      ) : (
+                        <Input
+                          value={appSettings.applicationName}
+                          onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
+                        />
+                      )}
+                    </div>
+                  </FormField>
+                  <FormField label="Workspace selection">
+                    <Tiles
+                      columns={2}
+                      items={[
+                        {
+                          label: 'Select existing workspace',
+                          value: 'select-existing',
+                          disabled: appSettings.appSelection === 'create-new'
+                        },
+                        {
+                          label: 'Create new workspace',
+                          value: 'create-new'
+                        }
+                      ]}
+                      value={appSettings.workspaceSelection}
+                      onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
+                    />
+                  </FormField>
+                  <FormField label="Workspace">
+                    <div style={{ width: '50%' }}>
+                      {appSettings.workspaceSelection === 'select-existing' ? (
+                        <Select
+                          selectedOption={appSettings.selectedWorkspace}
+                          onChange={({ detail }) => setAppSettings({ ...appSettings, selectedWorkspace: detail.selectedOption, workspace: detail.selectedOption.value })}
+                          options={[
+                            { label: 'workspace-1769533298515', value: 'workspace-1769533298515' },
+                            { label: 'workspace-1769533298516', value: 'workspace-1769533298516' }
                           ]}
-                          value={appSettings.workspaceSelection}
-                          onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
+                          placeholder="Select a workspace"
                         />
-                      </FormField>
-                      <FormField label="Workspace">
-                        <div style={{ width: '50%' }}>
-                          {appSettings.workspaceSelection === 'select-existing' ? (
-                            <Select
-                              selectedOption={appSettings.selectedWorkspace}
-                              onChange={({ detail }) => setAppSettings({ ...appSettings, selectedWorkspace: detail.selectedOption, workspace: detail.selectedOption.value })}
-                              options={[
-                                { label: 'workspace-1769533298515', value: 'workspace-1769533298515' },
-                                { label: 'workspace-1769533298516', value: 'workspace-1769533298516' }
-                              ]}
-                              placeholder="Select a workspace"
-                            />
-                          ) : (
-                            <Input
-                              value={appSettings.workspace}
-                              onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
-                            />
-                          )}
-                        </div>
-                      </FormField>
-                      <Box>
-                        <Button onClick={() => {
-                          setAppSettings({
-                            applicationName: 'opensearchui-1769533298515',
-                            workspace: 'workspace-1769533298515',
-                            appSelection: 'create-new',
-                            workspaceSelection: 'create-new',
-                            selectedApp: null,
-                            selectedWorkspace: null
-                          });
-                          setCustomizeAppSettings(false);
-                        }}>
-                          Reset to default
-                        </Button>
-                      </Box>
-                    </SpaceBetween>
-                  )}
+                      ) : (
+                        <Input
+                          value={appSettings.workspace}
+                          onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
+                        />
+                      )}
+                    </div>
+                  </FormField>
+                  <Box>
+                    <Button onClick={() => {
+                      setAppSettings({
+                        applicationName: 'opensearchui-1769533298515',
+                        workspace: 'workspace-1769533298515',
+                        appSelection: 'create-new',
+                        workspaceSelection: 'create-new',
+                        selectedApp: null,
+                        selectedWorkspace: null
+                      });
+                      setCustomizeAppSettings(false);
+                    }}>
+                      Reset to default
+                    </Button>
+                  </Box>
                 </SpaceBetween>
-              </ExpandableSection>
-              </SpaceBetween>
+              )}
             </SpaceBetween>
           </Container>
 

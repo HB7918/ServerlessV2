@@ -21,7 +21,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'awd2718',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'June 12, 2024, 13:10 (UTC-07:00)',
@@ -29,7 +30,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'awstest',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'June 12, 2024, 13:46 (UTC-07:00)',
@@ -37,7 +39,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'awstest2',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'August 25, 2025, 13:45 (UTC-07:00)',
@@ -45,7 +48,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'cloudwatch-logs-opensearch-3r',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'January 13, 2025, 10:52 (UTC-07:00)',
@@ -53,7 +57,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'collection-1726782959504',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'February 9, 2025, 10:57 (UTC-07:00)',
@@ -61,7 +66,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'collection-1759115442785',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'February 24, 2025, 14:50 (UTC-07:00)',
@@ -69,7 +75,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'collection-1740426643191',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'February 24, 2025, 14:54 (UTC-07:00)',
@@ -77,7 +84,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'collection-1740426837466',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'May 22, 2023, 10:21 (UTC-07:00)',
@@ -85,7 +93,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'collection2',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'July 16, 2025, 10:22 (UTC-07:00)',
@@ -93,7 +102,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 's3vectors-collection-175262',
     status: 'Active',
-    type: 'Vectorsearch'
+    type: 'Vectorsearch',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'July 16, 2025, 10:27 (UTC-07:00)',
@@ -101,7 +111,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 's3vectors-collection-175263',
     status: 'Active',
-    type: 'Vectorsearch'
+    type: 'Vectorsearch',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'March 15, 2025, 09:30 (UTC-07:00)',
@@ -109,7 +120,8 @@ const ALL_ITEMS = [
     group: 'prod-group',
     name: 'prod-logs-collection',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'March 20, 2025, 14:15 (UTC-07:00)',
@@ -117,7 +129,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'dev-test-collection-001',
     status: 'Active',
-    type: 'Search'
+    type: 'Search',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'April 5, 2025, 11:45 (UTC-07:00)',
@@ -125,7 +138,8 @@ const ALL_ITEMS = [
     group: 'analytics',
     name: 'analytics-collection-2025',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'April 12, 2025, 16:20 (UTC-07:00)',
@@ -133,7 +147,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'staging-collection-v2',
     status: 'Active',
-    type: 'Search'
+    type: 'Search',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'May 1, 2025, 08:00 (UTC-07:00)',
@@ -141,7 +156,8 @@ const ALL_ITEMS = [
     group: 'ml-group',
     name: 'ml-vectors-collection',
     status: 'Active',
-    type: 'Vectorsearch'
+    type: 'Vectorsearch',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'May 10, 2025, 13:30 (UTC-07:00)',
@@ -149,7 +165,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'backup-collection-may',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'June 3, 2025, 10:10 (UTC-07:00)',
@@ -157,7 +174,8 @@ const ALL_ITEMS = [
     group: 'customer-data',
     name: 'customer-search-index',
     status: 'Active',
-    type: 'Search'
+    type: 'Search',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'June 18, 2025, 15:45 (UTC-07:00)',
@@ -165,7 +183,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'temp-collection-june',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'July 2, 2025, 09:20 (UTC-07:00)',
@@ -173,7 +192,8 @@ const ALL_ITEMS = [
     group: 'security',
     name: 'security-logs-collection',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'July 25, 2025, 12:00 (UTC-07:00)',
@@ -181,7 +201,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'test-collection-july-25',
     status: 'Active',
-    type: 'Search'
+    type: 'Search',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'August 8, 2025, 14:30 (UTC-07:00)',
@@ -189,7 +210,8 @@ const ALL_ITEMS = [
     group: 'monitoring',
     name: 'app-metrics-collection',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'September 1, 2025, 10:00 (UTC-07:00)',
@@ -197,7 +219,8 @@ const ALL_ITEMS = [
     group: '-',
     name: 'collection-sept-2025',
     status: 'Active',
-    type: 'Timeseries'
+    type: 'Timeseries',
+    serverlessVersion: 'Serverless v2'
   },
   {
     creationDate: 'September 15, 2025, 16:45 (UTC-07:00)',
@@ -205,7 +228,8 @@ const ALL_ITEMS = [
     group: 'documents',
     name: 'document-search-collection',
     status: 'Active',
-    type: 'Search'
+    type: 'Search',
+    serverlessVersion: 'Serverless v1'
   },
   {
     creationDate: 'October 1, 2025, 11:30 (UTC-07:00)',
@@ -213,7 +237,8 @@ const ALL_ITEMS = [
     group: 'ml-group',
     name: 'ai-embeddings-collection',
     status: 'Active',
-    type: 'Vectorsearch'
+    type: 'Vectorsearch',
+    serverlessVersion: 'Serverless v2'
   }
 ];
 
@@ -238,7 +263,7 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
       sortingField: 'name'
     },
     {
-      cell: () => <Link external fontSize="inherit" href="#">Dashboard</Link>,
+      cell: (item) => <Link external fontSize="inherit" href="#">{item.serverlessVersion === 'Serverless v2' ? 'OpenSearch UI' : 'Dashboard'}</Link>,
       header: 'OpenSearch Dashboards',
       id: 'dashboard',
       minWidth: 180
@@ -256,6 +281,12 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
       minWidth: 150
     },
     {
+      cell: (item) => item.serverlessVersion,
+      header: 'Serverless version',
+      id: 'serverlessVersion',
+      minWidth: 150
+    },
+    {
       cell: (item) => item.group,
       header: 'Collection group',
       id: 'group',
@@ -267,12 +298,6 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
       id: 'creationDate',
       minWidth: 200,
       sortingField: 'creationDate'
-    },
-    {
-      cell: (item) => item.description,
-      header: 'Description',
-      id: 'description',
-      minWidth: 150
     }
   ];
 
