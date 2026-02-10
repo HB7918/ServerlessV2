@@ -37,6 +37,7 @@ function CommentsPanel({ screenName }) {
     return saved !== null ? JSON.parse(saved) : true;
   });
   const [expandedComment, setExpandedComment] = useState(null);
+  const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 });
   const textareaRef = useRef(null);
 
   const storageKey = `comments-${screenName}`;
@@ -45,6 +46,21 @@ function CommentsPanel({ screenName }) {
     fetchComments();
   }, [screenName]);
 
+  // Track scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollOffset({
+        x: window.scrollX,
+        y: window.scrollY
+      });
+    };
+    
+    window.addEventListener('scroll', handleScroll, true);
+    handleScroll(); // Initial position
+    
+    return () => window.removeEventListener('scroll', handleScroll, true);
+  }, []);
+
   // Handle click to place pin
   useEffect(() => {
     if (!commentMode) return;
@@ -52,8 +68,9 @@ function CommentsPanel({ screenName }) {
     const handleClick = (e) => {
       if (e.target.closest('[data-comments-panel]')) return;
       
-      const x = e.clientX;
-      const y = e.clientY;
+      // Save position including scroll offset (absolute position in document)
+      const x = e.clientX + window.scrollX;
+      const y = e.clientY + window.scrollY;
       
       setPendingPin({ x, y });
       setCommentMode(false);
@@ -228,8 +245,8 @@ function CommentsPanel({ screenName }) {
           data-comments-panel
           style={{
             position: 'fixed',
-            left: pendingPin.x,
-            top: pendingPin.y,
+            left: pendingPin.x - scrollOffset.x,
+            top: pendingPin.y - scrollOffset.y,
             zIndex: 1002
           }}
         >
@@ -336,8 +353,8 @@ function CommentsPanel({ screenName }) {
           data-comments-panel
           style={{
             position: 'fixed',
-            left: comment.pinX - 12,
-            top: comment.pinY - 24,
+            left: comment.pinX - scrollOffset.x - 12,
+            top: comment.pinY - scrollOffset.y - 24,
             zIndex: expandedComment === comment.timestamp ? 1002 : 1001
           }}
         >

@@ -10,7 +10,9 @@ import {
   Header,
   Pagination,
   CollectionPreferences,
-  Flashbar
+  Flashbar,
+  HelpPanel,
+  Icon
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -305,6 +307,7 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [filteringText, setFilteringText] = useState('');
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [preferences, setPreferences] = useState({
     pageSize: 20,
     contentDensity: 'comfortable',
@@ -319,8 +322,12 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
       dismissLabel: 'Dismiss',
       onDismiss: () => setFlashbarItems([]),
       header: 'Introducing Serverless v2 for Amazon OpenSearch Serverless',
-      content: 'Experience instant autoscaling from zero to hundreds of requests in seconds, scale-to-zero when idle for up to 40% cost savings, and near-instant data freshness with newly indexed data searchable in seconds. Serverless v2 supports search, time-series, and vector workloads with the same APIs you\'re already using.',
-      action: <Button iconName="external" iconAlign="right" href="#" target="_blank">Learn more</Button>,
+      content: (
+        <>
+          Experience instant autoscaling from zero to hundreds of requests in seconds, scale-to-zero when idle for up to 40% cost savings, and near-instant data freshness with newly indexed data searchable in seconds. Serverless v2 supports search, time-series, and vector workloads with the same APIs you're already using. <Link external variant="primary" href="#">Learn more</Link>
+        </>
+      ),
+      action: <Button onClick={onCreateClick}>Create collection</Button>,
       id: 'serverless-v2-announcement'
     }
   ]);
@@ -372,6 +379,35 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
         }
       }}
       onNavigate={onNavigate}
+      toolsOpen={toolsOpen}
+      onToolsChange={({ detail }) => setToolsOpen(detail.open)}
+      tools={
+        <HelpPanel header={<h2>Collections</h2>}>
+          <SpaceBetween size="m">
+            <Box>
+              An OpenSearch Serverless collection is a group of OpenSearch indexes that work together to support a specific workload or use case. Collections are different than provisioned OpenSearch domains for which you manually manage capacity and perform administrative tasks.
+            </Box>
+            <Box variant="h4">Serverless Versions</Box>
+            <Box>
+              Current Generation - Serverless v1: Scales in 2-30 minutes with minimum capacity requirements.
+            </Box>
+            <Box>
+              Next Generation - Serverless v2: Instant scaling in seconds, scales to zero when idle for up to 40% cost savings, and near-instant data freshness.
+            </Box>
+            <Box variant="h4">Was this content helpful?</Box>
+            <SpaceBetween direction="horizontal" size="xs">
+              <Button iconName="thumbs-up" variant="normal">Yes</Button>
+              <Button iconName="thumbs-down" variant="normal">No</Button>
+            </SpaceBetween>
+            <Box variant="h4">Learn more <Icon name="external" /></Box>
+            <SpaceBetween size="xs">
+              <Link href="#">Creating and managing Amazon OpenSearch Serverless collections</Link>
+              <Link href="#">What is Amazon OpenSearch Serverless?</Link>
+              <Link href="#">Learn about Serverless v2</Link>
+            </SpaceBetween>
+          </SpaceBetween>
+        </HelpPanel>
+      }
     >
       <SpaceBetween size="l">
         {flashbarItems.length > 0 && <Flashbar items={flashbarItems} />}
@@ -421,7 +457,7 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
               </SpaceBetween>
             }
             counter={`(${filteredItems.length})`}
-            info={<Link variant="info">Info</Link>}
+            info={<Link variant="info" onFollow={(e) => { e.preventDefault(); setToolsOpen(true); }}>Info</Link>}
             variant="awsui-h1-sticky"
           >
             Collections

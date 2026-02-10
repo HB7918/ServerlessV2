@@ -7,7 +7,7 @@ import {
 } from '@cloudscape-design/components';
 import { useState } from 'react';
 
-function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick, onNavigate }) {
+function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick, onNavigate, tools, toolsOpen, onToolsChange }) {
   const [navigationOpen, setNavigationOpen] = useState(false);
 
   const handleNavigationClick = (event) => {
@@ -109,13 +109,13 @@ function AWSLayout({ children, breadcrumbs, activeHref, onBreadcrumbClick, onNav
                 }}
               />
             </div>
-            <div style={{ flexShrink: 0 }}>
-              <Button iconName="status-info" variant="icon" />
-            </div>
           </div>
         }
         content={children}
-        toolsHide
+        tools={tools}
+        toolsOpen={toolsOpen}
+        onToolsChange={onToolsChange}
+        toolsHide={!tools}
         contentType="table"
         maxContentWidth={Number.MAX_VALUE}
       />

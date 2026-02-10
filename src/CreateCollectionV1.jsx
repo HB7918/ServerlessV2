@@ -218,7 +218,7 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
           You're using the previous generation Serverless v1 collection creation. Serverless v2 offers up to 40% cost savings, instant auto-scaling (vs. 2-30 minutes), scale-to-zero, and makes newly indexed data searchable instantly. <Link href="#" external variant="primary">Learn more about Serverless v2.</Link>
         </>
       ),
-      action: <Button onClick={() => onNavigateToV2()}>Create Serverless v2 collection</Button>,
+      action: <Button onClick={() => onNavigateToV2()}>Switch to Serverless v2 collection</Button>,
       id: 'v1-experience-banner'
     }
   ]);
