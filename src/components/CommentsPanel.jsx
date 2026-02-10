@@ -5,12 +5,25 @@ import {
   Box,
   Spinner
 } from '@cloudscape-design/components';
-import { generateClient } from 'aws-amplify/api';
-import * as mutations from '../graphql/mutations';
-import * as queries from '../graphql/queries';
-import * as subscriptions from '../graphql/subscriptions';
+import { graphqlConfig } from '../aws-exports';
 
-const client = generateClient();
+// Direct GraphQL fetch helper (more reliable than Amplify client)
+const graphqlFetch = async (query, variables = {}) => {
+  const response = await fetch(graphqlConfig.endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': graphqlConfig.apiKey
+    },
+    body: JSON.stringify({ query, variables })
+  });
+  
+  const result = await response.json();
+  if (result.errors) {
+    throw new Error(result.errors[0]?.message || 'GraphQL error');
+  }
+  return result;
+};
 
 function CommentsPanel({ screenName }) {
   const [comments, setComments] = useState([]);
@@ -30,19 +43,6 @@ function CommentsPanel({ screenName }) {
 
   useEffect(() => {
     fetchComments();
-    
-    const subscription = client.graphql({
-      query: subscriptions.onCreateComment,
-      variables: { screenname: screenName }
-    }).subscribe({
-      next: ({ data }) => {
-        const newComment = data.onCreateComment;
-        setComments(prev => [newComment, ...prev]);
-      },
-      error: (error) => console.error('Subscription error:', error)
-    });
-
-    return () => subscription.unsubscribe();
   }, [screenName]);
 
   // Handle click to place pin
@@ -76,14 +76,26 @@ function CommentsPanel({ screenName }) {
   const fetchComments = async () => {
     try {
       setLoading(true);
-      const result = await client.graphql({
-        query: queries.listComments,
-        variables: {
-          filter: { screenname: { eq: screenName } }
+      const query = `
+        query ListComments($filter: TableCommentFilterInput) {
+          listComments(filter: $filter) {
+            items {
+              screenname
+              text
+              author
+              timestamp
+              pinX
+              pinY
+            }
+          }
         }
+      `;
+      
+      const result = await graphqlFetch(query, {
+        filter: { screenname: { eq: screenName } }
       });
       
-      const items = result.data.listComments.items || [];
+      const items = result.data?.listComments?.items || [];
       items.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       setComments(items);
     } catch (err) {
@@ -118,14 +130,27 @@ function CommentsPanel({ screenName }) {
       };
 
       try {
-        await client.graphql({
-          query: mutations.createComment,
-          variables: { input: comment }
-        });
+        const mutation = `
+          mutation CreateComment($input: CreateCommentInput!) {
+            createComment(input: $input) {
+              screenname
+              text
+              author
+              timestamp
+              pinX
+              pinY
+            }
+          }
+        `;
+        
+        await graphqlFetch(mutation, { input: comment });
+        // Add to local state immediately
+        setComments([comment, ...comments]);
         setNewComment('');
         setPendingPin(null);
       } catch (error) {
         console.error('Error adding comment:', error);
+        // Fallback to localStorage
         const commentWithId = { ...comment, id: Date.now().toString() };
         setComments([commentWithId, ...comments]);
         localStorage.setItem(storageKey, JSON.stringify([commentWithId, ...comments]));
@@ -137,14 +162,20 @@ function CommentsPanel({ screenName }) {
 
   const handleDeleteComment = async (comment) => {
     try {
-      await client.graphql({
-        query: mutations.deleteComment,
-        variables: { 
-          input: { 
-            screenname: comment.screenname,
-            timestamp: comment.timestamp
-          } 
+      const mutation = `
+        mutation DeleteComment($input: DeleteCommentInput!) {
+          deleteComment(input: $input) {
+            screenname
+            timestamp
+          }
         }
+      `;
+      
+      await graphqlFetch(mutation, { 
+        input: { 
+          screenname: comment.screenname,
+          timestamp: comment.timestamp
+        } 
       });
       setComments(comments.filter(c => c.timestamp !== comment.timestamp));
       setExpandedComment(null);

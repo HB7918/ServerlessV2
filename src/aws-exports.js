@@ -9,4 +9,11 @@ const awsconfig = {
   }
 };
 
+// Also export individual values for direct API calls if needed
+export const graphqlConfig = {
+  endpoint: awsconfig.API.GraphQL.endpoint,
+  apiKey: awsconfig.API.GraphQL.apiKey,
+  region: awsconfig.API.GraphQL.region
+};
+
 export default awsconfig;
