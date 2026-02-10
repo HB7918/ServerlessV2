@@ -13,7 +13,8 @@ import {
   Link,
   Tiles,
   RadioGroup,
-  Checkbox
+  Checkbox,
+  Flashbar
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -42,7 +43,7 @@ function ConfigureCollectionStep({ formData, setFormData, onNavigateToV2 }) {
 
             <FormField
               label="Serverless version"
-              description={<>This is the previous generation serverless v1 collections create flow. To create the latest generation of serverless v2 collections, <Link href="#" onFollow={(e) => { e.preventDefault(); onNavigateToV2(); }}>Create Serverless v2 collection</Link>.</>}
+              description="This is the previous generation serverless v1 collections create flow."
               info={<Link variant="info">Info</Link>}
             >
               <Box>Serverless v1</Box>
@@ -208,6 +209,20 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
     securityMode: 'easy'
   });
 
+  const [flashbarItems] = useState([
+    {
+      type: 'info',
+      dismissible: false,
+      content: (
+        <>
+          You're using the previous generation Serverless v1 collection creation. Serverless v2 offers up to 40% cost savings, instant auto-scaling (vs. 2-30 minutes), scale-to-zero, and makes newly indexed data searchable instantly. <Link href="#" external variant="primary">Learn more about Serverless v2.</Link>
+        </>
+      ),
+      action: <Button onClick={() => onNavigateToV2()}>Create Serverless v2 collection</Button>,
+      id: 'v1-experience-banner'
+    }
+  ]);
+
   const handleNavigate = ({ detail }) => {
     setActiveStepIndex(detail.requestedStepIndex);
   };
@@ -251,23 +266,26 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
         }
       }}
     >
-      <Wizard
-        steps={steps}
-        activeStepIndex={activeStepIndex}
-        onNavigate={handleNavigate}
-        onSubmit={handleSubmit}
-        onCancel={onCancel}
-        i18nStrings={{
-          stepNumberLabel: stepNumber => `Step ${stepNumber}`,
-          collapsedStepsLabel: (stepNumber, stepsCount) => `Step ${stepNumber} of ${stepsCount}`,
-          navigationAriaLabel: 'Steps',
-          cancelButton: 'Cancel',
-          previousButton: 'Previous',
-          nextButton: 'Next',
-          submitButton: 'Create collection',
-          optional: 'optional'
-        }}
-      />
+      <SpaceBetween size="l">
+        <Flashbar items={flashbarItems} />
+        <Wizard
+          steps={steps}
+          activeStepIndex={activeStepIndex}
+          onNavigate={handleNavigate}
+          onSubmit={handleSubmit}
+          onCancel={onCancel}
+          i18nStrings={{
+            stepNumberLabel: stepNumber => `Step ${stepNumber}`,
+            collapsedStepsLabel: (stepNumber, stepsCount) => `Step ${stepNumber} of ${stepsCount}`,
+            navigationAriaLabel: 'Steps',
+            cancelButton: 'Cancel',
+            previousButton: 'Previous',
+            nextButton: 'Next',
+            submitButton: 'Create collection',
+            optional: 'optional'
+          }}
+        />
+      </SpaceBetween>
       <CommentsPanel screenName="Create Collection V1" />
     </AWSLayout>
   );

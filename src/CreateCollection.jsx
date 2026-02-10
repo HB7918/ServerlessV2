@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   SpaceBetween,
-  Alert,
   Button,
   Container,
   Header,
@@ -10,14 +9,14 @@ import {
   Input,
   Link,
   Tiles,
+  ContentLayout,
+  ExpandableSection,
+  Table,
+  Flashbar,
   Select,
   RadioGroup,
   Checkbox,
-  ContentLayout,
-  ColumnLayout,
-  ExpandableSection,
-  Autosuggest,
-  TokenGroup
+  ColumnLayout
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -26,22 +25,25 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [formData, setFormData] = useState({
     collectionName: '',
     collectionType: 'timeseries',
-    collectionGroup: null,
     customizeEncryption: false,
     kmsKey: '',
-    accessType: 'public',
-    vpcEndpoints: false,
-    awsServicePrivateAccess: false,
-    selectedVpcEndpoints: [],
-    selectedAwsServices: []
+    accessType: 'public'
   });
 
-  const [fixCollectionGroup, setFixCollectionGroup] = useState(false);
-  const [customizeGroupSettings, setCustomizeGroupSettings] = useState(false);
+  const [customizeSettings, setCustomizeSettings] = useState(false);
+  
+  // Collection group settings
   const [groupSelection, setGroupSelection] = useState('create-new');
-  const [customizeAppSettings, setCustomizeAppSettings] = useState(false);
-  const [vpcInputValue, setVpcInputValue] = useState('');
-  const [serviceInputValue, setServiceInputValue] = useState('');
+  const [groupSettings, setGroupSettings] = useState({
+    name: 'serverlessV2_27121',
+    minIndexing: { label: '-', value: '-', description: '' },
+    maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
+    minSearch: { label: '-', value: '-', description: '' },
+    maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
+    selectedGroup: null
+  });
+
+  // OpenSearch application settings
   const [appSettings, setAppSettings] = useState({
     applicationName: 'opensearchui-1769533298515',
     workspace: 'workspace-1769533298515',
@@ -50,14 +52,34 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     selectedApp: null,
     selectedWorkspace: null
   });
-  const [groupSettings, setGroupSettings] = useState({
-    name: 'serverlessV2_27121',
-    minIndexing: { label: '-', value: '-' },
-    maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
-    minSearch: { label: '-', value: '-' },
-    maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
-    selectedGroup: null
-  });
+
+  const [flashbarItems] = useState([
+    {
+      type: 'info',
+      dismissible: false,
+      content: (
+        <>
+          You're creating a Serverless v2 collection with instant auto-scaling and scale-to-zero for cost optimization. Serverless v2 offers up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <Link href="#" external variant="primary">Learn more about Serverless v2.</Link>
+        </>
+      ),
+      action: <Button onClick={() => onNavigateToV1()}>Create Serverless v1 collection</Button>,
+      id: 'new-experience-banner'
+    }
+  ]);
+
+  const capacityOptions = [
+    { label: '-', value: '-', description: '' },
+    { label: '1', value: '1', description: '6 GB RAM' },
+    { label: '2', value: '2', description: '12 GB RAM' },
+    { label: '4', value: '4', description: '24 GB RAM' },
+    { label: '8', value: '8', description: '48 GB RAM' },
+    { label: '16', value: '16', description: '96 GB RAM' },
+    { label: '32', value: '32', description: '192 GB RAM' },
+    { label: '48', value: '48', description: '288 GB RAM' },
+    { label: '64', value: '64', description: '384 GB RAM' },
+    { label: '80', value: '80', description: '480 GB RAM' },
+    { label: '96', value: '96', description: '576 GB RAM' }
+  ];
 
   const handleSubmit = () => {
     console.log('Collection created:', formData);
@@ -69,6 +91,42 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     { text: 'Serverless: Collections', href: '#/collections' },
     { text: 'Create collection', href: '#/collections/create' }
   ];
+
+  const defaultSettings = [
+    { configuration: 'Collection group settings', value: 'Create new collection group', editable: 'Yes', isSection: true },
+    { configuration: 'Collection group name', value: 'serverless_v2_27121', editable: 'Yes', indent: true },
+    { configuration: 'Min - Max Indexing capacity (OCUs)', value: '0 - 96 OCUs', editable: 'Yes', indent: true },
+    { configuration: 'Min - Max Search capacity (OCUs)', value: '0 - 96 OCUs', editable: 'Yes', indent: true },
+    { configuration: 'OpenSearch application settings', value: 'Create new application', editable: 'Yes', isSection: true },
+    { configuration: 'OpenSearch application name', value: 'opensearchui-1769533298515', editable: 'Yes', indent: true },
+    { configuration: 'Workspace setting', value: 'Create new workspace', editable: 'Yes', indent: true },
+    { configuration: 'Workspace name', value: 'workspace-1769533298515', editable: 'Yes', indent: true },
+    { configuration: 'Encryption key', value: 'AWS Owned', editable: 'No', isSection: true },
+    { configuration: 'Network access', value: 'Public', editable: 'Yes', isSection: true, hasBottomBorder: true }
+  ];
+
+  const resetGroupSettings = () => {
+    setGroupSettings({
+      name: 'serverlessV2_27121',
+      minIndexing: { label: '-', value: '-', description: '' },
+      maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
+      minSearch: { label: '-', value: '-', description: '' },
+      maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
+      selectedGroup: null
+    });
+    setGroupSelection('create-new');
+  };
+
+  const resetAppSettings = () => {
+    setAppSettings({
+      applicationName: 'opensearchui-1769533298515',
+      workspace: 'workspace-1769533298515',
+      appSelection: 'create-new',
+      workspaceSelection: 'create-new',
+      selectedApp: null,
+      selectedWorkspace: null
+    });
+  };
 
   return (
     <AWSLayout
@@ -82,18 +140,24 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     >
       <ContentLayout
         header={
-          <Header
-            variant="h1"
-            description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
-          >
-            Create collection
-          </Header>
+          <SpaceBetween size="s">
+            <Flashbar items={flashbarItems} />
+            <Header
+              variant="h1"
+              description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
+            >
+              Create collection
+            </Header>
+          </SpaceBetween>
         }
       >
         <SpaceBetween size="l">
           <Container header={<Header variant="h2">Collection details</Header>}>
             <SpaceBetween size="l">
-              <FormField label="Collection name">
+              <FormField 
+                label="Collection name"
+                constraintText="The name must start with a lowercase letter and must be between 3 and 32 characters. Valid characters are a-z (lowercase only), 0-9, and - (hyphen)."
+              >
                 <Input
                   placeholder="test"
                   value={formData.collectionName}
@@ -103,7 +167,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
               <FormField
                 label="Serverless version"
-                description={<>Creating latest generation of Amazon OpenSearch Serverless with instant auto scaling and scale-to-zero for cost optimization. To create previous generation of serverless collections, <Link href="#" onFollow={(e) => { e.preventDefault(); onNavigateToV1(); }}>Create Serverless v1 collection</Link>.</>}
+                description="Creating latest generation of Amazon OpenSearch Serverless with instant auto scaling and scale-to-zero for cost optimization."
                 info={<Link variant="info">Info</Link>}
               >
                 <Box>Serverless v2</Box>
@@ -137,222 +201,195 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                   onChange={({ detail }) => setFormData({ ...formData, collectionType: detail.value })}
                 />
               </FormField>
-
-              <SpaceBetween size="xs">
-                <FormField
-                  label={<span style={{ fontSize: '18px', fontWeight: '700' }}>Collection group</span>}
-                  description="Collections in the same group share OCUs and follow the group's min/max capacity settings. Each collection can only belong to one group."
-                  info={<Link variant="info">Info</Link>}
-                  stretch
-                />
-
-                <ExpandableSection
-                  headerText="Collection group settings"
-                  defaultExpanded={true}
-                >
-                  <SpaceBetween size="l">
-                    {!customizeGroupSettings ? (
-                      <>
-                        <ColumnLayout columns={3} variant="text-grid">
-                          <div>
-                            <Box variant="awsui-key-label">Collection group name</Box>
-                            <div>{groupSettings.name}</div>
-                          </div>
-                          <div>
-                            <SpaceBetween size="s">
-                              <div>
-                                <Box variant="awsui-key-label">Minimum indexing capacity (OCUs)</Box>
-                                <div>0</div>
-                              </div>
-                              <div>
-                                <Box variant="awsui-key-label">Maximum indexing capacity (OCUs)</Box>
-                                <div>96</div>
-                              </div>
-                            </SpaceBetween>
-                          </div>
-                          <div>
-                            <SpaceBetween size="s">
-                              <div>
-                                <Box variant="awsui-key-label">Minimum Search capacity (OCUs)</Box>
-                                <div>0</div>
-                              </div>
-                              <div>
-                                <Box variant="awsui-key-label">Maximum Search capacity (OCUs)</Box>
-                                <div>96</div>
-                              </div>
-                            </SpaceBetween>
-                          </div>
-                        </ColumnLayout>
-                        <Box>
-                          <Button onClick={() => setCustomizeGroupSettings(true)}>Customize</Button>
-                        </Box>
-                      </>
-                    ) : (
-                      <SpaceBetween size="l">
-                        <FormField label="Collection group selection">
-                          <Tiles
-                            columns={2}
-                            items={[
-                              {
-                                label: 'Select existing collection group',
-                                value: 'select-existing'
-                              },
-                              {
-                                label: 'Create new collection group',
-                                value: 'create-new'
-                              }
-                            ]}
-                            value={groupSelection}
-                            onChange={({ detail }) => setGroupSelection(detail.value)}
-                          />
-                        </FormField>
-                        <FormField label="Collection group name">
-                          <div style={{ width: '50%' }}>
-                            {groupSelection === 'select-existing' ? (
-                              <Select
-                                selectedOption={groupSettings.selectedGroup}
-                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, selectedGroup: detail.selectedOption, name: detail.selectedOption.value })}
-                                options={[
-                                  { label: 'serverlessV2_27121', value: 'serverlessV2_27121' },
-                                  { label: 'serverlessV2_27122', value: 'serverlessV2_27122' }
-                                ]}
-                                placeholder="Select a collection group"
-                              />
-                            ) : (
-                              <Input
-                                value={groupSettings.name}
-                                onChange={({ detail }) => setGroupSettings({ ...groupSettings, name: detail.value })}
-                              />
-                            )}
-                          </div>
-                        </FormField>
-                        {groupSelection === 'select-existing' ? (
-                          <ColumnLayout columns={2} variant="text-grid">
-                            <div>
-                              <SpaceBetween size="s">
-                                <div>
-                                  <Box variant="awsui-key-label">Minimum indexing capacity (OCUs)</Box>
-                                  <div>0</div>
-                                </div>
-                                <div>
-                                  <Box variant="awsui-key-label">Maximum indexing capacity (OCUs)</Box>
-                                  <div>96</div>
-                                </div>
-                              </SpaceBetween>
-                            </div>
-                            <div>
-                              <SpaceBetween size="s">
-                                <div>
-                                  <Box variant="awsui-key-label">Minimum Search capacity (OCUs)</Box>
-                                  <div>0</div>
-                                </div>
-                                <div>
-                                  <Box variant="awsui-key-label">Maximum Search capacity (OCUs)</Box>
-                                  <div>96</div>
-                                </div>
-                              </SpaceBetween>
-                            </div>
-                          </ColumnLayout>
-                        ) : (
-                          <>
-                            <ColumnLayout columns={2}>
-                              <FormField label="Minimum indexing capacity (OCUs)">
-                                <Select
-                                  selectedOption={groupSettings.minIndexing}
-                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, minIndexing: detail.selectedOption })}
-                                  options={[
-                                    { label: '-', value: '-' },
-                                    { label: '96', value: '96', description: '576 GB RAM' }
-                                  ]}
-                                />
-                              </FormField>
-                              <FormField label="Maximum indexing capacity (OCUs)">
-                                <Select
-                                  selectedOption={groupSettings.maxIndexing}
-                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
-                                  options={[
-                                    { label: '96', value: '96', description: '576 GB RAM' }
-                                  ]}
-                                />
-                              </FormField>
-                            </ColumnLayout>
-                            <ColumnLayout columns={2}>
-                              <FormField label="Minimum Search capacity (OCUs)">
-                                <Select
-                                  selectedOption={groupSettings.minSearch}
-                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, minSearch: detail.selectedOption })}
-                                  options={[
-                                    { label: '-', value: '-' },
-                                    { label: '96', value: '96', description: '576 GB RAM' }
-                                  ]}
-                                />
-                              </FormField>
-                              <FormField label="Maximum Search capacity (OCUs)">
-                                <Select
-                                  selectedOption={groupSettings.maxSearch}
-                                  onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
-                                  options={[
-                                    { label: '96', value: '96', description: '576 GB RAM' }
-                                  ]}
-                                />
-                              </FormField>
-                            </ColumnLayout>
-                          </>
-                        )}
-                        <Box>
-                          <Button onClick={() => {
-                            setGroupSettings({
-                              name: 'serverlessV2_27121',
-                              minIndexing: { label: '-', value: '-' },
-                              maxIndexing: { label: '96', value: '96', description: '576 GB RAM' },
-                              minSearch: { label: '-', value: '-' },
-                              maxSearch: { label: '96', value: '96', description: '576 GB RAM' },
-                              selectedGroup: null
-                            });
-                            setGroupSelection('create-new');
-                            setCustomizeGroupSettings(false);
-                          }}>
-                            Reset to default
-                          </Button>
-                        </Box>
-                      </SpaceBetween>
-                    )}
-                  </SpaceBetween>
-                </ExpandableSection>
-              </SpaceBetween>
             </SpaceBetween>
           </Container>
 
-          <Container
-            header={
-              <Header
-                variant="h2"
-                description="OpenSearch UI (Dashboards) is the next generation and redesigned OpenSearch Dashboards experience that can connect to multiple data sources. An OpenSearch application has its own Endpoint and can be easily shared to others for collaboration, and each collaborator can login via AWS Identity and Access Management (IAM), and/or IAM Identity Center credentials."
-                info={<Link variant="info">Info</Link>}
+          {!customizeSettings ? (
+            <ExpandableSection
+              headerText="Default settings for the collection"
+              defaultExpanded={true}
+              variant="container"
+            >
+              <SpaceBetween size="s">
+                <Box color="text-body-secondary">
+                  Create collection sets the following configuration to the recommended defaults, some of which can be changed later as indicated by the table below. To change these settings, select <Link onFollow={() => setCustomizeSettings(true)}>Customize settings.</Link>
+                </Box>
+                <Table
+                  columnDefinitions={[
+                    {
+                      id: 'configuration',
+                      header: 'Configuration',
+                      cell: item => {
+                        const content = item.isSection ? <Box fontWeight="bold">{item.configuration}</Box> : item.indent ? <Box margin={{ left: 'l' }}>{item.configuration}</Box> : item.configuration;
+                        return item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{content}</div> : content;
+                      },
+                      width: 300
+                    },
+                    {
+                      id: 'value',
+                      header: 'Value',
+                      cell: item => item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{item.value}</div> : item.value,
+                      width: 250
+                    },
+                    {
+                      id: 'editable',
+                      header: 'Editable after creation',
+                      cell: item => item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{item.editable}</div> : item.editable,
+                      width: 180
+                    }
+                  ]}
+                  items={defaultSettings}
+                  variant="embedded"
+                  stripedRows={false}
+                />
+                <Box>
+                  <Button onClick={() => setCustomizeSettings(true)}>Customize settings</Button>
+                </Box>
+              </SpaceBetween>
+            </ExpandableSection>
+          ) : (
+            <>
+              {/* Collection Group Settings */}
+              <Container header={<Header variant="h2">Collection group settings</Header>}>
+                <SpaceBetween size="l">
+                  <FormField label="Collection group selection">
+                    <Tiles
+                      columns={2}
+                      items={[
+                        {
+                          label: 'Select existing collection group',
+                          value: 'select-existing'
+                        },
+                        {
+                          label: 'Create new collection group',
+                          value: 'create-new'
+                        }
+                      ]}
+                      value={groupSelection}
+                      onChange={({ detail }) => setGroupSelection(detail.value)}
+                    />
+                  </FormField>
+                  
+                  <FormField label="Collection group name">
+                    <div style={{ width: 'calc(50% - 6px)' }}>
+                      {groupSelection === 'select-existing' ? (
+                        <Select
+                          selectedOption={groupSettings.selectedGroup}
+                          onChange={({ detail }) => setGroupSettings({ ...groupSettings, selectedGroup: detail.selectedOption, name: detail.selectedOption.value })}
+                          options={[
+                            { label: 'serverlessV2_27121', value: 'serverlessV2_27121' },
+                            { label: 'serverlessV2_27122', value: 'serverlessV2_27122' }
+                          ]}
+                          placeholder="Select a collection group"
+                        />
+                      ) : (
+                        <Input
+                          value={groupSettings.name}
+                          onChange={({ detail }) => setGroupSettings({ ...groupSettings, name: detail.value })}
+                        />
+                      )}
+                    </div>
+                  </FormField>
+
+                  {groupSelection === 'select-existing' ? (
+                    <ColumnLayout columns={2} variant="text-grid">
+                      <SpaceBetween size="m">
+                        <div>
+                          <Box variant="awsui-key-label">Minimum indexing capacity (OCUs)</Box>
+                          <div>8 OCUs (48 GB RAM)</div>
+                        </div>
+                        <div>
+                          <Box variant="awsui-key-label">Maximum indexing capacity (OCUs)</Box>
+                          <div>96 OCUs (576 GB RAM)</div>
+                        </div>
+                      </SpaceBetween>
+                      <SpaceBetween size="m">
+                        <div>
+                          <Box variant="awsui-key-label">Minimum Search capacity (OCUs)</Box>
+                          <div>8 OCUs (48 GB RAM)</div>
+                        </div>
+                        <div>
+                          <Box variant="awsui-key-label">Maximum Search capacity (OCUs)</Box>
+                          <div>96 OCUs (576 GB RAM)</div>
+                        </div>
+                      </SpaceBetween>
+                    </ColumnLayout>
+                  ) : (
+                    <>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <FormField 
+                          label="Minimum indexing capacity (OCUs)"
+                          description="Baseline resources for data ingestion. Higher values improve write consistency but increase baseline costs. Each OCU = 6 GB RAM."
+                        >
+                          <Select
+                            selectedOption={groupSettings.minIndexing}
+                            onChange={({ detail }) => setGroupSettings({ ...groupSettings, minIndexing: detail.selectedOption })}
+                            options={capacityOptions}
+                            filteringType="auto"
+                            filteringPlaceholder="Enter a number"
+                            triggerVariant="option"
+                          />
+                        </FormField>
+                        <FormField 
+                          label="Maximum indexing capacity (OCUs)"
+                          description="Upper limit for indexing during peak demand. Auto-scales to this limit. Setting too low may throttle writes. Default: 96 OCUs (576 GB RAM)."
+                        >
+                          <Select
+                            selectedOption={groupSettings.maxIndexing}
+                            onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
+                            options={capacityOptions}
+                            filteringType="auto"
+                            filteringPlaceholder="Enter a number"
+                            triggerVariant="option"
+                          />
+                        </FormField>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <FormField 
+                          label="Minimum Search capacity (OCUs)"
+                          description="Baseline resources for queries. Higher values ensure consistent response times. Each OCU = 6 GB RAM."
+                        >
+                          <Select
+                            selectedOption={groupSettings.minSearch}
+                            onChange={({ detail }) => setGroupSettings({ ...groupSettings, minSearch: detail.selectedOption })}
+                            options={capacityOptions}
+                            filteringType="auto"
+                            filteringPlaceholder="Enter a number"
+                            triggerVariant="option"
+                          />
+                        </FormField>
+                        <FormField 
+                          label="Maximum Search capacity (OCUs)"
+                          description="Upper limit for search during peak traffic. Auto-scales to this limit. Setting too low may slow queries. Default: 96 OCUs (576 GB RAM)."
+                        >
+                          <Select
+                            selectedOption={groupSettings.maxSearch}
+                            onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
+                            options={capacityOptions}
+                            filteringType="auto"
+                            filteringPlaceholder="Enter a number"
+                            triggerVariant="option"
+                          />
+                        </FormField>
+                      </div>
+                    </>
+                  )}
+                </SpaceBetween>
+              </Container>
+
+              {/* OpenSearch UI Settings */}
+              <Container
+                header={
+                  <Header
+                    variant="h2"
+                    description="OpenSearch UI (Dashboards) is the next generation and redesigned OpenSearch Dashboards experience that can connect to multiple data sources."
+                    info={<Link variant="info">Info</Link>}
+                  >
+                    OpenSearch UI
+                  </Header>
+                }
               >
-                OpenSearch UI
-              </Header>
-            }
-          >
-            <SpaceBetween size="l">
-              {!customizeAppSettings ? (
-                <>
-                  <ColumnLayout columns={3} variant="text-grid">
-                    <div>
-                      <Box variant="awsui-key-label">OpenSearch application name</Box>
-                      <div>{appSettings.applicationName}</div>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">Workspace</Box>
-                      <div>{appSettings.workspace}</div>
-                    </div>
-                    <div></div>
-                  </ColumnLayout>
-                  <Box>
-                    <Button onClick={() => setCustomizeAppSettings(true)}>Customize</Button>
-                  </Box>
-                </>
-              ) : (
                 <SpaceBetween size="l">
                   <FormField label="OpenSearch application selection">
                     <Tiles
@@ -371,8 +408,9 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                       onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
                     />
                   </FormField>
-                  <FormField label="OpenSearch application name">
-                    <div style={{ width: '50%' }}>
+                  
+                  <ColumnLayout columns={2}>
+                    <FormField label="OpenSearch application name">
                       {appSettings.appSelection === 'select-existing' ? (
                         <Select
                           selectedOption={appSettings.selectedApp}
@@ -389,8 +427,10 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                           onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
                         />
                       )}
-                    </div>
-                  </FormField>
+                    </FormField>
+                    <div></div>
+                  </ColumnLayout>
+
                   <FormField label="Workspace selection">
                     <Tiles
                       columns={2}
@@ -409,8 +449,9 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                       onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
                     />
                   </FormField>
-                  <FormField label="Workspace">
-                    <div style={{ width: '50%' }}>
+                  
+                  <ColumnLayout columns={2}>
+                    <FormField label="Workspace">
                       {appSettings.workspaceSelection === 'select-existing' ? (
                         <Select
                           selectedOption={appSettings.selectedWorkspace}
@@ -427,275 +468,108 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                           onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
                         />
                       )}
-                    </div>
-                  </FormField>
-                  <Box>
-                    <Button onClick={() => {
-                      setAppSettings({
-                        applicationName: 'opensearchui-1769533298515',
-                        workspace: 'workspace-1769533298515',
-                        appSelection: 'create-new',
-                        workspaceSelection: 'create-new',
-                        selectedApp: null,
-                        selectedWorkspace: null
-                      });
-                      setCustomizeAppSettings(false);
-                    }}>
-                      Reset to default
-                    </Button>
-                  </Box>
+                    </FormField>
+                    <div></div>
+                  </ColumnLayout>
                 </SpaceBetween>
-              )}
-            </SpaceBetween>
-          </Container>
+              </Container>
 
-          <Container
-            header={
-              <Header
-                variant="h2"
-                info={<Link variant="info">Info</Link>}
+              {/* Encryption Settings */}
+              <Container
+                header={
+                  <Header
+                    variant="h2"
+                    info={<Link variant="info">Info</Link>}
+                  >
+                    Encryption
+                  </Header>
+                }
               >
-                Encryption
-              </Header>
-            }
-          >
-            <SpaceBetween size="l">
-              <Box>
-                Encryption at rest secures the indexes within your collection. For each collection, AWS KMS uses a symmetric encryption key. Encryption policies are the optimal way to manage KMS keys across multiple collections.{' '}
-                <Link external>Manage encryption policies</Link>
-              </Box>
-              <Box>
-                Your data is encrypted by default with a key that AWS owns and manages for you. To choose a different key, customize your encryption settings.
-              </Box>
-              <Checkbox
-                checked={formData.customizeEncryption}
-                onChange={({ detail }) => setFormData({ ...formData, customizeEncryption: detail.checked })}
-              >
-                <div>
-                  <strong>Customize encryption settings (advanced)</strong>
-                  <div style={{ color: '#5f6b7a', fontSize: '12px' }}>
-                    To use the default key, clear this option.
-                  </div>
-                </div>
-              </Checkbox>
-
-              {formData.customizeEncryption && (
                 <SpaceBetween size="l">
-                  <FormField label="Choose an AWS KMS key">
-                    <SpaceBetween direction="horizontal" size="xs">
-                      <Input
-                        placeholder="Choose an AWS KMS key or enter an ARN"
-                        value={formData.kmsKey}
-                        onChange={({ detail }) => setFormData({ ...formData, kmsKey: detail.value })}
-                      />
-                      <Button iconName="external" iconAlign="right">
-                        Create an AWS KMS key
-                      </Button>
-                    </SpaceBetween>
-                  </FormField>
-
                   <Box>
-                    <Box variant="h4">AWS KMS key details</Box>
-                    <Box margin={{ top: 'xs' }}>
-                      <Box variant="awsui-key-label">Key ARN</Box>
-                      <Link href="#">1c10ee1c-d4c7-a0e-beb4-59b6a3c990b9</Link>
-                    </Box>
+                    Encryption at rest secures the indexes within your collection. For each collection, AWS KMS uses a symmetric encryption key. Encryption policies are the optimal way to manage KMS keys across multiple collections.{' '}
+                    <Link external>Manage encryption policies</Link>
                   </Box>
+                  <Box>
+                    Your data is encrypted by default with a key that AWS owns and manages for you. To choose a different key, customize your encryption settings.
+                  </Box>
+                  <Checkbox
+                    checked={formData.customizeEncryption}
+                    onChange={({ detail }) => setFormData({ ...formData, customizeEncryption: detail.checked })}
+                  >
+                    <div>
+                      <strong>Customize encryption settings (advanced)</strong>
+                      <div style={{ color: '#5f6b7a', fontSize: '12px' }}>
+                        To use the default key, clear this option.
+                      </div>
+                    </div>
+                  </Checkbox>
+
+                  {formData.customizeEncryption && (
+                    <SpaceBetween size="l">
+                      <FormField label="Choose an AWS KMS key">
+                        <SpaceBetween direction="horizontal" size="xs">
+                          <Input
+                            placeholder="Choose an AWS KMS key or enter an ARN"
+                            value={formData.kmsKey}
+                            onChange={({ detail }) => setFormData({ ...formData, kmsKey: detail.value })}
+                          />
+                          <Button iconName="external" iconAlign="right">
+                            Create an AWS KMS key
+                          </Button>
+                        </SpaceBetween>
+                      </FormField>
+                    </SpaceBetween>
+                  )}
                 </SpaceBetween>
-              )}
-            </SpaceBetween>
-          </Container>
+              </Container>
 
-          <Container
-            header={
-              <Header
-                variant="h2"
-                info={<Link variant="info">Info</Link>}
+              {/* Network Access Settings */}
+              <Container
+                header={
+                  <Header
+                    variant="h2"
+                    info={<Link variant="info">Info</Link>}
+                  >
+                    Network access settings
+                  </Header>
+                }
               >
-                Network access settings
-              </Header>
-            }
-          >
-            <SpaceBetween size="l">
-              <Box>
-                Choose internet or VPC access. To enable VPC access, we use private IP addresses from your VPC, which provides an inherent layer of security. Collection VPC endpoints are created and managed solely within OpenSearch Serverless and are separate from domain VPC endpoints. The optimal way to manage network access and VPC endpoints across multiple collections is using network access policies.{' '}
-                <Link external>View and manage network access policies</Link>
-              </Box>
-              <FormField label="Access type">
-                <Box>
-                  You can configure the same or different network settings for your collection endpoint and its corresponding OpenSearch Dashboards endpoint.
-                </Box>
-              </FormField>
-              <FormField label="Access collections from">
-                <RadioGroup
-                  items={[
-                    {
-                      value: 'public',
-                      label: 'Public'
-                    },
-                    {
-                      value: 'private',
-                      label: 'Private'
-                    }
-                  ]}
-                  value={formData.accessType}
-                  onChange={({ detail }) => setFormData({ ...formData, accessType: detail.value })}
-                />
-              </FormField>
+                <SpaceBetween size="l">
+                  <Box>
+                    Choose internet or VPC access. To enable VPC access, we use private IP addresses from your VPC, which provides an inherent layer of security. Collection VPC endpoints are created and managed solely within OpenSearch Serverless and are separate from domain VPC endpoints. The optimal way to manage network access and VPC endpoints across multiple collections is using network access policies.{' '}
+                    <Link external>View and manage network access policies</Link>
+                  </Box>
+                  <FormField label="Access type">
+                    <Box>
+                      You can configure the same or different network settings for your collection endpoint and its corresponding OpenSearch Dashboards endpoint.
+                    </Box>
+                  </FormField>
+                  <FormField label="Access collections from">
+                    <RadioGroup
+                      items={[
+                        {
+                          value: 'public',
+                          label: 'Public'
+                        },
+                        {
+                          value: 'private',
+                          label: 'Private'
+                        }
+                      ]}
+                      value={formData.accessType}
+                      onChange={({ detail }) => setFormData({ ...formData, accessType: detail.value })}
+                    />
+                  </FormField>
+                </SpaceBetween>
+              </Container>
+            </>
+          )}
 
-              {formData.accessType === 'private' && (
-                <Box margin={{ left: 'xxl' }}>
-                  <SpaceBetween size="s">
-                    <SpaceBetween size="xs">
-                      <Checkbox
-                        checked={formData.vpcEndpoints}
-                        onChange={({ detail }) => setFormData({ ...formData, vpcEndpoints: detail.checked })}
-                      >
-                        VPC endpoints for access
-                      </Checkbox>
-                      {formData.vpcEndpoints && (
-                        <Box margin={{ left: 'l' }}>
-                          <SpaceBetween size="xxs">
-                            <Box color="text-body-secondary">
-                              Choose one or more VPC endpoints or input VPCe ID to allow access to collection.
-                            </Box>
-                            <SpaceBetween direction="horizontal" size="xs">
-                              <div style={{ width: '400px' }}>
-                                <Autosuggest
-                                  value={vpcInputValue}
-                                  onChange={({ detail }) => setVpcInputValue(detail.value)}
-                                  onSelect={({ detail }) => {
-                                    if (detail.value && !formData.selectedVpcEndpoints.find(t => t.label === detail.value)) {
-                                      setFormData({
-                                        ...formData,
-                                        selectedVpcEndpoints: [...formData.selectedVpcEndpoints, { label: `VPCe id = ${detail.value}`, dismissLabel: `Remove ${detail.value}` }]
-                                      });
-                                      setVpcInputValue('');
-                                    }
-                                  }}
-                                  onKeyDown={({ detail }) => {
-                                    if (detail.key === 'Enter' && vpcInputValue && !formData.selectedVpcEndpoints.find(t => t.label.includes(vpcInputValue))) {
-                                      setFormData({
-                                        ...formData,
-                                        selectedVpcEndpoints: [...formData.selectedVpcEndpoints, { label: `VPCe id = ${vpcInputValue}`, dismissLabel: `Remove ${vpcInputValue}` }]
-                                      });
-                                      setVpcInputValue('');
-                                    }
-                                  }}
-                                  options={[
-                                    { value: 'vpce-007aabb47506742bd' },
-                                    { value: 'vpce-0123456789abcdef0' },
-                                    { value: 'vpce-abcdef0123456789a' }
-                                  ]}
-                                  placeholder="Select VPC endpoints or input VPCe ID"
-                                  empty="No VPC endpoints found"
-                                />
-                              </div>
-                              <Button iconName="refresh" variant="normal" iconAlign="left" />
-                              <Button>Create VPC endpoints</Button>
-                            </SpaceBetween>
-                            {formData.selectedVpcEndpoints.length > 0 && (
-                              <Box margin={{ top: 'xxs' }}>
-                                <SpaceBetween direction="horizontal" size="xs" alignItems="center">
-                                  <TokenGroup
-                                    items={formData.selectedVpcEndpoints}
-                                    onDismiss={({ detail: { itemIndex } }) => {
-                                      setFormData({
-                                        ...formData,
-                                        selectedVpcEndpoints: formData.selectedVpcEndpoints.filter((_, index) => index !== itemIndex)
-                                      });
-                                    }}
-                                  />
-                                  <Button variant="link" onClick={() => setFormData({ ...formData, selectedVpcEndpoints: [] })}>
-                                    Clear filters
-                                  </Button>
-                                </SpaceBetween>
-                              </Box>
-                            )}
-                          </SpaceBetween>
-                        </Box>
-                      )}
-                    </SpaceBetween>
-
-                    <SpaceBetween size="xs">
-                      <Checkbox
-                        checked={formData.awsServicePrivateAccess}
-                        onChange={({ detail }) => setFormData({ ...formData, awsServicePrivateAccess: detail.checked })}
-                      >
-                        AWS service private access
-                      </Checkbox>
-                      {formData.awsServicePrivateAccess && (
-                        <Box margin={{ left: 'l' }}>
-                          <SpaceBetween size="xxs">
-                            <Box color="text-body-secondary">
-                              With AWS service private access, you can provide private network access to OpenSearch Serverless collections for other AWS services. Select one or more services from the dropdown. Access only applies to the OpenSearch endpoint, not to OpenSearch Dashboards.
-                            </Box>
-                            <div style={{ width: '400px' }}>
-                              <Autosuggest
-                                value={serviceInputValue}
-                                onChange={({ detail }) => setServiceInputValue(detail.value)}
-                                onSelect={({ detail }) => {
-                                  if (detail.value && !formData.selectedAwsServices.find(t => t.label.includes(detail.value))) {
-                                    setFormData({
-                                      ...formData,
-                                      selectedAwsServices: [...formData.selectedAwsServices, { label: `Service = ${detail.value}`, dismissLabel: `Remove ${detail.value}` }]
-                                    });
-                                    setServiceInputValue('');
-                                  }
-                                }}
-                                onKeyDown={({ detail }) => {
-                                  if (detail.key === 'Enter' && serviceInputValue && !formData.selectedAwsServices.find(t => t.label.includes(serviceInputValue))) {
-                                    setFormData({
-                                      ...formData,
-                                      selectedAwsServices: [...formData.selectedAwsServices, { label: `Service = ${serviceInputValue}`, dismissLabel: `Remove ${serviceInputValue}` }]
-                                    });
-                                    setServiceInputValue('');
-                                  }
-                                }}
-                                options={[
-                                  { value: 'bedrock.amazonaws.com' },
-                                  { value: 'lambda.amazonaws.com' },
-                                  { value: 'sagemaker.amazonaws.com' },
-                                  { value: 'kendra.amazonaws.com' }
-                                ]}
-                                placeholder="Select AWS services or input access string"
-                                empty="No services found"
-                              />
-                            </div>
-                            {formData.selectedAwsServices.length > 0 && (
-                              <Box margin={{ top: 'xxs' }}>
-                                <SpaceBetween direction="horizontal" size="xs" alignItems="center">
-                                  <TokenGroup
-                                    items={formData.selectedAwsServices}
-                                    onDismiss={({ detail: { itemIndex } }) => {
-                                      setFormData({
-                                        ...formData,
-                                        selectedAwsServices: formData.selectedAwsServices.filter((_, index) => index !== itemIndex)
-                                      });
-                                    }}
-                                  />
-                                  <Button variant="link" onClick={() => setFormData({ ...formData, selectedAwsServices: [] })}>
-                                    Clear filters
-                                  </Button>
-                                </SpaceBetween>
-                              </Box>
-                            )}
-                          </SpaceBetween>
-                        </Box>
-                      )}
-                    </SpaceBetween>
-                  </SpaceBetween>
-                </Box>
-              )}
-            </SpaceBetween>
-          </Container>
-
-          <Container
-            header={
-              <Header variant="h2">
-                Tags - <Box variant="span" fontWeight="normal" color="text-body-secondary">optional</Box>
-              </Header>
-            }
+          <ExpandableSection
+            headerText="Tags - optional"
+            defaultExpanded={false}
+            variant="container"
           >
             <SpaceBetween size="l">
               <Box>
@@ -707,7 +581,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                 You can add up to 50 tags.
               </Box>
             </SpaceBetween>
-          </Container>
+          </ExpandableSection>
 
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
@@ -721,7 +595,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
           </Box>
         </SpaceBetween>
       </ContentLayout>
-      <CommentsPanel screenName="Create Collection" />
+      <CommentsPanel screenName="Create Collection Draft" />
     </AWSLayout>
   );
 }

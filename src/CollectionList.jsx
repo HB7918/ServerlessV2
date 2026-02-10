@@ -9,7 +9,8 @@ import {
   TextFilter,
   Header,
   Pagination,
-  CollectionPreferences
+  CollectionPreferences,
+  Flashbar
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -311,6 +312,19 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
     wrapLines: false
   });
 
+  const [flashbarItems, setFlashbarItems] = useState([
+    {
+      type: 'info',
+      dismissible: true,
+      dismissLabel: 'Dismiss',
+      onDismiss: () => setFlashbarItems([]),
+      header: 'Introducing Serverless v2 for Amazon OpenSearch Serverless',
+      content: 'Experience instant autoscaling from zero to hundreds of requests in seconds, scale-to-zero when idle for up to 40% cost savings, and near-instant data freshness with newly indexed data searchable in seconds. Serverless v2 supports search, time-series, and vector workloads with the same APIs you\'re already using.',
+      action: <Button iconName="external" iconAlign="right" href="#" target="_blank">Learn more</Button>,
+      id: 'serverless-v2-announcement'
+    }
+  ]);
+
   // Filter items based on search text
   const filteredItems = ALL_ITEMS.filter(item => {
     if (!filteringText) return true;
@@ -359,7 +373,9 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
       }}
       onNavigate={onNavigate}
     >
-      <Table
+      <SpaceBetween size="l">
+        {flashbarItems.length > 0 && <Flashbar items={flashbarItems} />}
+        <Table
         columnDefinitions={COLUMN_DEFINITIONS}
         items={paginatedItems}
         selectedItems={selectedItems}
@@ -459,6 +475,7 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
         stripedRows={preferences.stripedRows}
         wrapLines={preferences.wrapLines}
       />
+      </SpaceBetween>
       <CommentsPanel screenName="Collections" />
     </AWSLayout>
   );
