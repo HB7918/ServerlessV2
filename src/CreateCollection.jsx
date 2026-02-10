@@ -15,7 +15,9 @@ import {
   Checkbox,
   ContentLayout,
   ColumnLayout,
-  ExpandableSection
+  ExpandableSection,
+  Autosuggest,
+  TokenGroup
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -29,13 +31,17 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     kmsKey: '',
     accessType: 'public',
     vpcEndpoints: false,
-    awsServicePrivateAccess: false
+    awsServicePrivateAccess: false,
+    selectedVpcEndpoints: [],
+    selectedAwsServices: []
   });
 
   const [fixCollectionGroup, setFixCollectionGroup] = useState(false);
   const [customizeGroupSettings, setCustomizeGroupSettings] = useState(false);
   const [groupSelection, setGroupSelection] = useState('create-new');
   const [customizeAppSettings, setCustomizeAppSettings] = useState(false);
+  const [vpcInputValue, setVpcInputValue] = useState('');
+  const [serviceInputValue, setServiceInputValue] = useState('');
   const [appSettings, setAppSettings] = useState({
     applicationName: 'opensearchui-1769533298515',
     workspace: 'workspace-1769533298515',
@@ -529,7 +535,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                     },
                     {
                       value: 'private',
-                      label: 'Private (recommended)'
+                      label: 'Private'
                     }
                   ]}
                   value={formData.accessType}
@@ -539,19 +545,145 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
               {formData.accessType === 'private' && (
                 <Box margin={{ left: 'xxl' }}>
-                  <SpaceBetween size="m">
-                    <Checkbox
-                      checked={formData.vpcEndpoints}
-                      onChange={({ detail }) => setFormData({ ...formData, vpcEndpoints: detail.checked })}
-                    >
-                      VPC endpoints for access
-                    </Checkbox>
-                    <Checkbox
-                      checked={formData.awsServicePrivateAccess}
-                      onChange={({ detail }) => setFormData({ ...formData, awsServicePrivateAccess: detail.checked })}
-                    >
-                      AWS service private access
-                    </Checkbox>
+                  <SpaceBetween size="s">
+                    <SpaceBetween size="xs">
+                      <Checkbox
+                        checked={formData.vpcEndpoints}
+                        onChange={({ detail }) => setFormData({ ...formData, vpcEndpoints: detail.checked })}
+                      >
+                        VPC endpoints for access
+                      </Checkbox>
+                      {formData.vpcEndpoints && (
+                        <Box margin={{ left: 'l' }}>
+                          <SpaceBetween size="xxs">
+                            <Box color="text-body-secondary">
+                              Choose one or more VPC endpoints or input VPCe ID to allow access to collection.
+                            </Box>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <div style={{ width: '400px' }}>
+                                <Autosuggest
+                                  value={vpcInputValue}
+                                  onChange={({ detail }) => setVpcInputValue(detail.value)}
+                                  onSelect={({ detail }) => {
+                                    if (detail.value && !formData.selectedVpcEndpoints.find(t => t.label === detail.value)) {
+                                      setFormData({
+                                        ...formData,
+                                        selectedVpcEndpoints: [...formData.selectedVpcEndpoints, { label: `VPCe id = ${detail.value}`, dismissLabel: `Remove ${detail.value}` }]
+                                      });
+                                      setVpcInputValue('');
+                                    }
+                                  }}
+                                  onKeyDown={({ detail }) => {
+                                    if (detail.key === 'Enter' && vpcInputValue && !formData.selectedVpcEndpoints.find(t => t.label.includes(vpcInputValue))) {
+                                      setFormData({
+                                        ...formData,
+                                        selectedVpcEndpoints: [...formData.selectedVpcEndpoints, { label: `VPCe id = ${vpcInputValue}`, dismissLabel: `Remove ${vpcInputValue}` }]
+                                      });
+                                      setVpcInputValue('');
+                                    }
+                                  }}
+                                  options={[
+                                    { value: 'vpce-007aabb47506742bd' },
+                                    { value: 'vpce-0123456789abcdef0' },
+                                    { value: 'vpce-abcdef0123456789a' }
+                                  ]}
+                                  placeholder="Select VPC endpoints or input VPCe ID"
+                                  empty="No VPC endpoints found"
+                                />
+                              </div>
+                              <Button iconName="refresh" variant="normal" iconAlign="left" />
+                              <Button>Create VPC endpoints</Button>
+                            </SpaceBetween>
+                            {formData.selectedVpcEndpoints.length > 0 && (
+                              <Box margin={{ top: 'xxs' }}>
+                                <SpaceBetween direction="horizontal" size="xs" alignItems="center">
+                                  <TokenGroup
+                                    items={formData.selectedVpcEndpoints}
+                                    onDismiss={({ detail: { itemIndex } }) => {
+                                      setFormData({
+                                        ...formData,
+                                        selectedVpcEndpoints: formData.selectedVpcEndpoints.filter((_, index) => index !== itemIndex)
+                                      });
+                                    }}
+                                  />
+                                  <Button variant="link" onClick={() => setFormData({ ...formData, selectedVpcEndpoints: [] })}>
+                                    Clear filters
+                                  </Button>
+                                </SpaceBetween>
+                              </Box>
+                            )}
+                          </SpaceBetween>
+                        </Box>
+                      )}
+                    </SpaceBetween>
+
+                    <SpaceBetween size="xs">
+                      <Checkbox
+                        checked={formData.awsServicePrivateAccess}
+                        onChange={({ detail }) => setFormData({ ...formData, awsServicePrivateAccess: detail.checked })}
+                      >
+                        AWS service private access
+                      </Checkbox>
+                      {formData.awsServicePrivateAccess && (
+                        <Box margin={{ left: 'l' }}>
+                          <SpaceBetween size="xxs">
+                            <Box color="text-body-secondary">
+                              With AWS service private access, you can provide private network access to OpenSearch Serverless collections for other AWS services. Select one or more services from the dropdown. Access only applies to the OpenSearch endpoint, not to OpenSearch Dashboards.
+                            </Box>
+                            <div style={{ width: '400px' }}>
+                              <Autosuggest
+                                value={serviceInputValue}
+                                onChange={({ detail }) => setServiceInputValue(detail.value)}
+                                onSelect={({ detail }) => {
+                                  if (detail.value && !formData.selectedAwsServices.find(t => t.label.includes(detail.value))) {
+                                    setFormData({
+                                      ...formData,
+                                      selectedAwsServices: [...formData.selectedAwsServices, { label: `Service = ${detail.value}`, dismissLabel: `Remove ${detail.value}` }]
+                                    });
+                                    setServiceInputValue('');
+                                  }
+                                }}
+                                onKeyDown={({ detail }) => {
+                                  if (detail.key === 'Enter' && serviceInputValue && !formData.selectedAwsServices.find(t => t.label.includes(serviceInputValue))) {
+                                    setFormData({
+                                      ...formData,
+                                      selectedAwsServices: [...formData.selectedAwsServices, { label: `Service = ${serviceInputValue}`, dismissLabel: `Remove ${serviceInputValue}` }]
+                                    });
+                                    setServiceInputValue('');
+                                  }
+                                }}
+                                options={[
+                                  { value: 'bedrock.amazonaws.com' },
+                                  { value: 'lambda.amazonaws.com' },
+                                  { value: 'sagemaker.amazonaws.com' },
+                                  { value: 'kendra.amazonaws.com' }
+                                ]}
+                                placeholder="Select AWS services or input access string"
+                                empty="No services found"
+                              />
+                            </div>
+                            {formData.selectedAwsServices.length > 0 && (
+                              <Box margin={{ top: 'xxs' }}>
+                                <SpaceBetween direction="horizontal" size="xs" alignItems="center">
+                                  <TokenGroup
+                                    items={formData.selectedAwsServices}
+                                    onDismiss={({ detail: { itemIndex } }) => {
+                                      setFormData({
+                                        ...formData,
+                                        selectedAwsServices: formData.selectedAwsServices.filter((_, index) => index !== itemIndex)
+                                      });
+                                    }}
+                                  />
+                                  <Button variant="link" onClick={() => setFormData({ ...formData, selectedAwsServices: [] })}>
+                                    Clear filters
+                                  </Button>
+                                </SpaceBetween>
+                              </Box>
+                            )}
+                          </SpaceBetween>
+                        </Box>
+                      )}
+                    </SpaceBetween>
                   </SpaceBetween>
                 </Box>
               )}

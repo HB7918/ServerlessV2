@@ -1,0 +1,218 @@
+AWS announces Vulcan for Amazon OpenSearch Service
+Amazon OpenSearch Serverless now supports instant scaling and scale-to-zero for up to 40% cost savings compared to provisioning for peak capacity, and delivers near-instant data freshness
+Toyota, JP Morgan Chase and General Electric are among the many customers using Vulcan 
+
+Seattle, WA – (BUSINESS WIRE) –   June 15, 2026 – Today, Amazon Web Services, Inc. (AWS), an Amazon.com company (NASDAQ: AMZN), announced the general availability of Vulcan, the next generation of Amazon OpenSearch Serverless that instantly scales from a single request to hundreds of requests in seconds and scales to zero when idle for supporting applications ranging from the cost-conscious to the most demanding. Amazon OpenSearch Serverless is an on-demand, auto-scaling offering of Amazon OpenSearch Service that automatically adjusts capacity to meet the needs of customer’s search, time-series and vector workloads. With Vulcan, Amazon OpenSearch Serverless automatically provides just the right resources for any application and scales to zero when idle, so customers pay only for what they use. Vulcan makes newly indexed data searchable in seconds, enhancing data freshness and ensuring real-time insights for time-sensitive applications. Instead of provisioning clusters for peak loads, customers can use Vulcan to automatically provision, scale, and manage capacity for even their most unpredictable workloads and realize up to 40% cost savings. To learn more about Vulcan, visit https://aws.amazon.com/opensearch/vulcan.
+OpenSearch is a distributed search and analytics engine that allows users to search and analyze petabytes of data in near real-time. Hundreds of thousands of customers use Amazon OpenSearch Service to deploy and manage clusters, where they must carefully plan cluster size, instance types, and storage capacity to meet workload requirements. Amazon OpenSearch Serverless, launched in 2022, eliminates these capacity planning challenges and is used by thousands of customers, including Toyota, Capital One and GE Health, for search, observability and vector workloads with sporadic or unpredictable patterns. OpenSearch Serverless automatically scales capacity within 2 to 30 minutes to meet varying workloads demands and makes newly indexed data ready to be searched in minutes. Customers love not having to worry about managing cluster capacity or version upgrades and want to use OpenSearch Serverless for more broader applications. However, demanding applications need capacity added in seconds to maintain performance and data searchable instantly rather than in minutes for real-time insights. Additionally, cost-conscious customers need scale-to-zero when idle, as current minimum capacity requirements in OpenSearch Serverless lead to unnecessary costs. Customers want faster scaling, instant data freshness, and scale-to-zero in OpenSearch Serverless to benefit from its simplicity while optimizing costs.
+Vulcan is the next generation of Amazon OpenSearch Serverless that enables customers to scale their search, time-series and vector workloads from a single request to hundreds of requests in seconds to support even the most demanding workloads. Vulcan continuously monitors indexing and search requests, dynamically allocating just the right capacity to maintain consistent performance for the application. Vulcan delivers instant data freshness, ensuring newly indexed data becomes searchable almost immediately—critical for time-sensitive applications like fraud detection and observability monitoring. With scale-to-zero, customers pay only for the capacity they consume and can save up to 40% on their cluster spend provisioned for peak loads. For example, when an application monitoring workload receives a sudden burst of logging activities during an availability event, Vulcan scales the resources in seconds to ingest and store the data, ensuring real-time insights without any performance degradation. With Vulcan, customers can run any search, time-series and vector workload on OpenSearch Serverless and meet capacity requirements with even greater cost-efficiency. 
+“With the rapid rise of generative AI applications and agentic systems, enterprises are producing massive streams of machine-generated data from sources like cloud applications, IoT devices, and more,” said Chet Kapoor, VP of Search, Security and Observability at AWS. “Amazon OpenSearch Serverless already empowers customers to search and analyze this data without the operational overhead of managing clusters. With Vulcan, we’re taking that experience further—offering instant, elastic scaling from zero along with instant data freshness so customers can handle the unpredictable surges of modern AI-driven workloads in real time. Vulcan automatically provisions and optimizes resources to meet shifting demand, all while providing the interactive, feature rich experience that customers expect from Amazon OpenSearch Service.”
+Customers can get started with Vulcan by creating and analyzing data collections in just a few clicks using the AWS Console, command line interface (CLI), or the AWS software development kit (AWS SDK). Vulcan supports the same ingest and query APIs as the open-source OpenSearch, so customers can continue to use their existing clients and applications. Vulcan is an opt-in capability of Amazon OpenSearch Serverless, giving customers the flexibility to continue using their existing OpenSearch Serverless collections or choose Vulcan for instant autoscaling, scale-to-zero, and high data freshness. Additionally, customers can easily migrate their existing Serverless collections to Vulcan with a just a few clicks on the AWS console or by calling the AWS APIs, making it easy to migrate existing workloads. Vulcan also works seamlessly with OpenSearch UI, allowing customers to interactively analyze their data and visualize the results. As Vulcan runs the latest version of open-source OpenSearch, it includes support for popular features available in Amazon OpenSearch Service, such as one-click semantic search, trace analytics, and anomaly detection. 
+JPMorgan Chase is a global financial services firm that provides banking, investment, and asset management solutions. “In our Card department, detecting fraudulent activity the moment it happens is critical to protecting our customers and maintaining trust. Our fraud detection systems process vast amounts of streaming transaction data and all of it gets indexed in Amazon OpenSearch Serverless for anomaly detection. Increased latency in searching newly indexed data or delays in scaling infrastructure can mean the difference between stopping fraud in progress or missing it entirely,” said Lori Beer, CIO, JPMorgan Chase. “Vulcan instantly scales our search and analytics capabilities from zero to meet unpredictable surges in transaction volume—without having to manage clusters or pre-provision capacity. Vulcan automatically allocates the right resources in real time and guarantees near-instant data freshness, ensuring our fraud detection algorithms run with the millisecond response times they need to stop fraud before it impacts customers.” 
+Juicebox is an AI powered recruitment platform that is used by enterprises and startups to source, assess and engage talent using natural language searches and automated outreach tools. “Our recently launched PeopleGPT, the AI search engine for recruitment, uses Amazon OpenSearch Serverless as a vector store to power semantic search, RAG pipelines, and contextual retrieval for thousands of users across our entire customer base,” said Ishan Gupta, CTO, Juicebox. “Previously, we had to keep capacity running for every customer at all times, even when indexes were idle—driving up infrastructure costs. With Vulcan, we can now scale vector workloads to zero when they’re not in use and instantly scale back up the moment a query arrives. This eliminates idle costs across our fleet while ensuring the low-latency performance that’s critical for powering real-time AI experiences.”
+Vulcan is generally available today and is available in all AWS regions where Amazon OpenSearch Serverless is currently available. To learn more and get started with Vulcan, visit https://aws.amazon.com/opensearch/vulcan. 
+
+External FAQs
+	•	What are you launching today?
+Today we are launching Vulcan, the next generation of Amazon OpenSearch Serverless that scales instantly from a single request to hundreds of requests in seconds and scales to zero when idle for supporting applications ranging from the cost-conscious to the most demanding. Amazon OpenSearch Serverless is an on-demand, auto-scaling offering of Amazon OpenSearch Service that automatically adjusts capacity to meet the needs of customer’s search, analytics and vector workloads. With Vulcan, Amazon OpenSearch Serverless automatically provides just the right resources for any application and scales to zero when idle, so customers pay only for what they use. Vulcan makes newly indexed data searchable in seconds, enhancing data freshness and ensuring real-time insights for time-sensitive applications. Instead of provisioning clusters for peak loads, customers can use Vulcan to automatically provision, scale, and manage capacity for even their most unpredictable workloads and realize up to 40% cost savings
+
+	•	Why should I use Vulcan?
+With Vulcan, you can now use Amazon OpenSearch Serverless to cost-effectively support even the most demanding applications that require instant autoscaling to support sudden surge in traffic while ensuring high data freshness. Key benefits of Vulcan include: 1) Fast scaling – With Vulcan, OpenSearch Serverless can scale instantly, from a single request to hundreds of requests in seconds; 2) Cost effective – Your search and analytics workloads automatically start up, scale-to-zero when idle and consume just the right amount of resources in response to your application’s demand to improve both utilization and performance, while lowering costs up to 40% compared to provisioning clusters for peak capacity; 3) High data freshness – Vulcan delivers instant data freshness, ensuring newly indexed data becomes searchable almost immediately for real-time insights in time-sensitive applications.
+
+	•	How does this feature relate to/work with other AWS services?
+Vulcan supports the same functional capabilities available in Amazon OpenSearch Service managed clusters including integration with other AWS services such as AWS CloudWatch for monitoring performance metrics and setting up alarms, AWS Identity and Access Management (IAM) for access control to Vulcan resources and AWS Key Management Service (KMS) to encrypt data.
+
+	•	How do I get started with Vulcan?
+Customers can get started with Vulcan by creating and analyzing data collections in just a few clicks using the AWS Console, command line interface (CLI), or the AWS software development kit (AWS SDK). Vulcan supports the same ingest and query APIs as the open-source OpenSearch, so customers can continue to use their existing clients and applications. Vulcan is an opt-in capability of Amazon OpenSearch Serverless, giving customers the flexibility to continue using their existing OpenSearch Serverless collections or choose Vulcan for instant autoscaling, scale-to-zero, and high data freshness. Additionally, customers can easily migrate their existing Serverless collections to Vulcan with a just a few clicks on the AWS console or by calling the AWS APIs, making it easy to migrate existing workloads. Vulcan also works seamlessly with OpenSearch UI, allowing customers to interactively analyze their data and visualize the results. As Vulcan runs the latest version of open-source OpenSearch, it includes support for popular features available in Amazon OpenSearch Service, such as one-click semantic search, trace analytics, and anomaly detection.
+
+	•	What version of OpenSearch does Vulcan run on?
+Vulcan runs on the OpenSearch version 3.3, giving you access to the latest OpenSearch innovations in search performance, observability and new functionality to make agentic AI integrations simpler and more powerful.
+
+	•	How does Vulcan scale capacity during autoscaling events?
+With Vulcan, the unit of measure of capacity for OpenSearch Serverless continues to be OpenSearch Compute Units (OCUs). 1 OCU comprises of 6GB RAM, corresponding vCPU and IOPs to access data from OpenSearch Serverless managed storage. With Vulcan, OpenSearch Serverless is able to add and remove capacity during scaling events in seconds rather than in minutes, allowing you to respond to the needs of even your most demanding search and analytics workloads. Additionally, Vulcan scales to zero OCUs, enabling you to optimize costs during periods of inactivity.
+
+	•	How does Vulcan work with Collection Groups?
+Vulcan works seamlessly with Collection Groups and respects the minimum and maximum OCU limits you configure for each group. When you create or migrate collections to Vulcan within a Collection Group, Vulcan's instant autoscaling operates within the boundaries you've defined—maintaining at least the minimum OCU capacity and never exceeding the maximum OCU limit. However, you cannot mix existing OpenSearch Serverless collections and Vulcan collections within the same Collection Group. If you want to use Vulcan with existing collections in a Collection Group, you'll need to either migrate all collections in that group to Vulcan or move specific collections to a new Collection Group designated for Vulcan. 
+
+	•	Can I control the scale-to-zero behavior of Vulcan?
+When min OCUs for a collection is set to zero, Vulcan by default scales your OCUs to zero after 5 minutes of inactivity. You can change this behavior by choosing a value ranging from 5 mins to 24 hours to specify the time your serverless collections can be idle before they scale to zero to meet your specific business requirements. Collections that are scaled to zero experience a 15-second cold start delay turning on when a new request arrives as Vulcan provisions the necessary resources.
+
+	•	I already have OpenSearch Serverless collections in my account. How do I use Vulcan with these collections?
+You can migrate your existing OpenSearch Collections to Vulcan with just a few clicks on the Amazon OpenSearch Service management console or by calling the AWS APIs. Once your collection switches over to Vulcan, you automatically get all its benefits like instant autoscaling and scale-to-zero.
+
+	•	Why is Vulcan an opt-in feature and not turned on by default?
+Vulcan is an opt-in feature because it introduces a new pricing model with a different storage tier and changes performance characteristics compared to the current generation of Amazon OpenSearch Serverless. With the opt-in nature of Vulcan, customers get the flexibility to evaluate how the new pricing structure and performance profile align with their specific workload requirements and business needs before migrating. Customers can continue using their current OpenSearch Serverless collections while selectively migrating workloads to Vulcan as they validate the benefits for their use cases.
+
+	•	What regions is Vulcan available in at GA?
+Vulcan is available in all the 22 AWS commercial and 2 AWS GovCloud regions that Amazon OpenSearch Serverless is available in today. 
+
+Internal FAQs
+	•	What do we want someone sitting across the table at lunch saying about the service?
+“Vulcan has been game changer for our observability workloads running on OpenSearch Serverless. Our workloads are extremely spiky in nature with critical events triggering a deluge of logs, metrics and traces at multiple times during a day. Vulcan instantly scales capacity to meet such surges in our data volumes with zero intervention from our end. No more capacity planning for seasonal events or closely monitoring the status of our applications”
+“Our search infrastructure costs dropped by 30% after migrating to Vulcan since all our collections now scale to zero, helping us avoid idle OCU charges. Our engineers love it because they can focus on building features instead of managing clusters. It's one of those rare things where everyone wins - better performance, lower costs, and less operational headache”.
+
+	•	Who is the target customer and persona for Vulcan?
+The target customers for Vulcan fall into three primary categories:1) Customers with high-demand, variable workload applications: These customers run critical search and analytics applications that experience sudden, unpredictable traffic spikes. This includes financial services (fraud detection), e-commerce (product search during sales events), media companies (content search during breaking news), and monitoring/observability platforms that need to handle incident-driven traffic surges. 2) Cost-Conscious customers: This segment targets customers with variable or unpredictable search workloads who are tired of paying for unused capacity. These include startups, mid-market companies, and ISVs providing search and analytics infrastructure to multiple tenants. ISVs particularly benefit as they typically have a few top talker tenants driving most usage while supporting a long tail of idle customers—scale-to-zero eliminates infrastructure costs for these idle tenants while maintaining instant availability when needed. 3) AI/ML and Gen AI Developers: This segment is focused on customers building RAG applications, semantic search systems, and agentic AI workloads that use vector databases. These workloads involve agentic interactions which are unpredictable in nature and benefit from instant scaling capabilities. This includes both enterprises implementing AI initiatives and AI-first companies building intelligent applications.
+All these segments of customers will benefit from more elastic and instantaneous scaling to hundreds of requests, increased data freshness, lower cost OCU billing representing exactly the resources used by their search and analytics, and full feature parity with the latest version of OpenSearch. 
+
+	•	What will our customers like most about Vulcan?
+Customers will appreciate that Vulcan is more elastic than the current generation of Amazon OpenSearch Serverless with instant scaling from a single request to hundreds of requests within seconds, allowing them to adapt to even their most demanding workloads. Customers will like that their data is searchable in seconds rather than minutes from the time it is indexed. With scale-to-zero eliminating idle charges, customers will see an overall reduction in their total costs for OpenSearch Serverless.
+
+	•	What will customers be most disappointed with in Vulcan?
+Customers will be disappointed with increased latency for queries in some scenarios when using Vulcan. With Vulcan, we are replacing the Elastic Block Storage (EBS) volume attached to each Amazon OpenSearch Serverless compute node with a shared storage layer powered by Elastic File System (EFS). The team evaluated multiple file storage options for the shared storage layer and finally chose EFS as it best fits the immutable-file workload that OpenSearch needs. However, the disk seek times on EFS are higher than on EBS (up to ~4x) so queries being served from EFS will have higher latency when compared to those previously being served by EBS. However, as long as the query is served by the cache on the compute nodes, customers will see no performance difference. We conducted a fleet analysis and identified that 97% of the existing customers would have no query latency impact as the working dataset resides in memory. For the remaining 3% customers, p90 queries would see increased latencies (~up to 4x). We plan to mitigate performance degradation for these customers in the short-term with application side improvements like parallel and non-blocking IO optimizations and in the long term with investments in partnership with the EFS team in ensuring predictable small random access read latency.
+
+	•	Why do we believe the first release of Vulcan will be successful?
+We believe Vulcan's first release will be successful because we've identified and delivered the minimum set of capabilities that directly solve our customers' most painful problems with OpenSearch Serverless today. We have multiple Product Feature Requests (PFR) in Salesforce (Appendix B) with more than 50 customers asking for scale-to-zero capabilities, representing a total opportunity size of ~40M USD. Currently, customers need to have at least 4 OCUs for production and 2 OCUs for dev/test workloads running at all times, which can be a non-starter for a lot of cost-conscious customers. Increased data freshness when searching data with reduction in write-to read latency is also a top ask from customers like AutoDesk and AppZen. Similarly, autoscaling delays ranging from 2 to up to 30 minutes that cause performance degradation during traffic spikes is the biggest complain from majority of OpenSearch Serverless customers, preventing them from onboarding their production workloads to the platform. With instant autoscaling and scale-to-zero, Vulcan makes Amazon OpenSearch Serverless attractive to a wide spectrum of customers ranging from the most demanding to the cost-conscious.
+
+	•	What use cases would customers not want to move to the service, and why? How significant are these missed opportunities?
+Customers using Amazon OpenSearch Service for custom solutions or specialty use cases with very specific performance, sizing, and hardware characteristics will not find Amazon OpenSearch Serverless to be the appropriate choice even with the improved experience that Vulcan offers. These customers will prefer to either use the managed clusters that is offered by Amazon OpenSearch Service or self-manage OpenSearch on EC2, ECS, EKS or on-prem datacenters. Also, customers needing extremely low query latencies on very large datasets might not want to move to Vulcan at GA since there will be performance degradation with the new storage layer until our short- and long-term enhancements are implemented. Vulcan has the potential to incentivize about 70% of the customers with typical log analytics and search use cases to migrate from the current managed clusters and self-managed infrastructure for OpenSearch. The remaining 30% will prefer to be on Amazon OpenSearch Service’s managed clusters or self-manage their workloads.
+
+	•	What is the competitive landscape and how is Vulcan differentiated from any other available product and/or solution?
+The competitive landscape is fragmented across Vulcan's three collection types – search, time-series and vector, with no competitor offering a unified truly serverless solution. For search use cases, Elasticsearch Service and Azure AI Search provide serverless offerings without scale-to-zero, while Algolia offers usage-based pricing but only for search use cases. In observability, Datadog and New Relic provide SaaS solutions with usage pricing but use proprietary stacks, while Elastic Observability and Splunk Cloud still require capacity planning. For vector collections, Pinecone offers serverless vector search but lacks full-text and analytics capabilities, Turbopuffer provides fast vector operations with pay-per-query pricing but is vector and full-text search only, while Weaviate and Qdrant require instance provisioning. Another major  competitor is S3 vectors, which launched this year and is the first cloud object store with native support to store and query vectors, delivering purpose-built, cost-optimized vector storage. Vulcan uniquely differentiates itself by being the only solution offering true serverless scaling with instant scale-to-zero across all three use cases—search, time-series analytics, and vector workloads—in a unified platform. Unlike competitors who specialize in single domains or require fixed capacity, Vulcan combines single-digit second scaling, OpenSearch ecosystem compatibility, and pay-per-use economics without minimum capacity requirements, eliminating the need for multiple vendors while avoiding vendor lock-in through open-source compatibility.
+
+	•	Will this service require any new or changed go-to-market motions (including target customers, buyer, sales motion, or BD/Sales/Marketing/Partner resources)?
+No. We do not anticipate requiring a separate specialized sales team for Vulcan and will leverage the existing specialized sellers and SAs for Amazon OpenSearch Serverless to drive adoption of the service.
+
+	•	What are the directional plans and aims for pricing?
+OpenSearch Serverless today charges customers for compute and storage separately. The compute capacity is measured in OpenSearch Compute Units (OCUs) and corresponds to the CPU, memory, EBS storage, and I/O resources required to index data or run queries. Customers also pay S3 storage costs in per GB per month for storing their data in a serverless collection. The tight coupling of EBS with search and indexing means compute cannot scale independently of local storage leading to over-provisioned OCUs (up to ~20x) for customers that need more storage.
+With Vulcan, we are replacing the EBS volume attached to each OCU with a shared storage layer powered by EFS that can be accessed by both indexing and search OCUs. We will continue using S3 as the durability layer for storage. With this new architecture, there is complete decoupling of compute and storage, allowing indexing and search operations to scale independently of storage. The numbers of OCUs needed for search and indexing operations reduces significantly and along with scale-to-zero, customers pay for only what they use. EFS marginal rates are ~3X more expensive than EBS so customers will see a higher storage cost but as most customers have over-provisioned OCUs ranging from 5x to 20x, we expect the overall cost for customers reducing with Vulcan. Given the new architecture, we will fashion a pricing model for Vulcan that follows costs, is easier to understand for existing and new customers and is cheaper than the current generation of Amazon OpenSearch Serverless. The pricing dimensions under consideration are: 
+	•	OpenSearch Compute Unit (Indexing OCU) – This dimension remains unchanged and signifies the compute, memory and network I/O required for indexing data. Previously, each OCU also had an EBS volume attached to it which is now no longer needed and is replaced by the shared storage of EFS.
+	•	OpenSearch Compute Unit (Search OCU) – This dimension remains unchanged and signifies the compute, memory and network I/O required for searching data. Previously, each OCU also had an EBS volume attached to it which is now no longer needed and is replaced by the shared storage of EFS.
+	•	Managed Storage (per GB per month) – This storage cost now includes both the S3 and EFS storage cost. The EFS powered hared storage is shared by both the indexing and search OCUs. We can either charge this as a single blended cost or split this out as hot and warm storage.
+We will refine and test this pricing and packaging as we build out the detailed cost models and gather more data from our discussions with customers and benchmarking. We will follow up with a pricing narrative to describe our detailed pricing proposal.
+
+	•	What are the directional plans and aim for naming?
+We see Vulcan as the next generation of Amazon OpenSearch Serverless, delivering significant improvements for customers who want to run search and analytics workloads on AWS without operational overhead. The naming strategy positions Vulcan as an evolution of OpenSearch Serverless that is faster, more cost-effective, and feature-rich. The new name will be used as the product identifier to clearly differentiate this enhanced generation while maintaining the OpenSearch Serverless brand equity. We will follow up with a separate naming narrative that outlines specific branding options and go-to-market messaging strategy for Vulcan.
+
+	•	Are we currently making any decisions that will lead us through one-way doors?
+No. At GA, Vulcan is an opt-in capability so customers will have the option of using existing OpenSearch Serverless collections for their workloads. While Vulcan provides a superior experience with faster scaling and scale-to-zero capabilities, certain query patterns may experience degraded performance characteristics due to the underlying storage architecture changes. We plan to run both Vulcan and existing OpenSearch Serverless side by side to ensure customer choice with the end goal of migrating all customers over to Vulcan once all edge-case issues are fixed. 
+
+	•	Are there any debated topics? What are they and, if necessary, what is the plan to resolve them?
+The choice of the storage technology for the new shared storage layer in Vulcan to replace the existing EBS volumes was one of the most debated topics. The team spent multiple months conducting POCs analyzing storage solutions ranging from AWS-managed storage services like S3 Express, EFS, FSx, EBS multi-attach to internal storage solutions like Aurora Grover page store, Xanadu row store to building our own multi-tenant storage tier. EFS emerged as the optimal choice because it provides multi-tenant shared storage, is fully managed, and offers multi-AZ fault tolerance and durability at the scale we require. However, for queries not served from memory cache, we expect increased latency of up to 4X with EFS compared to our current EBS-based architecture. Building an equivalent storage capabilities to mitigate the increase disk seek latency is significantly higher build and operational investment and carries significant risks while providing no benefits to the broader AWS ecosystem. While we trust EFS is the right technical fit for Vulcan, we need continuous innovation on EFS to support our future growth needs, both in terms of scale and upcoming use cases. Our top priorities are ensuring that OpenSearch Serverless can grow alongside EFS without hitting operational limits, support low query latency, operational visibility and shared support mechanisms. We will be working closely with the EFS team to align on investments in these core areas.
+Appendix A – Additional FAQs
+	•	How will this launch support Windows users, applications based on Windows Server and .NET/.NET Core developers at launch?
+Vulcan will support .NET SDK calls to create, update and delete OpenSearch Serverless collections.
+
+	•	What is the plan to be in scope for AWS compliance assurance for programs including SOC, HIPAA, FedRAMP, etc.?  What is the plan to support Enterprise security features including encryption at rest using KMS and supporting customer-owned keys and encryption in transit?
+Amazon OpenSearch Serverless is HIPAA eligible and compliant with PCI DSS, SOC, ISO, and FedRamp standards, so customers using Vulcan can meet their security and compliance needs. Vulcan will be secure by default. It will support encryption at rest using KMS, node-to-node encryption over TLS and will require clients to communicate using only HTTPS. Vulcan will automatically deploy and rotate certificates throughout the lifecycle of the collections. When VPC access is enabled, collections and OpenSearch UI will be accessible only within the customer VPC. Customers can view access logs via CloudTrail for auditing purposes.
+
+	•	What is your plan to support networking features including VPC, PrivateLink, IPv6 and connectivity to/from IPv6-only EC2 instances at launch?
+Amazon OpenSearch Serverless already supports networking features including VPC, PrivateLink and IPv6 so Vulcan will support all these networking features at launch.
+
+	•	When will the launch support governance related AWS features including (but not limited to) IAM, Organizations, Service Quotas, CloudFormation, Resource Tagging, X-Ray, CloudTrail and Config?
+Amazon OpenSearch Serverless already supports governance related AWS features like IAM, Organization, Service Quotas, etc. so Vulcan will support all these features at launch.
+
+	•	What services does this launch depend on? Are these services available in all regions, including GovCloud (PDT, OSU), MVP (DCA, LCK), and China (BJS, ZHY) partitions? Are the features needed from those services available in all regions?
+Vulcan depends on EC2 and ECS for its compute needs and EFS and S3 for its storage requirements. It also depends on VPC and AWS Private Link for network connectivity. For data encryption at rest, it relies on AWS KMS. Other AWS services needed include DynamoDB, Kinesis, SQS, Lambda, CloudWatch and CloudTrail. All these dependent services and their features are available in all AWS commercial regions, GovCloud, MVP and China partitions.
+
+	•	Will this launch support a 1-day region build or fully automated region build at launch? If not, what is blocking this from occurring? When will it be addressed?
+Amazon OpenSearch Serverless does not support 1-day region build or fully automated region build so Vulcan will not launch with this capability. We are working on plans to enable 1-day region launches for OpenSearch Serverless but do not have an ETA yet on when it will be addressed.
+
+	•	Does the service rely on an open-source project for key functionality? If so, what is your open-source strategy?
+Yes. Amazon OpenSearch Serverless runs OpenSearch which is opensource and distributed as part of Apache License V2(Alv2). The OpenSearch project is maintained by the OpenSearch Software Foundation which operates under the umbrella of the Linux Foundation. With Vulcan, we will aim for OpenSearch Serverless to have feature parity with the latest opensource OpenSearch version.
+
+	•	What steps, if any, can a customer take to manage the fault domains exposed by this service?
+Vulcan publishes all its logs and metrics to AWS CloudWatch so customers can use their CloudWatch dashboard to get complete observability about their Vulcan collections.
+
+	•	Does your product support Graviton instances and the Arm architecture at launch? If not, what are any blockers preventing you from adding Graviton/Arm support? What is the defined timeline to add support post GA?
+Vulcan’s compute is powered by EC2 R6g Graviton instances. We will be working with the EC2 team to adopt newer generations of Graviton as and when they are available.
+
+	•	If performance is a differentiating advantage of this service, explain the customer-relevant performance metrics and provide a competitive landscape including open source and offerings on other clouds. If you anticipate that performance will be part of this service’s durable advantage (or if failure to maintain performance would cause customer dissatisfaction), make sure to explain how we will maintain our performance position.
+The key differentiating advantage of Vulcan is its instant autoscaling where it can scale to hundreds of thousands of connections in a matter of few seconds. Customers can see the time taken by their OCUs to scale up or down during scaling events in their CloudWatch metrics. While there are competitors out there which have serverless offerings for platforms that serve search and analytics queries, none of them have the instant autoscaling and scale-to-zero capabilities offered by Vulcan. The instant autoscaling for Vulcan is powered by our investments in a shared storage layer that decouple compute and storage along with other enhancements like application warm pooling. We will continue investments in the shared storage layer along with other application side enhancements to maintain our performance position.
+
+	•	What is the plan to make Amazon.com a glowing public reference of the service?
+We will actively engage with the various search and analytics team that support Amazon.com during the beta of the launch and support them to get their workloads on Vulcan.
+
+	•	Have you reviewed this proposed product / PR/FAQ with AWS Security?
+We will be reviewing the proposed product architecture with AWS Security by opening up an engagement ticket with the team.
+
+	•	Whom have you engaged in Legal regarding Open Source and Licensed Code?
+Given that all new features first land in opensource OpenSearch before they are ported to OpenSearch Serverless, we will follow the usual procedures for involving Legal whenever a new version of OpenSearch is released and moved over to OpenSearch Serverless.
+
+	•	What IP have we submitted during the course of developing this service?
+No new IP is being submitted during the course of developing this feature.
+
+	•	How will this launch support GDPR compliance?
+Vulcan is a feature of Amazon OpenSearch Serverless, which is GDPR compliant.
+
+	•	What impact will the launch have on customer service and premium support?
+Amazon OpenSearch Serverless is generally available to customers and familiar to customer support (CS) teams. CS and premium supports teams will be trained closer to launch of Vulcan on the operational tools and troubleshooting. 
+	•	Will customers interact with the new service/feature through a UI? If yes, provide wireframes, and ensure we schedule a review of the UX?
+Customers will be interacting with Vulcan using the existing UI for Amazon OpenSearch Serverless. With the launch of Vulcan, customers will have a UI option of using existing OpenSearch Serverless or Vulcan. We will be setting up a review of the new UX once the wireframes are finalized.
+
+	•	Have you reviewed your proposed APIs with an API Bar Raiser?
+We will be reviewing the proposed APIs with API Bar Raiser as we build out this feature.
+
+	•	If the launch of your service or feature requires work from a substantial number of teams across AWS, what is your estimate of the amount of work for each team to integrate/adopt? What would it take to significantly reduce or eliminate this? What are the top services you will require to be successful and where does this work fall on their priority? (If you will require cross-AWS work, include a link to your: FAQ for product/feature resourcing and design.)
+Vulcan has a dependency on EFS for its shared storage layer, and we have a list of items with the EFS team that are launch blockers. While we have a list of asks from the EFS team to improve query performance in the long term, we are confident of launching Vulcan with EFS as the shared storage with the away-team work that we are doing in the short term. 
+
+	•	How does this service consider accessibility and the user experience of customers with disabilities? Will it meet AWS accessibility guidelines and/or Amazon’s internal accessibility guidelines at launch? If not, why and what is the timeline for remediation? If not, provide link to the approved exception in Amazon Approvals - template can be found here.
+The UX for Vulcan will go through all levels of UX fit and finish and will ensure that it meets all AWS accessibility guidelines.
+
+	•	What new identity or permissions models outside of what is provided in IAM, Resources Tagging ((Attribute-based Access Control via Tagris), Organizations, or SSO does this feature or service introduce (if any)? If you have any proposed additions, have you reviewed them with Identity leadership and have approval to move forward?
+Vulcan introduces no new identity or permissions model outside of what is provided in IAM, Resource Tagging, Organizations or SSO.
+Appendix B – AWS Console Mocks
+
+
+
+
+
+
+
+
+
+
+
+Appendix C – Customers requesting scale-to-zero in Amazon OpenSearch Serverless
+
+Sr. No. 
+Customer Name 
+Use Case
+	•	
+Shutterstock
+Shutterstock is looking to migrate Elasticsearch workloads to OpenSearch serverless for their Dev and QA environments. They would like the ability to scale to 0 for these environments as they are not used over the weekends
+	•	
+SmugMug
+Customer is interested in this similar to Redshift Serverless that can scale to zero.
+	•	
+EPIQ
+Customer wants to adopt OS serverless but not being able to scale to 0 is a blocker. It is cost prohibitive in current state.
+	•	
+Skyward
+Customer wants to pause unused OpenSearch serverless collections when not in use in-development environments to save on additional cost
+	•	
+PowerSchool
+Today with OpenSearch Serverless a minimum four OCUs are instantiated for the first collection in an account. This is costing customers around 700$ per month, when using OpenSearch Serverless. This isn't a problem at least for prod accounts, but for dev and stag 700$ per month doesn't really fit the Serverless model
+	•	
+New Jersey Courts
+NJ Courts is building a solution for legal document search. NJ Courts wants to use serverless because it is easier to manage. However, the customer is sensitive to cost and desire OpenSearch serverless to scale down to zero.
+	•	
+Karta
+Karta is a fintech startup and would like to explore using AOSS for search use cases on their DDB data however min. cost is a blocker
+	•	
+Gleason Corporation 
+Customer stopped using OpenSearch Serverless as a Bedrock knowledge base because of the cost that incurred even if they are not using the service
+	•	
+Groupe Le Centrale
+Customer wants to switch their 20 OpenSearch domains to OS serverless, but this still blocked to this cost constraint. Having the ability to scale OCU to zero will definitely allow wide serverless adoption by this customer.
+	•	
+Jehovah’s Witnesses 
+JW.org is looking to build multi-tenant architecture, with each tenant representing specific language translations. They are looking to implement on serverless, multiple environments - dev, qa, uat, prod and do want their non-prod environment to be shut down to 0.
+	•	
+Joko 
+Customer has intermittent workload and OpenSearch serverless with minimum of 4 OCU when not used is considered too expensive for them. They mainly want to use it for vector embeddings in a GenAI workload.
+	•	
+PacketWatch 
+Customer has intermittent workload and OpenSearch serverless with minimum of 4 OCU when not used is considered too expensive for them. They mainly want to use it for vector embeddings in a GenAI workload.
+	•	
+ANWB 
+ANWB wants to use the serverless variant of OpenSearch since it offers features that help their development process. However, their OpenSearch dataset and load on the cluster are quite low, and dev environments are short-lived and have extensive period of idle time. 0 OCU would greatly drive down cost and provide better service experience.
+	•	
+Millman Intelliscript
+We use a provisioned in prod but want to use serverless in dev and have a lot of downtime that it does not make sense to them why they are experiencing hourly charges for OCUs that are not being used
+	•	
+Resparkle Technology
+Resparkle has a DynamoDB to OpenSearch use case and decided to use OpenSearch clusters as serverless min. cost is too high.
+	•	
+Isoton
+Customer is using pinecone rather than OSS due to cost, but Pinecone has a limited feature set which is proving a bad experience. Wouldn't be an issue if OSS scaled to 0.
+

@@ -13,7 +13,8 @@ import {
   Box,
   Link,
   ExpandableSection,
-  Alert
+  Alert,
+  ColumnLayout
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -24,10 +25,10 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
   const [deploymentType, setDeploymentType] = useState('standard');
   const [enableRetentionPolicy, setEnableRetentionPolicy] = useState(false);
   const [retentionDescription, setRetentionDescription] = useState('');
-  const [minIndexingCapacity, setMinIndexingCapacity] = useState({ label: '-', value: '-' });
-  const [maxIndexingCapacity, setMaxIndexingCapacity] = useState({ label: '96', value: '96' });
-  const [minSearchCapacity, setMinSearchCapacity] = useState({ label: '-', value: '-' });
-  const [maxSearchCapacity, setMaxSearchCapacity] = useState({ label: '96', value: '96' });
+  const [minIndexingCapacity, setMinIndexingCapacity] = useState({ label: '-', value: '-', description: '' });
+  const [maxIndexingCapacity, setMaxIndexingCapacity] = useState({ label: '96', value: '96', description: '576 GB RAM' });
+  const [minSearchCapacity, setMinSearchCapacity] = useState({ label: '-', value: '-', description: '' });
+  const [maxSearchCapacity, setMaxSearchCapacity] = useState({ label: '96', value: '96', description: '576 GB RAM' });
 
   const breadcrumbs = [
     { text: 'Amazon OpenSearch Service', href: '#' },
@@ -36,15 +37,17 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
   ];
 
   const capacityOptions = [
-    { label: '-', value: '-' },
-    { label: '2', value: '2' },
-    { label: '4', value: '4' },
-    { label: '8', value: '8' },
-    { label: '16', value: '16' },
-    { label: '32', value: '32' },
-    { label: '48', value: '48' },
-    { label: '64', value: '64' },
-    { label: '96', value: '96' }
+    { label: '-', value: '-', description: '' },
+    { label: '1', value: '1', description: '6 GB RAM' },
+    { label: '2', value: '2', description: '12 GB RAM' },
+    { label: '4', value: '4', description: '24 GB RAM' },
+    { label: '8', value: '8', description: '48 GB RAM' },
+    { label: '16', value: '16', description: '96 GB RAM' },
+    { label: '32', value: '32', description: '192 GB RAM' },
+    { label: '48', value: '48', description: '288 GB RAM' },
+    { label: '64', value: '64', description: '384 GB RAM' },
+    { label: '80', value: '80', description: '480 GB RAM' },
+    { label: '96', value: '96', description: '576 GB RAM' }
   ];
 
   const handleCreate = () => {
@@ -88,13 +91,13 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
         }
       >
         <SpaceBetween size="l">
-          <Container>
-            <ExpandableSection
-              headerText="Organize collections and manage capacity"
-              defaultExpanded={true}
-            >
-              <SpaceBetween size="m">
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+          <ExpandableSection
+            headerText="Organize collections and manage capacity"
+            defaultExpanded={true}
+            variant="container"
+          >
+            <SpaceBetween size="m">
+              <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
                   <div style={{ flex: '0 0 250px' }}>
                     <img 
                       src="/Illustration.svg"
@@ -119,8 +122,7 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                   </div>
                 </div>
               </SpaceBetween>
-            </ExpandableSection>
-          </Container>
+          </ExpandableSection>
 
           <Container header={<Header variant="h2">Collection group details</Header>}>
             <SpaceBetween size="m">
@@ -128,30 +130,36 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                 Once set, the Collection group name and deployment type cannot be changed.
               </Alert>
 
-              <FormField
-                label="Collection group name"
-                description="Enter collection group name (Min: 3-32 alphanumeric characters (a-z, 0-9), hyphens (-), numbers (0-9), and the hyphen (-))"
-              >
-                <Input
-                  value={groupName}
-                  onChange={({ detail }) => setGroupName(detail.value)}
-                  placeholder="Enter collection group name"
-                />
-              </FormField>
+              <ColumnLayout columns={2}>
+                <FormField
+                  label="Collection group name"
+                  constraintText="Must start with a lowercase letter. Can only contain between 3 and 32 lowercase letters a-z, numbers 0-9, and the hyphen (-)."
+                >
+                  <Input
+                    value={groupName}
+                    onChange={({ detail }) => setGroupName(detail.value)}
+                    placeholder="Enter collection group name"
+                  />
+                </FormField>
+                <div></div>
+              </ColumnLayout>
 
-              <FormField
-                label="Serverless version"
-                description="Select the serverless version for your collection group."
-              >
-                <Select
-                  selectedOption={serverlessVersion}
-                  onChange={({ detail }) => setServerlessVersion(detail.selectedOption)}
-                  options={[
-                    { label: 'Serverless V1', value: 'v1' },
-                    { label: 'Serverless V2', value: 'v2' }
-                  ]}
-                />
-              </FormField>
+              <ColumnLayout columns={2}>
+                <FormField
+                  label="Serverless version"
+                  description="Select the serverless version for your collection group."
+                >
+                  <Select
+                    selectedOption={serverlessVersion}
+                    onChange={({ detail }) => setServerlessVersion(detail.selectedOption)}
+                    options={[
+                      { label: 'Serverless V1', value: 'v1' },
+                      { label: 'Serverless V2', value: 'v2' }
+                    ]}
+                  />
+                </FormField>
+                <div></div>
+              </ColumnLayout>
 
               {serverlessVersion.value === 'v1' && (
                 <FormField
@@ -206,37 +214,47 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                 </SpaceBetween>
               </Alert>
 
-              <FormField label="Minimum indexing capacity (OCUs)">
-                <Select
-                  selectedOption={minIndexingCapacity}
-                  onChange={({ detail }) => setMinIndexingCapacity(detail.selectedOption)}
-                  options={capacityOptions}
-                />
-              </FormField>
+              <ColumnLayout columns={2}>
+                <FormField label="Minimum indexing capacity (OCUs)">
+                  <Select
+                    selectedOption={minIndexingCapacity}
+                    onChange={({ detail }) => setMinIndexingCapacity(detail.selectedOption)}
+                    options={capacityOptions}
+                    filteringType="auto"
+                    filteringPlaceholder="Enter a number"
+                  />
+                </FormField>
+                <FormField label="Maximum indexing capacity (OCUs)">
+                  <Select
+                    selectedOption={maxIndexingCapacity}
+                    onChange={({ detail }) => setMaxIndexingCapacity(detail.selectedOption)}
+                    options={capacityOptions}
+                    filteringType="auto"
+                    filteringPlaceholder="Enter a number"
+                  />
+                </FormField>
+              </ColumnLayout>
 
-              <FormField label="Maximum indexing capacity (OCUs)">
-                <Select
-                  selectedOption={maxIndexingCapacity}
-                  onChange={({ detail }) => setMaxIndexingCapacity(detail.selectedOption)}
-                  options={capacityOptions}
-                />
-              </FormField>
-
-              <FormField label="Minimum Search capacity (OCUs)">
-                <Select
-                  selectedOption={minSearchCapacity}
-                  onChange={({ detail }) => setMinSearchCapacity(detail.selectedOption)}
-                  options={capacityOptions}
-                />
-              </FormField>
-
-              <FormField label="Maximum Search capacity (OCUs)">
-                <Select
-                  selectedOption={maxSearchCapacity}
-                  onChange={({ detail }) => setMaxSearchCapacity(detail.selectedOption)}
-                  options={capacityOptions}
-                />
-              </FormField>
+              <ColumnLayout columns={2}>
+                <FormField label="Minimum Search capacity (OCUs)">
+                  <Select
+                    selectedOption={minSearchCapacity}
+                    onChange={({ detail }) => setMinSearchCapacity(detail.selectedOption)}
+                    options={capacityOptions}
+                    filteringType="auto"
+                    filteringPlaceholder="Enter a number"
+                  />
+                </FormField>
+                <FormField label="Maximum Search capacity (OCUs)">
+                  <Select
+                    selectedOption={maxSearchCapacity}
+                    onChange={({ detail }) => setMaxSearchCapacity(detail.selectedOption)}
+                    options={capacityOptions}
+                    filteringType="auto"
+                    filteringPlaceholder="Enter a number"
+                  />
+                </FormField>
+              </ColumnLayout>
             </SpaceBetween>
           </Container>
 
