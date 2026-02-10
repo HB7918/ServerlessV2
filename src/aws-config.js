@@ -1,19 +1,12 @@
 import { Amplify } from 'aws-amplify';
 
-// TODO: Replace with your AWS Amplify configuration
-// Get this after running: amplify init && amplify add api
 const amplifyConfig = {
-  Auth: {
-    region: 'us-east-1', // Your AWS region
-    userPoolId: 'YOUR_USER_POOL_ID',
-    userPoolWebClientId: 'YOUR_USER_POOL_WEB_CLIENT_ID',
-  },
   API: {
     GraphQL: {
-      endpoint: 'YOUR_APPSYNC_ENDPOINT',
+      endpoint: 'https://x2aoavmtzvbe7oagrpsesclsge.appsync-api.us-east-1.amazonaws.com/graphql',
       region: 'us-east-1',
       defaultAuthMode: 'apiKey',
-      apiKey: 'YOUR_API_KEY'
+      apiKey: 'da2-tjsipkh7ovcurc2ox4ar43ysr4'
     }
   }
 };
