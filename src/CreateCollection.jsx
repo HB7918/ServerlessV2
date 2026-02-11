@@ -721,7 +721,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
           </div>
 
           <ExpandableSection
-            headerText="Tags - optional"
+            headerText={<>Tags - <span style={{ fontStyle: 'italic', fontWeight: 'normal' }}>optional</span></>}
             defaultExpanded={false}
             variant="container"
           >
