@@ -39,7 +39,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [customizeSettings, setCustomizeSettings] = useState(false);
   const [vpcInputValue, setVpcInputValue] = useState('');
   const [serviceInputValue, setServiceInputValue] = useState('');
-  const [creationMethod, setCreationMethod] = useState('standard-create');
+  const [creationMethod, setCreationMethod] = useState('easy-create');
   
   // Collection group settings
   const [groupSelection, setGroupSelection] = useState('create-new');
