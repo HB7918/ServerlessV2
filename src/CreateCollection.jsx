@@ -20,7 +20,9 @@ import {
   TokenGroup,
   Alert,
   StatusIndicator,
-  Icon
+  Icon,
+  Textarea,
+  ButtonDropdown
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -82,8 +84,28 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     appSelection: 'create-new',
     workspaceSelection: 'create-new',
     selectedApp: null,
-    selectedWorkspace: null
+    selectedWorkspace: null,
+    createNewApp: true
   });
+
+  // Data access policy settings
+  const [dataAccessSettings, setDataAccessSettings] = useState({
+    policyOption: 'create-new',
+    policyName: 'easy-weffsc',
+    description: '',
+    definitionMethod: 'visual',
+    selectedExistingPolicy: null,
+    ruleName: 'Rule 1',
+    aliasPermissions: { create: false, describe: true, update: false, delete: false },
+    indexPermissions: { create: false, describe: false, update: false, delete: false, read: false, write: false },
+    modelPermissions: { create: false, describe: false, update: false, delete: false, execute: false }
+  });
+
+  const existingPolicies = [
+    { label: 'data-access-policy-prod', value: 'data-access-policy-prod' },
+    { label: 'data-access-policy-dev', value: 'data-access-policy-dev' },
+    { label: 'data-access-policy-staging', value: 'data-access-policy-staging' }
+  ];
 
   const capacityOptions = [
     { label: '-', value: '-', description: '' },
@@ -158,7 +180,11 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     { configuration: 'Workspace setting', value: 'Create new workspace', editable: 'Yes', indent: true },
     { configuration: 'Workspace name', value: easyCreateWorkspaceName, editable: 'No', indent: true, isWorkspaceName: true },
     { configuration: 'Encryption key', value: 'AWS Owned', editable: 'No', isSection: true },
-    { configuration: 'Network access', value: 'Public', editable: 'Yes', isSection: true, hasBottomBorder: true }
+    { configuration: 'Network access', value: 'Public', editable: 'Yes', isSection: true },
+    { configuration: 'Data access', value: 'New policy', editable: 'Yes', isSection: true, isDataAccess: true },
+    { configuration: 'Principals', value: 'arn:aws:iam::478031150999:role/Admin', editable: 'Yes', indent: true },
+    { configuration: 'Policy name', value: 'easy-weffsc', editable: 'Yes', indent: true },
+    { configuration: 'Permissions', value: ['aoss:CreateCollectionItems', 'aoss:DeleteCollectionItems', 'aoss:UpdateCollectionItems', 'aoss:DescribeCollectionItems', 'aoss:CreateIndex', 'aoss:DeleteIndex', 'aoss:UpdateIndex', 'aoss:DescribeIndex', 'aoss:ReadDocument', 'aoss:WriteDocument', 'aoss:DescribeMLResource', 'aoss:CreateMLResource', 'aoss:UpdateMLResource', 'aoss:DeleteMLResource', 'aoss:ExecuteMLResource'], editable: 'Yes', indent: true, isPermissions: true }
   ];
 
   const resetGroupSettings = () => {
@@ -315,6 +341,8 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
               >
                 <div 
                   onMouseLeave={() => setHoveredRow(null)}
+                  style={{ '--table-cell-vertical-align': 'top' }}
+                  className="easy-create-table"
                 >
                 <Table
                   columnDefinitions={[
@@ -326,13 +354,14 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                         return (
                           <div 
                             onMouseEnter={() => setHoveredRow(item.configuration)}
-                            style={{ cursor: 'default', padding: '4px 0' }}
+                            style={{ cursor: 'default', padding: '4px 0', verticalAlign: 'top' }}
                           >
                             {item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{content}</div> : content}
                           </div>
                         );
                       },
-                      width: 300
+                      width: 300,
+                      verticalAlign: 'top'
                     },
                     {
                       id: 'value',
@@ -553,6 +582,16 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                             </div>
                           );
                         }
+                        // Permissions row - show each permission on its own line
+                        if (item.isPermissions) {
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              {item.value.map((permission, idx) => (
+                                <div key={idx}>{permission}</div>
+                              ))}
+                            </div>
+                          );
+                        }
                         // Non-editable items - show lock icon on hover
                         if (item.hasBottomBorder) {
                           return (
@@ -593,6 +632,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                   items={defaultSettings}
                   variant="embedded"
                   stripedRows={false}
+                  contentDensity="compact"
                 />
                 </div>
               </Container>
@@ -749,88 +789,99 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
               }
             >
               <SpaceBetween size="m">
-                <Box>
-                  <Box variant="awsui-key-label" margin={{ bottom: 'xxs' }}>OpenSearch application selection</Box>
-                  <Tiles
-                    columns={2}
-                    items={[
-                      {
-                        label: 'Select existing OpenSearch application',
-                        value: 'select-existing'
-                      },
-                      {
-                        label: 'Create new OpenSearch application',
-                        value: 'create-new'
-                      }
-                    ]}
-                    value={appSettings.appSelection}
-                    onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
-                  />
-                </Box>
-                
-                <ColumnLayout columns={2}>
-                  <FormField label="OpenSearch application name">
-                    {appSettings.appSelection === 'select-existing' ? (
-                      <Select
-                        selectedOption={appSettings.selectedApp}
-                        onChange={({ detail }) => setAppSettings({ ...appSettings, selectedApp: detail.selectedOption, applicationName: detail.selectedOption.value })}
-                        options={[
-                          { label: 'opensearchui-1769533298515', value: 'opensearchui-1769533298515' },
-                          { label: 'opensearchui-1769533298516', value: 'opensearchui-1769533298516' }
-                        ]}
-                        placeholder="Select an OpenSearch application"
-                      />
-                    ) : (
-                      <Input
-                        value={appSettings.applicationName}
-                        onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
-                      />
-                    )}
-                  </FormField>
-                  <div></div>
-                </ColumnLayout>
+                <Checkbox
+                  checked={appSettings.createNewApp}
+                  onChange={({ detail }) => setAppSettings({ ...appSettings, createNewApp: detail.checked })}
+                >
+                  Enable OpenSearch application
+                </Checkbox>
 
-                <Box>
-                  <Box variant="awsui-key-label" margin={{ bottom: 'xxs' }}>Workspace selection</Box>
-                  <Tiles
-                    columns={2}
-                    items={[
-                      {
-                        label: 'Select existing workspace',
-                        value: 'select-existing',
-                        disabled: appSettings.appSelection === 'create-new'
-                      },
-                      {
-                        label: 'Create new workspace',
-                        value: 'create-new'
-                      }
-                    ]}
-                    value={appSettings.workspaceSelection}
-                    onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
-                  />
-                </Box>
-                
-                <ColumnLayout columns={2}>
-                  <FormField label="Workspace">
-                    {appSettings.workspaceSelection === 'select-existing' ? (
-                      <Select
-                        selectedOption={appSettings.selectedWorkspace}
-                        onChange={({ detail }) => setAppSettings({ ...appSettings, selectedWorkspace: detail.selectedOption, workspace: detail.selectedOption.value })}
-                        options={[
-                          { label: 'workspace-1769533298515', value: 'workspace-1769533298515' },
-                          { label: 'workspace-1769533298516', value: 'workspace-1769533298516' }
+                {appSettings.createNewApp && (
+                  <>
+                    <Box>
+                      <Box variant="awsui-key-label" margin={{ bottom: 'xxs' }}>OpenSearch application selection</Box>
+                      <Tiles
+                        columns={2}
+                        items={[
+                          {
+                            label: 'Select existing OpenSearch application',
+                            value: 'select-existing'
+                          },
+                          {
+                            label: 'Create new OpenSearch application',
+                            value: 'create-new'
+                          }
                         ]}
-                        placeholder="Select a workspace"
+                        value={appSettings.appSelection}
+                        onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
                       />
-                    ) : (
-                      <Input
-                        value={appSettings.workspace}
-                        onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
+                    </Box>
+                    
+                    <ColumnLayout columns={2}>
+                      <FormField label="OpenSearch application name">
+                        {appSettings.appSelection === 'select-existing' ? (
+                          <Select
+                            selectedOption={appSettings.selectedApp}
+                            onChange={({ detail }) => setAppSettings({ ...appSettings, selectedApp: detail.selectedOption, applicationName: detail.selectedOption.value })}
+                            options={[
+                              { label: 'opensearchui-1769533298515', value: 'opensearchui-1769533298515' },
+                              { label: 'opensearchui-1769533298516', value: 'opensearchui-1769533298516' }
+                            ]}
+                            placeholder="Select an OpenSearch application"
+                          />
+                        ) : (
+                          <Input
+                            value={appSettings.applicationName}
+                            onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
+                          />
+                        )}
+                      </FormField>
+                      <div></div>
+                    </ColumnLayout>
+
+                    <Box>
+                      <Box variant="awsui-key-label" margin={{ bottom: 'xxs' }}>Workspace selection</Box>
+                      <Tiles
+                        columns={2}
+                        items={[
+                          {
+                            label: 'Select existing workspace',
+                            value: 'select-existing',
+                            disabled: appSettings.appSelection === 'create-new'
+                          },
+                          {
+                            label: 'Create new workspace',
+                            value: 'create-new'
+                          }
+                        ]}
+                        value={appSettings.workspaceSelection}
+                        onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
                       />
-                    )}
-                  </FormField>
-                  <div></div>
-                </ColumnLayout>
+                    </Box>
+                
+                    <ColumnLayout columns={2}>
+                      <FormField label="Workspace">
+                        {appSettings.workspaceSelection === 'select-existing' ? (
+                          <Select
+                            selectedOption={appSettings.selectedWorkspace}
+                            onChange={({ detail }) => setAppSettings({ ...appSettings, selectedWorkspace: detail.selectedOption, workspace: detail.selectedOption.value })}
+                            options={[
+                              { label: 'workspace-1769533298515', value: 'workspace-1769533298515' },
+                              { label: 'workspace-1769533298516', value: 'workspace-1769533298516' }
+                            ]}
+                            placeholder="Select a workspace"
+                          />
+                        ) : (
+                          <Input
+                            value={appSettings.workspace}
+                            onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
+                          />
+                        )}
+                      </FormField>
+                      <div></div>
+                    </ColumnLayout>
+                  </>
+                )}
               </SpaceBetween>
             </Container>
             <Container
@@ -1020,6 +1071,169 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                     </SpaceBetween>
                   </Box>
                 )}
+              </SpaceBetween>
+            </Container>
+            <Container
+              variant="stacked"
+              header={
+                <Header 
+                  variant="h2"
+                  description={<>Data access policies define which principals (IAM users, roles, or SAML identities) can access the data in your collections and indexes. You can create a new policy or select an existing one. <Link external>Learn more</Link></>}
+                >
+                  Data access policy settings
+                </Header>
+              }
+            >
+              <SpaceBetween size="l">
+                <FormField label="Choose an option for the rules that you want to define">
+                  <RadioGroup
+                    items={[
+                      { value: 'create-new', label: 'Create as a new data access policy' },
+                      { value: 'add-existing', label: 'Add to an existing data access policy' }
+                    ]}
+                    value={dataAccessSettings.policyOption}
+                    onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, policyOption: detail.value })}
+                  />
+                </FormField>
+
+                {dataAccessSettings.policyOption === 'add-existing' && (
+                  <FormField label="Select existing policy">
+                    <div style={{ width: '50%' }}>
+                      <Select
+                        selectedOption={dataAccessSettings.selectedExistingPolicy}
+                        onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, selectedExistingPolicy: detail.selectedOption })}
+                        options={existingPolicies}
+                        placeholder="Select a data access policy"
+                      />
+                    </div>
+                  </FormField>
+                )}
+
+                {dataAccessSettings.policyOption === 'create-new' && (
+                  <>
+                    <FormField label="Access policy name">
+                      <Input
+                        placeholder="Enter policy name"
+                        value={dataAccessSettings.policyName}
+                        onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, policyName: detail.value })}
+                      />
+                    </FormField>
+
+                    <FormField label={<>Description - <span style={{ fontStyle: 'italic', fontWeight: 'normal' }}>optional</span></>}>
+                      <Textarea
+                        placeholder="Enter description"
+                        value={dataAccessSettings.description}
+                        onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, description: detail.value })}
+                        rows={3}
+                      />
+                    </FormField>
+                  </>
+                )}
+
+                <FormField label="Select policy definition method">
+                  <RadioGroup
+                    items={[
+                      { value: 'visual', label: 'Visual editor' },
+                      { value: 'json', label: 'JSON' }
+                    ]}
+                    value={dataAccessSettings.definitionMethod}
+                    onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, definitionMethod: detail.value })}
+                  />
+                </FormField>
+
+                <ExpandableSection
+                  headerText="Rule 1"
+                  headerDescription="Select the principal(s) first, and then identify the resources and permissions that the principal(s) can use."
+                  defaultExpanded={true}
+                  headerActions={<Button disabled onClick={(e) => { e.stopPropagation(); }}>Remove</Button>}
+                >
+                  <SpaceBetween size="l">
+                    <FormField 
+                      label="Rule name"
+                      constraintText="Limit around 30 characters long."
+                    >
+                      <div style={{ width: '50%' }}>
+                        <Input
+                          value={dataAccessSettings.ruleName}
+                          onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, ruleName: detail.value })}
+                        />
+                      </div>
+                    </FormField>
+
+                    <div>
+                      <SpaceBetween size="m">
+                        <div>
+                          <Box variant="h4">Select principals</Box>
+                          <Box color="text-body-secondary">
+                            Select either an IAM user that you create in AWS, or a SAML user who's authorized to use applications within AWS IAM Identity Center user portal.
+                          </Box>
+                        </div>
+                        <ButtonDropdown
+                          items={[
+                            { id: 'iam-users', text: 'IAM users and roles' },
+                            { id: 'saml', text: 'SAML users and groups' }
+                          ]}
+                          variant="normal"
+                        >
+                          Add principals
+                        </ButtonDropdown>
+
+                        <div>
+                          <Box variant="h4">Grant permissions</Box>
+                          <Box color="text-body-secondary">
+                            Specify the types of permissions to grant for aliases, templates, and indexes in the selected collections.
+                          </Box>
+                        </div>
+                        
+                        <SpaceBetween size="xs">
+                          <SpaceBetween direction="horizontal" size="xs">
+                            <Box fontWeight="bold">Alias and templates permissions</Box>
+                            <Link onFollow={() => setDataAccessSettings({ ...dataAccessSettings, aliasPermissions: { create: true, describe: true, update: true, delete: true } })}>Select all</Link>
+                          </SpaceBetween>
+                          <SpaceBetween direction="horizontal" size="l">
+                            <Checkbox checked={dataAccessSettings.aliasPermissions.create} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, aliasPermissions: { ...dataAccessSettings.aliasPermissions, create: detail.checked } })}>Create</Checkbox>
+                            <Checkbox checked={dataAccessSettings.aliasPermissions.describe} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, aliasPermissions: { ...dataAccessSettings.aliasPermissions, describe: detail.checked } })}>Describe</Checkbox>
+                            <Checkbox checked={dataAccessSettings.aliasPermissions.update} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, aliasPermissions: { ...dataAccessSettings.aliasPermissions, update: detail.checked } })}>Update</Checkbox>
+                            <Checkbox checked={dataAccessSettings.aliasPermissions.delete} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, aliasPermissions: { ...dataAccessSettings.aliasPermissions, delete: detail.checked } })}>Delete</Checkbox>
+                          </SpaceBetween>
+                        </SpaceBetween>
+
+                        <SpaceBetween size="xs">
+                          <SpaceBetween direction="horizontal" size="xs">
+                            <Box fontWeight="bold">Index permissions</Box>
+                            <Link onFollow={() => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { create: true, describe: true, update: true, delete: true, read: true, write: true } })}>Select all</Link>
+                          </SpaceBetween>
+                          <SpaceBetween direction="horizontal" size="l">
+                            <Checkbox checked={dataAccessSettings.indexPermissions.create} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { ...dataAccessSettings.indexPermissions, create: detail.checked } })}>Create</Checkbox>
+                            <Checkbox checked={dataAccessSettings.indexPermissions.describe} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { ...dataAccessSettings.indexPermissions, describe: detail.checked } })}>Describe</Checkbox>
+                            <Checkbox checked={dataAccessSettings.indexPermissions.update} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { ...dataAccessSettings.indexPermissions, update: detail.checked } })}>Update</Checkbox>
+                            <Checkbox checked={dataAccessSettings.indexPermissions.delete} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { ...dataAccessSettings.indexPermissions, delete: detail.checked } })}>Delete</Checkbox>
+                            <Checkbox checked={dataAccessSettings.indexPermissions.read} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { ...dataAccessSettings.indexPermissions, read: detail.checked } })}>Read documents</Checkbox>
+                            <Checkbox checked={dataAccessSettings.indexPermissions.write} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, indexPermissions: { ...dataAccessSettings.indexPermissions, write: detail.checked } })}>Write or update documents</Checkbox>
+                          </SpaceBetween>
+                        </SpaceBetween>
+
+                        <SpaceBetween size="xs">
+                          <SpaceBetween direction="horizontal" size="xs">
+                            <Box fontWeight="bold">Model permissions</Box>
+                            <Link onFollow={() => setDataAccessSettings({ ...dataAccessSettings, modelPermissions: { create: true, describe: true, update: true, delete: true, execute: true } })}>Select all</Link>
+                          </SpaceBetween>
+                          <SpaceBetween direction="horizontal" size="l">
+                            <Checkbox checked={dataAccessSettings.modelPermissions.create} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, modelPermissions: { ...dataAccessSettings.modelPermissions, create: detail.checked } })}>Create</Checkbox>
+                            <Checkbox checked={dataAccessSettings.modelPermissions.describe} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, modelPermissions: { ...dataAccessSettings.modelPermissions, describe: detail.checked } })}>Describe</Checkbox>
+                            <Checkbox checked={dataAccessSettings.modelPermissions.update} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, modelPermissions: { ...dataAccessSettings.modelPermissions, update: detail.checked } })}>Update</Checkbox>
+                            <Checkbox checked={dataAccessSettings.modelPermissions.delete} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, modelPermissions: { ...dataAccessSettings.modelPermissions, delete: detail.checked } })}>Delete</Checkbox>
+                            <Checkbox checked={dataAccessSettings.modelPermissions.execute} onChange={({ detail }) => setDataAccessSettings({ ...dataAccessSettings, modelPermissions: { ...dataAccessSettings.modelPermissions, execute: detail.checked } })}>Execute</Checkbox>
+                          </SpaceBetween>
+                        </SpaceBetween>
+                        
+                        <div style={{ borderBottom: '1px solid #e9ebed', marginTop: '8px' }}></div>
+                        
+                        <Button>Add another rule</Button>
+                      </SpaceBetween>
+                    </div>
+                  </SpaceBetween>
+                </ExpandableSection>
               </SpaceBetween>
             </Container>
             </>

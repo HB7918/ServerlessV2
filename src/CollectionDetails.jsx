@@ -202,6 +202,23 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                 </div>
               </ColumnLayout>
             </Container>
+
+            <Container 
+              header={
+                <Header 
+                  variant="h2"
+                  description="Data access policies apply to collections and indexes, and control a user's access to the data in these resource."
+                  actions={<Button>Manage data access</Button>}
+                >
+                  Data access
+                </Header>
+              }
+            >
+              <div>
+                <Box variant="awsui-key-label">Associated policy</Box>
+                <Link external>easy-aws62718</Link>
+              </div>
+            </Container>
           </SpaceBetween>
         )}
 

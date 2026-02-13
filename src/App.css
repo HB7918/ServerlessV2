@@ -17,3 +17,8 @@ button[class*="awsui_button"][class*="awsui_variant-primary"][class*="awsui_disa
   border-color: #d5dbdb !important;
   color: #879596 !important;
 }
+
+/* Easy create table - align cells to top */
+.easy-create-table td {
+  vertical-align: top !important;
+}
