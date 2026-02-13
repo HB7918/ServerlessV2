@@ -13,8 +13,7 @@ import {
   Link,
   Tiles,
   RadioGroup,
-  Checkbox,
-  Flashbar
+  Checkbox
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -209,19 +208,6 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
     securityMode: 'easy'
   });
 
-  const [flashbarItems] = useState([
-    {
-      type: 'info',
-      dismissible: false,
-      content: (
-        <>
-          You're creating a Serverless v1 collection. Serverless v2 offers instant auto-scaling and scale-to-zero for cost optimization, up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <span style={{ textDecoration: 'underline' }}><Link href="#" external>Learn more</Link></span>. Or you can switch to <span style={{ textDecoration: 'underline' }}><Link onFollow={() => onNavigateToV2()}>Serverless v2 collection creation</Link></span>.
-        </>
-      ),
-      id: 'v1-experience-banner'
-    }
-  ]);
-
   const handleNavigate = ({ detail }) => {
     setActiveStepIndex(detail.requestedStepIndex);
   };
@@ -266,7 +252,9 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
       }}
     >
       <SpaceBetween size="l">
-        <Flashbar items={flashbarItems} />
+        <Alert type="info">
+          You're creating a Serverless v1 collection. Serverless v2 offers instant auto-scaling and scale-to-zero for cost optimization, up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <Link href="#" external>Learn more</Link>. Or you can switch to <Link onFollow={() => onNavigateToV2()}>Serverless v2 collection creation</Link>.
+        </Alert>
         <Wizard
           steps={steps}
           activeStepIndex={activeStepIndex}

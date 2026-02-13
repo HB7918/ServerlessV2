@@ -66,6 +66,22 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
               <div style={{ display: 'flex' }}>
                 <div style={{ flex: 1, paddingRight: '24px', display: 'flex', gap: '16px' }}>
                   <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                    <img src="/Illustration.svg" alt="Index your data" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <SpaceBetween size="s">
+                    <Box variant="awsui-key-label">Index your data</Box>
+                    <Box variant="p">
+                      • Start indexing your data<br />
+                      • An index consists of embeddings that describes the data
+                    </Box>
+                    <Button onClick={onCreateIndex}>
+                      Create index
+                    </Button>
+                  </SpaceBetween>
+                </div>
+                <div style={{ width: '1px', backgroundColor: '#e9ebed', margin: '0 24px' }} />
+                <div style={{ flex: 1, paddingLeft: '24px', display: 'flex', gap: '16px' }}>
+                  <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                     <img src="/Illustration.svg" alt="OpenSearch Application" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <SpaceBetween size="s">
@@ -80,22 +96,6 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                       onClick={() => window.open('https://future.playground.opensearch.org/app/login?', '_blank')}
                     >
                       OpenSearch application
-                    </Button>
-                  </SpaceBetween>
-                </div>
-                <div style={{ width: '1px', backgroundColor: '#e9ebed', margin: '0 24px' }} />
-                <div style={{ flex: 1, paddingLeft: '24px', display: 'flex', gap: '16px' }}>
-                  <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                    <img src="/Illustration.svg" alt="Index your data" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <SpaceBetween size="s">
-                    <Box variant="awsui-key-label">Index your data</Box>
-                    <Box variant="p">
-                      • Start indexing your data<br />
-                      • An index consists of embeddings that describes the data
-                    </Box>
-                    <Button onClick={onCreateIndex}>
-                      Create index
                     </Button>
                   </SpaceBetween>
                 </div>

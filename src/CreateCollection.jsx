@@ -12,7 +12,6 @@ import {
   ContentLayout,
   ExpandableSection,
   Table,
-  Flashbar,
   Select,
   RadioGroup,
   Checkbox,
@@ -20,7 +19,8 @@ import {
   Autosuggest,
   TokenGroup,
   Alert,
-  StatusIndicator
+  StatusIndicator,
+  Icon
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -42,6 +42,21 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [vpcInputValue, setVpcInputValue] = useState('');
   const [serviceInputValue, setServiceInputValue] = useState('');
   const [creationMethod, setCreationMethod] = useState('easy-create');
+  const [easyCreateGroupName, setEasyCreateGroupName] = useState('serverless_v2_27121');
+  const [isEditingGroupName, setIsEditingGroupName] = useState(false);
+  const [easyCreateAppName, setEasyCreateAppName] = useState('opensearchui-1769533298515');
+  const [isEditingAppName, setIsEditingAppName] = useState(false);
+  const [easyCreateWorkspaceName, setEasyCreateWorkspaceName] = useState('workspace-1769533298515');
+  const [isEditingWorkspaceName, setIsEditingWorkspaceName] = useState(false);
+  const [easyMinIndexing, setEasyMinIndexing] = useState({ label: '0', value: '0', description: '' });
+  const [isEditingMinIndexing, setIsEditingMinIndexing] = useState(false);
+  const [easyMaxIndexing, setEasyMaxIndexing] = useState({ label: '96', value: '96', description: '576 GB RAM' });
+  const [isEditingMaxIndexing, setIsEditingMaxIndexing] = useState(false);
+  const [easyMinSearch, setEasyMinSearch] = useState({ label: '0', value: '0', description: '' });
+  const [isEditingMinSearch, setIsEditingMinSearch] = useState(false);
+  const [easyMaxSearch, setEasyMaxSearch] = useState({ label: '96', value: '96', description: '576 GB RAM' });
+  const [isEditingMaxSearch, setIsEditingMaxSearch] = useState(false);
+  const [hoveredRow, setHoveredRow] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [creationSteps, setCreationSteps] = useState([
     { label: 'Creating collection group', status: 'in-progress' },
@@ -69,19 +84,6 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     selectedApp: null,
     selectedWorkspace: null
   });
-
-  const [flashbarItems] = useState([
-    {
-      type: 'info',
-      dismissible: false,
-      content: (
-        <>
-          You're creating a Serverless v2 collection with instant auto-scaling and scale-to-zero for cost optimization. Serverless v2 offers up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <span style={{ textDecoration: 'underline' }}><Link href="#" external>Learn more</Link></span>. Or you can switch to <span style={{ textDecoration: 'underline' }}><Link onFollow={() => onNavigateToV1()}>Serverless v1 collection creation</Link></span>.
-        </>
-      ),
-      id: 'new-experience-banner'
-    }
-  ]);
 
   const capacityOptions = [
     { label: '-', value: '-', description: '' },
@@ -146,13 +148,15 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
   const defaultSettings = [
     { configuration: 'Collection group settings', value: 'Create new collection group', editable: 'Yes', isSection: true },
-    { configuration: 'Collection group name', value: 'serverless_v2_27121', editable: 'Yes', indent: true },
-    { configuration: 'Min - Max Indexing capacity (OCUs)', value: '0 - 96 OCUs', editable: 'Yes', indent: true },
-    { configuration: 'Min - Max Search capacity (OCUs)', value: '0 - 96 OCUs', editable: 'Yes', indent: true },
+    { configuration: 'Collection group name', value: easyCreateGroupName, editable: 'No', indent: true, isGroupName: true },
+    { configuration: 'Minimum indexing capacity (OCUs)', value: `${easyMinIndexing.value} OCUs${easyMinIndexing.description ? ` (${easyMinIndexing.description})` : ''}`, editable: 'Yes', indent: true, isMinIndexing: true },
+    { configuration: 'Maximum indexing capacity (OCUs)', value: `${easyMaxIndexing.value} OCUs${easyMaxIndexing.description ? ` (${easyMaxIndexing.description})` : ''}`, editable: 'Yes', indent: true, isMaxIndexing: true },
+    { configuration: 'Minimum search capacity (OCUs)', value: `${easyMinSearch.value} OCUs${easyMinSearch.description ? ` (${easyMinSearch.description})` : ''}`, editable: 'Yes', indent: true, isMinSearch: true },
+    { configuration: 'Maximum search capacity (OCUs)', value: `${easyMaxSearch.value} OCUs${easyMaxSearch.description ? ` (${easyMaxSearch.description})` : ''}`, editable: 'Yes', indent: true, isMaxSearch: true },
     { configuration: 'OpenSearch application settings', value: 'Create new application', editable: 'Yes', isSection: true },
-    { configuration: 'OpenSearch application name', value: 'opensearchui-1769533298515', editable: 'Yes', indent: true },
+    { configuration: 'OpenSearch application name', value: easyCreateAppName, editable: 'No', indent: true, isAppName: true },
     { configuration: 'Workspace setting', value: 'Create new workspace', editable: 'Yes', indent: true },
-    { configuration: 'Workspace name', value: 'workspace-1769533298515', editable: 'Yes', indent: true },
+    { configuration: 'Workspace name', value: easyCreateWorkspaceName, editable: 'No', indent: true, isWorkspaceName: true },
     { configuration: 'Encryption key', value: 'AWS Owned', editable: 'No', isSection: true },
     { configuration: 'Network access', value: 'Public', editable: 'Yes', isSection: true, hasBottomBorder: true }
   ];
@@ -198,7 +202,9 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
       <ContentLayout
         header={
           <SpaceBetween size="s">
-            <Flashbar items={flashbarItems} />
+            <Alert type="info">
+              You're creating a Serverless v2 collection with instant auto-scaling and scale-to-zero for cost optimization. Serverless v2 offers up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <Link href="#" external>Learn more</Link>. Or you can switch to <Link onFollow={() => onNavigateToV1()}>Serverless v1 collection creation</Link>.
+            </Alert>
             <Header
               variant="h1"
               description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
@@ -307,6 +313,9 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                 variant="stacked"
                 header={<Header variant="h2">Default settings for the collection</Header>}
               >
+                <div 
+                  onMouseLeave={() => setHoveredRow(null)}
+                >
                 <Table
                   columnDefinitions={[
                     {
@@ -314,20 +323,270 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                       header: 'Configuration',
                       cell: item => {
                         const content = item.isSection ? <Box fontWeight="bold">{item.configuration}</Box> : item.indent ? <Box margin={{ left: 'l' }}>{item.configuration}</Box> : item.configuration;
-                        return item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{content}</div> : content;
+                        return (
+                          <div 
+                            onMouseEnter={() => setHoveredRow(item.configuration)}
+                            style={{ cursor: 'default', padding: '4px 0' }}
+                          >
+                            {item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{content}</div> : content}
+                          </div>
+                        );
                       },
                       width: 300
                     },
                     {
                       id: 'value',
-                      header: 'Value',
-                      cell: item => item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{item.value}</div> : item.value,
+                      header: <SpaceBetween direction="horizontal" size="xs"><span>Value</span><Icon name="edit" size="small" /></SpaceBetween>,
+                      cell: item => {
+                        const isEditable = item.isGroupName || item.isAppName || item.isWorkspaceName || item.isMinIndexing || item.isMaxIndexing || item.isMinSearch || item.isMaxSearch;
+                        const isHovered = hoveredRow === item.configuration;
+                        
+                        if (item.isGroupName) {
+                          if (isEditingGroupName) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <Input
+                                  value={easyCreateGroupName}
+                                  onChange={({ detail }) => setEasyCreateGroupName(detail.value)}
+                                  autoFocus
+                                />
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingGroupName(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyCreateGroupName('serverless_v2_27121');
+                                  setIsEditingGroupName(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingGroupName(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        if (item.isMinIndexing) {
+                          if (isEditingMinIndexing) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <div style={{ width: '200px' }}>
+                                  <Select
+                                    selectedOption={easyMinIndexing}
+                                    onChange={({ detail }) => setEasyMinIndexing(detail.selectedOption)}
+                                    options={capacityOptions}
+                                    triggerVariant="option"
+                                    expandToViewport
+                                  />
+                                </div>
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingMinIndexing(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyMinIndexing({ label: '0', value: '0', description: '' });
+                                  setIsEditingMinIndexing(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingMinIndexing(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        if (item.isMaxIndexing) {
+                          if (isEditingMaxIndexing) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <div style={{ width: '200px' }}>
+                                  <Select
+                                    selectedOption={easyMaxIndexing}
+                                    onChange={({ detail }) => setEasyMaxIndexing(detail.selectedOption)}
+                                    options={capacityOptions}
+                                    triggerVariant="option"
+                                    expandToViewport
+                                  />
+                                </div>
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingMaxIndexing(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyMaxIndexing({ label: '96', value: '96', description: '576 GB RAM' });
+                                  setIsEditingMaxIndexing(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingMaxIndexing(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        if (item.isMinSearch) {
+                          if (isEditingMinSearch) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <div style={{ width: '200px' }}>
+                                  <Select
+                                    selectedOption={easyMinSearch}
+                                    onChange={({ detail }) => setEasyMinSearch(detail.selectedOption)}
+                                    options={capacityOptions}
+                                    triggerVariant="option"
+                                    expandToViewport
+                                  />
+                                </div>
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingMinSearch(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyMinSearch({ label: '0', value: '0', description: '' });
+                                  setIsEditingMinSearch(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingMinSearch(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        if (item.isMaxSearch) {
+                          if (isEditingMaxSearch) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <div style={{ width: '200px' }}>
+                                  <Select
+                                    selectedOption={easyMaxSearch}
+                                    onChange={({ detail }) => setEasyMaxSearch(detail.selectedOption)}
+                                    options={capacityOptions}
+                                    triggerVariant="option"
+                                    expandToViewport
+                                  />
+                                </div>
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingMaxSearch(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyMaxSearch({ label: '96', value: '96', description: '576 GB RAM' });
+                                  setIsEditingMaxSearch(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingMaxSearch(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        if (item.isAppName) {
+                          if (isEditingAppName) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <Input
+                                  value={easyCreateAppName}
+                                  onChange={({ detail }) => setEasyCreateAppName(detail.value)}
+                                  autoFocus
+                                />
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingAppName(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyCreateAppName('opensearchui-1769533298515');
+                                  setIsEditingAppName(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingAppName(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        if (item.isWorkspaceName) {
+                          if (isEditingWorkspaceName) {
+                            return (
+                              <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <SpaceBetween direction="horizontal" size="xs">
+                                <Input
+                                  value={easyCreateWorkspaceName}
+                                  onChange={({ detail }) => setEasyCreateWorkspaceName(detail.value)}
+                                  autoFocus
+                                />
+                                <Button variant="icon" iconName="check" onClick={() => setIsEditingWorkspaceName(false)} />
+                                <Button variant="icon" iconName="close" onClick={() => {
+                                  setEasyCreateWorkspaceName('workspace-1769533298515');
+                                  setIsEditingWorkspaceName(false);
+                                }} />
+                              </SpaceBetween>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ cursor: 'pointer', padding: '4px 0' }}>
+                            <SpaceBetween direction="horizontal" size="xs">
+                              <span>{item.value}</span>
+                              {isHovered && <Button variant="inline-icon" iconName="edit" onClick={() => setIsEditingWorkspaceName(true)} />}
+                            </SpaceBetween>
+                            </div>
+                          );
+                        }
+                        // Non-editable items - show lock icon on hover
+                        if (item.hasBottomBorder) {
+                          return (
+                            <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                              <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>
+                                <SpaceBetween direction="horizontal" size="xs">
+                                  <span>{item.value}</span>
+                                  {isHovered && <span style={{ color: '#5f6b7a' }}><Icon name="lock-private" size="small" /></span>}
+                                </SpaceBetween>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                          <SpaceBetween direction="horizontal" size="xs">
+                            <span>{item.value}</span>
+                            {isHovered && !isEditable && <span style={{ color: '#5f6b7a' }}><Icon name="lock-private" size="small" /></span>}
+                          </SpaceBetween>
+                          </div>
+                        );
+                      },
                       width: 250
                     },
                     {
                       id: 'editable',
                       header: 'Editable after creation',
-                      cell: item => item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{item.editable}</div> : item.editable,
+                      cell: item => {
+                        return (
+                          <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
+                            {item.hasBottomBorder ? <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>{item.editable}</div> : item.editable}
+                          </div>
+                        );
+                      },
                       width: 180
                     }
                   ]}
@@ -335,6 +594,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                   variant="embedded"
                   stripedRows={false}
                 />
+                </div>
               </Container>
             )}
             {creationMethod === 'standard-create' && (
