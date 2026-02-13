@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Box,
   SpaceBetween,
-  Alert,
+  Flashbar,
   Button,
   Container,
   Header,
@@ -82,12 +82,26 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     >
       <ContentLayout
         header={
-          <Header
-            variant="h1"
-            description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
-          >
-            Create collection
-          </Header>
+          <SpaceBetween size="s">
+            <Flashbar items={[
+              {
+                type: 'info',
+                dismissible: false,
+                content: (
+                  <>
+                    You're creating a Serverless v1 collection. Serverless v2 offers instant auto-scaling and scale-to-zero for cost optimization, up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <span style={{ textDecoration: 'underline' }}><Link href="#" external>Learn more</Link></span>. Or you can switch to <span style={{ textDecoration: 'underline' }}><Link onFollow={() => onNavigateToV1()}>Serverless v2 collection creation</Link></span>.
+                  </>
+                ),
+                id: 'v1-experience-banner'
+              }
+            ]} />
+            <Header
+              variant="h1"
+              description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
+            >
+              Create collection
+            </Header>
+          </SpaceBetween>
         }
       >
         <SpaceBetween size="l">
