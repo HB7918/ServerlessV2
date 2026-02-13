@@ -18,7 +18,9 @@ import {
   Checkbox,
   ColumnLayout,
   Autosuggest,
-  TokenGroup
+  TokenGroup,
+  Alert,
+  StatusIndicator
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -40,6 +42,12 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [vpcInputValue, setVpcInputValue] = useState('');
   const [serviceInputValue, setServiceInputValue] = useState('');
   const [creationMethod, setCreationMethod] = useState('easy-create');
+  const [isCreating, setIsCreating] = useState(false);
+  const [creationSteps, setCreationSteps] = useState([
+    { label: 'Creating collection group', status: 'in-progress' },
+    { label: 'Creating OpenSearch application', status: 'pending' },
+    { label: 'Creating collection', status: 'pending' }
+  ]);
   
   // Collection group settings
   const [groupSelection, setGroupSelection] = useState('create-new');
@@ -91,7 +99,43 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
   const handleSubmit = () => {
     console.log('Collection created:', formData);
-    onCollectionCreated(formData.collectionName || 'new-collection');
+    setIsCreating(true);
+    
+    // Scroll to bottom of page to show the alert
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 100);
+    
+    // Step 1: Creating collection group (already in-progress)
+    setTimeout(() => {
+      setCreationSteps([
+        { label: 'Created collection group', status: 'success' },
+        { label: 'Creating OpenSearch application', status: 'in-progress' },
+        { label: 'Creating collection', status: 'pending' }
+      ]);
+    }, 2000);
+    
+    // Step 2: Creating OpenSearch application
+    setTimeout(() => {
+      setCreationSteps([
+        { label: 'Created collection group', status: 'success' },
+        { label: 'Created OpenSearch application', status: 'success' },
+        { label: 'Creating collection', status: 'in-progress' }
+      ]);
+    }, 4000);
+    
+    // Step 3: Creating collection and navigate
+    setTimeout(() => {
+      setCreationSteps([
+        { label: 'Created collection group', status: 'success' },
+        { label: 'Created OpenSearch application', status: 'success' },
+        { label: 'Created collection', status: 'success' }
+      ]);
+      // Navigate after a brief moment to show all success
+      setTimeout(() => {
+        onCollectionCreated(formData.collectionName || 'new-collection');
+      }, 500);
+    }, 6000);
   };
 
   const breadcrumbs = [
@@ -165,6 +209,8 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
         }
       >
         <SpaceBetween size="l">
+          <div style={{ pointerEvents: isCreating ? 'none' : 'auto', opacity: isCreating ? 0.6 : 1 }}>
+          <SpaceBetween size="l">
           <Container header={<Header variant="h2">Collection details</Header>}>
             <SpaceBetween size="l">
               <FormField 
@@ -175,6 +221,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                   placeholder="test"
                   value={formData.collectionName}
                   onChange={({ detail }) => setFormData({ ...formData, collectionName: detail.value })}
+                  disabled={isCreating}
                 />
               </FormField>
 
@@ -729,23 +776,44 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                 You can add tags to describe your collection. A tag consists of a case-sensitive key-value pair. For example, you can define a tag with a key-value pair of Environment Name=Development.
               </Box>
               <Box>No tags associated with this collection</Box>
-              <Button>Add new tag</Button>
+              <Button disabled={isCreating}>Add new tag</Button>
               <Box variant="small" color="text-body-secondary">
                 You can add up to 50 tags.
               </Box>
             </SpaceBetween>
           </ExpandableSection>
+          </SpaceBetween>
+          </div>
+
+          {isCreating && (
+            <Alert
+              type="warning"
+              header="Important: Creating OpenSearch Serverless resources."
+            >
+              <SpaceBetween size="xs">
+                <Box>Navigating away from this page stops the collection setup. The Collection details page appears after setup completes.</Box>
+                {creationSteps.map((step, index) => (
+                  <Box key={index}>
+                    <StatusIndicator type={step.status === 'success' ? 'success' : step.status === 'in-progress' ? 'in-progress' : 'pending'}>
+                      {step.label}{step.status === 'in-progress' ? '...' : ''}
+                    </StatusIndicator>
+                  </Box>
+                ))}
+              </SpaceBetween>
+            </Alert>
+          )}
 
           <Box float="right">
             <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={onCancel}>
+              <Button variant="link" onClick={onCancel} disabled={isCreating}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={handleSubmit}>
-                Create collection
+              <Button variant="primary" onClick={handleSubmit} disabled={isCreating} loading={isCreating}>
+                {isCreating ? 'Creating collection' : 'Create collection'}
               </Button>
             </SpaceBetween>
           </Box>
+          <Box padding={{ bottom: 'xxl' }} />
         </SpaceBetween>
       </ContentLayout>
       <CommentsPanel screenName="Create Collection Draft" />

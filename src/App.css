@@ -3,7 +3,17 @@
   --color-background-button-primary-default: #ff9900 !important;
   --color-background-button-primary-hover: #ec7211 !important;
   --color-background-button-primary-active: #eb5f07 !important;
+  --color-background-button-primary-disabled: #d5dbdb !important;
   --color-border-button-primary-default: #ff9900 !important;
   --color-border-button-primary-hover: #ec7211 !important;
   --color-border-button-primary-active: #eb5f07 !important;
+  --color-border-button-primary-disabled: #d5dbdb !important;
+  --color-text-button-primary-disabled: #879596 !important;
+}
+
+/* Override primary button loading state to show gray disabled appearance */
+button[class*="awsui_button"][class*="awsui_variant-primary"][class*="awsui_disabled"] {
+  background-color: #d5dbdb !important;
+  border-color: #d5dbdb !important;
+  color: #879596 !important;
 }
