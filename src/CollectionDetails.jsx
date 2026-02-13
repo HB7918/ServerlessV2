@@ -13,7 +13,9 @@ import {
   Alert,
   Table,
   TextFilter,
-  Pagination
+  Pagination,
+  Icon,
+  ExpandableSection
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -41,13 +43,6 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
       <ContentLayout
         header={
           <SpaceBetween size="m">
-            <Alert
-              type="info"
-              action={<Button onClick={onCreateIndex}>Create index</Button>}
-            >
-              Start indexing your data. A index consists of embeddings that describes the data.
-            </Alert>
-
             <Header
               variant="h1"
               info={<Link variant="info">Info</Link>}
@@ -62,6 +57,50 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
             >
               {collectionName || 'awd2718'}
             </Header>
+
+            <ExpandableSection
+              headerText="Next steps for your collection"
+              variant="container"
+              defaultExpanded={true}
+            >
+              <div style={{ display: 'flex' }}>
+                <div style={{ flex: 1, paddingRight: '24px', display: 'flex', gap: '16px' }}>
+                  <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                    <img src="/Illustration.svg" alt="OpenSearch Application" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <SpaceBetween size="s">
+                    <Box variant="awsui-key-label">Start using OpenSearch application</Box>
+                    <Box variant="p">
+                      • Create visualizations and dashboards<br />
+                      • Set up workspaces for team collaboration
+                    </Box>
+                    <Button 
+                      iconName="external" 
+                      iconAlign="right"
+                      onClick={() => window.open('https://future.playground.opensearch.org/app/login?', '_blank')}
+                    >
+                      OpenSearch application
+                    </Button>
+                  </SpaceBetween>
+                </div>
+                <div style={{ width: '1px', backgroundColor: '#e9ebed', margin: '0 24px' }} />
+                <div style={{ flex: 1, paddingLeft: '24px', display: 'flex', gap: '16px' }}>
+                  <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                    <img src="/Illustration.svg" alt="Index your data" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <SpaceBetween size="s">
+                    <Box variant="awsui-key-label">Index your data</Box>
+                    <Box variant="p">
+                      • Start indexing your data<br />
+                      • An index consists of embeddings that describes the data
+                    </Box>
+                    <Button onClick={onCreateIndex}>
+                      Create index
+                    </Button>
+                  </SpaceBetween>
+                </div>
+              </div>
+            </ExpandableSection>
 
             <div style={{ marginTop: '-8px' }}>
               <Tabs
@@ -110,23 +149,34 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                 </div>
                 <div>
                   <Box variant="awsui-key-label">Collection group</Box>
-                  <div>group1</div>
+                  <Link>serverless_v2_27121</Link>
+                </div>
+                <div>
+                  <Box variant="awsui-key-label">OpenSearch Application</Box>
+                  <Link>opensearchui-1769533298515</Link>
                 </div>
               </ColumnLayout>
             </Container>
             <Container header={<Header variant="h2">Endpoints</Header>}>
               <ColumnLayout columns={2} variant="text-grid">
                 <div>
-                  <Box variant="awsui-key-label">Collection endpoint</Box>
-                  <Link external>
-                    https://abc123xyz789.us-east-1.aoss.amazonaws.com
-                  </Link>
+                  <Box variant="awsui-key-label">OpenSearch endpoint</Box>
+                  <Box fontWeight="normal">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('https://abc123xyz789.us-east-1.aoss.amazonaws.com')}>
+                        <Icon name="copy" size="small" />
+                      </span>
+                      <span>https://abc123xyz789.us-east-1.aoss.amazonaws.com</span>
+                    </div>
+                  </Box>
                 </div>
                 <div>
-                  <Box variant="awsui-key-label">OpenSearch Dashboards URL</Box>
-                  <Link external>
-                    https://abc123xyz789.us-east-1.aoss.amazonaws.com/_dashboards
-                  </Link>
+                  <Box variant="awsui-key-label">OpenSearch application URL</Box>
+                  <Box fontWeight="normal">
+                    <Link external>
+                      https://abc123xyz789.us-east-1.aoss.amazonaws.com/_dashboards
+                    </Link>
+                  </Box>
                 </div>
               </ColumnLayout>
             </Container>
@@ -149,10 +199,6 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                 <div>
                   <Box variant="awsui-key-label">Access type</Box>
                   <div>Public</div>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">Network policy</Box>
-                  <Link>View policy</Link>
                 </div>
               </ColumnLayout>
             </Container>
