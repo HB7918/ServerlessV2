@@ -62,14 +62,14 @@ function CollectionGroup({ onCreateClick, onNavigate }) {
                 <div style={{ flex: 1 }}>
                   <SpaceBetween size="s">
                     <Box variant="p">
-                      Use collection groups to share the same capacity plan (OCUs) across collections. Grouping collections with the same or different KMS keys to set scaling limits and monitor OCU usage at the group level.
+                      Use collection groups to share the same capacity pool (OCUs) across collections. Grouping collections with the same or different KMS keys to set scaling limits and monitor OCU usage at the group level.
                     </Box>
                     <Box variant="p" fontWeight="bold">
                       When you create a new collection group, you can:
                     </Box>
                     <ul style={{ marginLeft: '20px' }}>
                       <li>Add one or more collections (each collection can only belong to one group).</li>
-                      <li>Set capacity limits to control costs and prevent runaway infrastructure and budgeting.</li>
+                      <li>Set optional min/max OCUs for predictable performance and budgeting.</li>
                       <li>Organize collection by team, workload type or environment.</li>
                     </ul>
                   </SpaceBetween>

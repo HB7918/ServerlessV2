@@ -50,6 +50,19 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
     { label: '96', value: '96', description: '576 GB RAM' }
   ];
 
+  const maxCapacityOptions = [
+    { label: '1', value: '1', description: '6 GB RAM' },
+    { label: '2', value: '2', description: '12 GB RAM' },
+    { label: '4', value: '4', description: '24 GB RAM' },
+    { label: '8', value: '8', description: '48 GB RAM' },
+    { label: '16', value: '16', description: '96 GB RAM' },
+    { label: '32', value: '32', description: '192 GB RAM' },
+    { label: '48', value: '48', description: '288 GB RAM' },
+    { label: '64', value: '64', description: '384 GB RAM' },
+    { label: '80', value: '80', description: '480 GB RAM' },
+    { label: '96', value: '96', description: '576 GB RAM' }
+  ];
+
   const handleCreate = () => {
     if (onGroupCreated) {
       onGroupCreated(groupName);
@@ -220,17 +233,15 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                     selectedOption={minIndexingCapacity}
                     onChange={({ detail }) => setMinIndexingCapacity(detail.selectedOption)}
                     options={capacityOptions}
-                    filteringType="auto"
-                    filteringPlaceholder="Enter a number"
+                    triggerVariant="option"
                   />
                 </FormField>
                 <FormField label="Maximum indexing capacity (OCUs)">
                   <Select
                     selectedOption={maxIndexingCapacity}
                     onChange={({ detail }) => setMaxIndexingCapacity(detail.selectedOption)}
-                    options={capacityOptions}
-                    filteringType="auto"
-                    filteringPlaceholder="Enter a number"
+                    options={maxCapacityOptions}
+                    triggerVariant="option"
                   />
                 </FormField>
               </ColumnLayout>
@@ -241,17 +252,15 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                     selectedOption={minSearchCapacity}
                     onChange={({ detail }) => setMinSearchCapacity(detail.selectedOption)}
                     options={capacityOptions}
-                    filteringType="auto"
-                    filteringPlaceholder="Enter a number"
+                    triggerVariant="option"
                   />
                 </FormField>
                 <FormField label="Maximum Search capacity (OCUs)">
                   <Select
                     selectedOption={maxSearchCapacity}
                     onChange={({ detail }) => setMaxSearchCapacity(detail.selectedOption)}
-                    options={capacityOptions}
-                    filteringType="auto"
-                    filteringPlaceholder="Enter a number"
+                    options={maxCapacityOptions}
+                    triggerVariant="option"
                   />
                 </FormField>
               </ColumnLayout>

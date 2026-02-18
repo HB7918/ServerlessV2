@@ -22,7 +22,8 @@ import {
   StatusIndicator,
   Icon,
   Textarea,
-  ButtonDropdown
+  ButtonDropdown,
+  Popover
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -59,10 +60,10 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [easyMaxSearch, setEasyMaxSearch] = useState({ label: '96', value: '96', description: '576 GB RAM' });
   const [isEditingMaxSearch, setIsEditingMaxSearch] = useState(false);
   const [hoveredRow, setHoveredRow] = useState(null);
+  const [showPermissions, setShowPermissions] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [creationSteps, setCreationSteps] = useState([
     { label: 'Creating collection group', status: 'in-progress' },
-    { label: 'Creating OpenSearch application', status: 'pending' },
     { label: 'Creating collection', status: 'pending' }
   ]);
   
@@ -121,6 +122,19 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     { label: '96', value: '96', description: '576 GB RAM' }
   ];
 
+  const maxCapacityOptions = [
+    { label: '1', value: '1', description: '6 GB RAM' },
+    { label: '2', value: '2', description: '12 GB RAM' },
+    { label: '4', value: '4', description: '24 GB RAM' },
+    { label: '8', value: '8', description: '48 GB RAM' },
+    { label: '16', value: '16', description: '96 GB RAM' },
+    { label: '32', value: '32', description: '192 GB RAM' },
+    { label: '48', value: '48', description: '288 GB RAM' },
+    { label: '64', value: '64', description: '384 GB RAM' },
+    { label: '80', value: '80', description: '480 GB RAM' },
+    { label: '96', value: '96', description: '576 GB RAM' }
+  ];
+
   const handleSubmit = () => {
     console.log('Collection created:', formData);
     setIsCreating(true);
@@ -134,32 +148,21 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
     setTimeout(() => {
       setCreationSteps([
         { label: 'Created collection group', status: 'success' },
-        { label: 'Creating OpenSearch application', status: 'in-progress' },
-        { label: 'Creating collection', status: 'pending' }
+        { label: 'Creating collection', status: 'in-progress' }
       ]);
     }, 2000);
     
-    // Step 2: Creating OpenSearch application
+    // Step 2: Creating collection and navigate
     setTimeout(() => {
       setCreationSteps([
         { label: 'Created collection group', status: 'success' },
-        { label: 'Created OpenSearch application', status: 'success' },
-        { label: 'Creating collection', status: 'in-progress' }
-      ]);
-    }, 4000);
-    
-    // Step 3: Creating collection and navigate
-    setTimeout(() => {
-      setCreationSteps([
-        { label: 'Created collection group', status: 'success' },
-        { label: 'Created OpenSearch application', status: 'success' },
         { label: 'Created collection', status: 'success' }
       ]);
       // Navigate after a brief moment to show all success
       setTimeout(() => {
         onCollectionCreated(formData.collectionName || 'new-collection');
       }, 500);
-    }, 6000);
+    }, 4000);
   };
 
   const breadcrumbs = [
@@ -171,14 +174,8 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const defaultSettings = [
     { configuration: 'Collection group settings', value: 'Create new collection group', editable: 'Yes', isSection: true },
     { configuration: 'Collection group name', value: easyCreateGroupName, editable: 'No', indent: true, isGroupName: true },
-    { configuration: 'Minimum indexing capacity (OCUs)', value: `${easyMinIndexing.value} OCUs${easyMinIndexing.description ? ` (${easyMinIndexing.description})` : ''}`, editable: 'Yes', indent: true, isMinIndexing: true },
-    { configuration: 'Maximum indexing capacity (OCUs)', value: `${easyMaxIndexing.value} OCUs${easyMaxIndexing.description ? ` (${easyMaxIndexing.description})` : ''}`, editable: 'Yes', indent: true, isMaxIndexing: true },
-    { configuration: 'Minimum search capacity (OCUs)', value: `${easyMinSearch.value} OCUs${easyMinSearch.description ? ` (${easyMinSearch.description})` : ''}`, editable: 'Yes', indent: true, isMinSearch: true },
-    { configuration: 'Maximum search capacity (OCUs)', value: `${easyMaxSearch.value} OCUs${easyMaxSearch.description ? ` (${easyMaxSearch.description})` : ''}`, editable: 'Yes', indent: true, isMaxSearch: true },
-    { configuration: 'OpenSearch application settings', value: 'Create new application', editable: 'Yes', isSection: true },
-    { configuration: 'OpenSearch application name', value: easyCreateAppName, editable: 'No', indent: true, isAppName: true },
-    { configuration: 'Workspace setting', value: 'Create new workspace', editable: 'Yes', indent: true },
-    { configuration: 'Workspace name', value: easyCreateWorkspaceName, editable: 'No', indent: true, isWorkspaceName: true },
+    { configuration: 'Indexing capacity (OCUs)', value: `${easyMinIndexing.value} - ${easyMaxIndexing.value} OCUs${easyMaxIndexing.description ? ` (${easyMaxIndexing.description})` : ''}`, editable: 'No', indent: true },
+    { configuration: 'Search capacity (OCUs)', value: `${easyMinSearch.value} - ${easyMaxSearch.value} OCUs${easyMaxSearch.description ? ` (${easyMaxSearch.description})` : ''}`, editable: 'No', indent: true },
     { configuration: 'Encryption key', value: 'AWS Owned', editable: 'No', isSection: true },
     { configuration: 'Network access', value: 'Public', editable: 'Yes', isSection: true },
     { configuration: 'Data access', value: 'New policy', editable: 'Yes', isSection: true, isDataAccess: true },
@@ -441,7 +438,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                                   <Select
                                     selectedOption={easyMaxIndexing}
                                     onChange={({ detail }) => setEasyMaxIndexing(detail.selectedOption)}
-                                    options={capacityOptions}
+                                    options={maxCapacityOptions}
                                     triggerVariant="option"
                                     expandToViewport
                                   />
@@ -505,7 +502,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                                   <Select
                                     selectedOption={easyMaxSearch}
                                     onChange={({ detail }) => setEasyMaxSearch(detail.selectedOption)}
-                                    options={capacityOptions}
+                                    options={maxCapacityOptions}
                                     triggerVariant="option"
                                     expandToViewport
                                   />
@@ -584,13 +581,20 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                             </div>
                           );
                         }
-                        // Permissions row - show each permission on its own line
+                        // Permissions row - show link to view full permissions
                         if (item.isPermissions) {
                           return (
                             <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
-                              {item.value.map((permission, idx) => (
-                                <div key={idx}>{permission}</div>
-                              ))}
+                              {showPermissions ? (
+                                <SpaceBetween size="xxs">
+                                  {item.value.map((permission, idx) => (
+                                    <div key={idx}>{permission}</div>
+                                  ))}
+                                  <Link onFollow={(e) => { e.preventDefault(); setShowPermissions(false); }}>Hide permissions</Link>
+                                </SpaceBetween>
+                              ) : (
+                                <Link onFollow={(e) => { e.preventDefault(); setShowPermissions(true); }}>View full permissions ({item.value.length})</Link>
+                              )}
                             </div>
                           );
                         }
@@ -601,7 +605,17 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                               <div style={{ borderBottom: '1px solid #e9ebed', paddingBottom: '8px', marginBottom: '-8px' }}>
                                 <SpaceBetween direction="horizontal" size="xs">
                                   <span>{item.value}</span>
-                                  {isHovered && <span style={{ color: '#5f6b7a' }}><Icon name="lock-private" size="small" /></span>}
+                                  {isHovered && (
+                                    <Popover
+                                      dismissButton={false}
+                                      position="top"
+                                      size="small"
+                                      triggerType="custom"
+                                      content="If you would like to make changes, use standard create."
+                                    >
+                                      <span style={{ color: '#5f6b7a', cursor: 'pointer' }}><Icon name="lock-private" size="small" /></span>
+                                    </Popover>
+                                  )}
                                 </SpaceBetween>
                               </div>
                             </div>
@@ -611,7 +625,17 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                           <div onMouseEnter={() => setHoveredRow(item.configuration)} style={{ padding: '4px 0' }}>
                           <SpaceBetween direction="horizontal" size="xs">
                             <span>{item.value}</span>
-                            {isHovered && !isEditable && <span style={{ color: '#5f6b7a' }}><Icon name="lock-private" size="small" /></span>}
+                            {isHovered && !isEditable && (
+                              <Popover
+                                dismissButton={false}
+                                position="top"
+                                size="small"
+                                triggerType="custom"
+                                content="If you would like to make changes, use standard create."
+                              >
+                                <span style={{ color: '#5f6b7a', cursor: 'pointer' }}><Icon name="lock-private" size="small" /></span>
+                              </Popover>
+                            )}
                           </SpaceBetween>
                           </div>
                         );
@@ -739,7 +763,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                         <Select
                           selectedOption={groupSettings.maxIndexing}
                           onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxIndexing: detail.selectedOption })}
-                          options={capacityOptions}
+                          options={maxCapacityOptions}
                           filteringType="auto"
                           filteringPlaceholder="Enter a number"
                           triggerVariant="option"
@@ -768,120 +792,13 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                         <Select
                           selectedOption={groupSettings.maxSearch}
                           onChange={({ detail }) => setGroupSettings({ ...groupSettings, maxSearch: detail.selectedOption })}
-                          options={capacityOptions}
+                          options={maxCapacityOptions}
                           filteringType="auto"
                           filteringPlaceholder="Enter a number"
                           triggerVariant="option"
                         />
                       </FormField>
                     </div>
-                  </>
-                )}
-              </SpaceBetween>
-            </Container>
-            <Container
-              variant="stacked"
-              header={
-                <Header 
-                  variant="h2"
-                  description="OpenSearch UI (Dashboards) is the next generation and redesigned OpenSearch Dashboards experience that can connect to multiple data sources."
-                >
-                  OpenSearch application settings
-                </Header>
-              }
-            >
-              <SpaceBetween size="m">
-                <Checkbox
-                  checked={appSettings.createNewApp}
-                  onChange={({ detail }) => setAppSettings({ ...appSettings, createNewApp: detail.checked })}
-                >
-                  Enable OpenSearch application
-                </Checkbox>
-
-                {appSettings.createNewApp && (
-                  <>
-                    <Box>
-                      <Box variant="awsui-key-label" margin={{ bottom: 'xxs' }}>OpenSearch application selection</Box>
-                      <Tiles
-                        columns={2}
-                        items={[
-                          {
-                            label: 'Select existing OpenSearch application',
-                            value: 'select-existing'
-                          },
-                          {
-                            label: 'Create new OpenSearch application',
-                            value: 'create-new'
-                          }
-                        ]}
-                        value={appSettings.appSelection}
-                        onChange={({ detail }) => setAppSettings({ ...appSettings, appSelection: detail.value })}
-                      />
-                    </Box>
-                    
-                    <ColumnLayout columns={2}>
-                      <FormField label="OpenSearch application name">
-                        {appSettings.appSelection === 'select-existing' ? (
-                          <Select
-                            selectedOption={appSettings.selectedApp}
-                            onChange={({ detail }) => setAppSettings({ ...appSettings, selectedApp: detail.selectedOption, applicationName: detail.selectedOption.value })}
-                            options={[
-                              { label: 'opensearchui-1769533298515', value: 'opensearchui-1769533298515' },
-                              { label: 'opensearchui-1769533298516', value: 'opensearchui-1769533298516' }
-                            ]}
-                            placeholder="Select an OpenSearch application"
-                          />
-                        ) : (
-                          <Input
-                            value={appSettings.applicationName}
-                            onChange={({ detail }) => setAppSettings({ ...appSettings, applicationName: detail.value })}
-                          />
-                        )}
-                      </FormField>
-                      <div></div>
-                    </ColumnLayout>
-
-                    <Box>
-                      <Box variant="awsui-key-label" margin={{ bottom: 'xxs' }}>Workspace selection</Box>
-                      <Tiles
-                        columns={2}
-                        items={[
-                          {
-                            label: 'Select existing workspace',
-                            value: 'select-existing',
-                            disabled: appSettings.appSelection === 'create-new'
-                          },
-                          {
-                            label: 'Create new workspace',
-                            value: 'create-new'
-                          }
-                        ]}
-                        value={appSettings.workspaceSelection}
-                        onChange={({ detail }) => setAppSettings({ ...appSettings, workspaceSelection: detail.value })}
-                      />
-                    </Box>
-                
-                    <ColumnLayout columns={2}>
-                      <FormField label="Workspace">
-                        {appSettings.workspaceSelection === 'select-existing' ? (
-                          <Select
-                            selectedOption={appSettings.selectedWorkspace}
-                            onChange={({ detail }) => setAppSettings({ ...appSettings, selectedWorkspace: detail.selectedOption, workspace: detail.selectedOption.value })}
-                            options={[
-                              { label: 'workspace-1769533298515', value: 'workspace-1769533298515' },
-                              { label: 'workspace-1769533298516', value: 'workspace-1769533298516' }
-                            ]}
-                            placeholder="Select a workspace"
-                          />
-                        ) : (
-                          <Input
-                            value={appSettings.workspace}
-                            onChange={({ detail }) => setAppSettings({ ...appSettings, workspace: detail.value })}
-                          />
-                        )}
-                      </FormField>
-                      <div></div>
-                    </ColumnLayout>
                   </>
                 )}
               </SpaceBetween>

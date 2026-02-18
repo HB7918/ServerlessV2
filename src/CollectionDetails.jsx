@@ -49,9 +49,6 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
               actions={
                 <SpaceBetween direction="horizontal" size="xs">
                   <Button>Delete collection</Button>
-                  <Button iconName="external" iconAlign="right">
-                    OpenSearch Application
-                  </Button>
                 </SpaceBetween>
               }
             >
