@@ -42,7 +42,11 @@ function ConfigureCollectionStep({ formData, setFormData, onNavigateToV2 }) {
 
             <FormField
               label="Serverless version"
-              description="This is the previous generation serverless v1 collections create flow."
+              description={
+                <>
+                  This is the previous generation serverless v1 collections create flow. <Link onFollow={() => onNavigateToV2()}>Switch to Serverless v2</Link>
+                </>
+              }
               info={<Link variant="info">Info</Link>}
             >
               <Box>Serverless v1</Box>
@@ -251,11 +255,7 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
         }
       }}
     >
-      <SpaceBetween size="l">
-        <Alert type="info">
-          You're creating a Serverless v1 collection. Serverless v2 offers instant auto-scaling and scale-to-zero for cost optimization, up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <Link href="#" external>Learn more</Link>. Or you can switch to <Link onFollow={() => onNavigateToV2()}>Serverless v2 collection creation</Link>.
-        </Alert>
-        <Wizard
+      <Wizard
           steps={steps}
           activeStepIndex={activeStepIndex}
           onNavigate={handleNavigate}
@@ -272,7 +272,6 @@ function CreateCollectionV1({ onCancel, onNavigateToV2, onCollectionCreated }) {
             optional: 'optional'
           }}
         />
-      </SpaceBetween>
       <CommentsPanel screenName="Create Collection V1" />
     </AWSLayout>
   );
