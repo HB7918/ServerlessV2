@@ -21,10 +21,9 @@ import CommentsPanel from './components/CommentsPanel';
 
 function CreateCollectionGroup({ onCancel, onGroupCreated }) {
   const [groupName, setGroupName] = useState('');
+  const [groupDescription, setGroupDescription] = useState('');
   const [serverlessVersion, setServerlessVersion] = useState({ label: 'Serverless V2', value: 'v2' });
-  const [deploymentType, setDeploymentType] = useState('standard');
-  const [enableRetentionPolicy, setEnableRetentionPolicy] = useState(false);
-  const [retentionDescription, setRetentionDescription] = useState('');
+  const [enableRedundancy, setEnableRedundancy] = useState(true);
   const [minIndexingCapacity, setMinIndexingCapacity] = useState({ label: '-', value: '-', description: '' });
   const [maxIndexingCapacity, setMaxIndexingCapacity] = useState({ label: '96', value: '96', description: '576 GB RAM' });
   const [minSearchCapacity, setMinSearchCapacity] = useState({ label: '-', value: '-', description: '' });
@@ -121,14 +120,14 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                   <div style={{ flex: 1 }}>
                     <SpaceBetween size="s">
                       <Box variant="p">
-                        Use collection groups to share the same capacity plan (OCUs) across collections. Grouping collections with the same or different KMS keys to set scaling limits and monitor OCU usage at the group level.
+                        Use collection groups to share the same capacity pool (OCUs) across collections. Grouping collections with the same or different KMS keys to set scaling limits and monitor OCU usage at the group level.
                       </Box>
                       <Box variant="p" fontWeight="bold">
                         When you create a new collection group, you can:
                       </Box>
                       <ul style={{ marginLeft: '20px' }}>
                         <li>Add one or more collections (each collection can only belong to one group).</li>
-                        <li>Set capacity limits to control costs and prevent runaway infrastructure and budgeting.</li>
+                        <li>Set optional min/max OCUs for predictable performance and budgeting.</li>
                         <li>Organize collection by team, workload type or environment.</li>
                       </ul>
                     </SpaceBetween>
@@ -177,33 +176,32 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
               {serverlessVersion.value === 'v1' && (
                 <FormField
                   label="Deployment type"
-                  description="Select the deployment type for your use case."
+                  description="Select the deployment type for your collection group."
                 >
                   <SpaceBetween size="xs">
                     <Checkbox
-                      checked={deploymentType === 'standard'}
-                      onChange={() => setDeploymentType('standard')}
+                      checked={enableRedundancy}
+                      onChange={({ detail }) => setEnableRedundancy(detail.checked)}
                     >
-                      Enable redundancy (active-standby)
+                      Enable redundancy (active replicas)
                     </Checkbox>
                     <Box variant="p" color="text-body-secondary" fontSize="body-s" margin={{ left: 'xxl' }}>
-                      Recommended for production workloads. Creates a standby replica, which is optional for production workloads. Even with system (or) event that you need to restore costs by disabling redundant active-standby. Availability will be compromised in the event of an infrastructure failure while your replicas are disabled.
+                      Recommended for production workloads. Creates active replicas for high availability. Disabling redundancy reduces costs but availability will be compromised in the event of an infrastructure failure.
                     </Box>
-                    <Checkbox
-                      checked={deploymentType === 'non-redundant'}
-                      onChange={() => setDeploymentType('non-redundant')}
-                    >
-                      Disable redundancy (non-redundant)
-                    </Checkbox>
-                    <Textarea
-                      value={retentionDescription}
-                      onChange={({ detail }) => setRetentionDescription(detail.value)}
-                      placeholder="Enter collection group description"
-                      rows={3}
-                    />
                   </SpaceBetween>
                 </FormField>
               )}
+
+              <FormField
+                label={<>Collection group description - <em>optional</em></>}
+              >
+                <Textarea
+                  value={groupDescription}
+                  onChange={({ detail }) => setGroupDescription(detail.value)}
+                  placeholder="Enter collection group description"
+                  rows={3}
+                />
+              </FormField>
             </SpaceBetween>
           </Container>
 
@@ -217,12 +215,12 @@ function CreateCollectionGroup({ onCancel, onGroupCreated }) {
                 <SpaceBetween size="xs">
                   <Box variant="strong">Understand the impact of capacity changes</Box>
                   <Box variant="p">
-                    Changing the minimum OCUs affects how your collection group scales:
+                    Changing the min/max OCUs affects how your collection group scales.
                   </Box>
                   <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
                     <li>A higher min OCU improves performance consistency but increases baseline cost.</li>
-                    <li>A lower min OCU reduces overall spending but may limit performance under load.</li>
-                    <li>Setting min = max OCU disables autoscaling, providing predictable costs but no usage-driven scaling.</li>
+                    <li>A lower max OCU helps control spending but may limit performance under load.</li>
+                    <li>The Maximum Indexing and Maximum Search OCUs fields default to 96, but you can change these as needed.</li>
                   </ul>
                 </SpaceBetween>
               </Alert>

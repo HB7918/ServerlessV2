@@ -7,6 +7,7 @@ import CreateIndex from './CreateIndex'
 import IndexDetails from './IndexDetails'
 import CollectionGroup from './CollectionGroup'
 import CreateCollectionGroup from './CreateCollectionGroup'
+import CollectionGroupDetails from './CollectionGroupDetails'
 import './App.css'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
 
   const [currentView, setCurrentView] = useState(getInitialView())
   const [selectedCollection, setSelectedCollection] = useState(null)
+  const [selectedCollectionGroup, setSelectedCollectionGroup] = useState(null)
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [indexes, setIndexes] = useState([])
   const [showIndexCreatedMessage, setShowIndexCreatedMessage] = useState(false)
@@ -82,6 +84,17 @@ function App() {
         <CollectionGroup 
           onCreateClick={() => setCurrentView('create-collection-group')}
           onNavigate={handleNavigate}
+          onViewGroup={(groupName) => {
+            setSelectedCollectionGroup(groupName);
+            setCurrentView('collection-group-details');
+          }}
+        />
+      )}
+      {currentView === 'collection-group-details' && (
+        <CollectionGroupDetails
+          groupName={selectedCollectionGroup}
+          onBack={() => setCurrentView('collection-groups')}
+          onCreateCollection={() => setCurrentView('create')}
         />
       )}
       {currentView === 'create-collection-group' && (

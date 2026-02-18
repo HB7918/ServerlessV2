@@ -14,7 +14,7 @@ import {
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
 
-function CollectionGroup({ onCreateClick, onNavigate }) {
+function CollectionGroup({ onCreateClick, onNavigate, onViewGroup }) {
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [filteringText, setFilteringText] = useState('');
 
@@ -84,7 +84,14 @@ function CollectionGroup({ onCreateClick, onNavigate }) {
             {
               id: 'name',
               header: 'Collection group',
-              cell: item => <Link>{item.name}</Link>,
+              cell: item => (
+                <Link onFollow={(e) => {
+                  e.preventDefault();
+                  if (onViewGroup) onViewGroup(item.name);
+                }}>
+                  {item.name}
+                </Link>
+              ),
               sortingField: 'name',
               minWidth: 200
             },
