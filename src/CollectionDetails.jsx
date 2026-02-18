@@ -65,14 +65,13 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
             >
               <div style={{ display: 'flex' }}>
                 <div style={{ flex: 1, paddingRight: '24px', display: 'flex', gap: '16px' }}>
-                  <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  <div style={{ width: '120px', height: '80px', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid #0972d3' }}>
                     <img src="/Illustration.svg" alt="Index your data" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <SpaceBetween size="s">
                     <Box variant="awsui-key-label">Index your data</Box>
                     <Box variant="p">
-                      • Start indexing your data<br />
-                      • An index consists of embeddings that describes the data
+                      Near-instant data freshness — Newly indexed data becomes searchable in seconds for real-time insights.
                     </Box>
                     <Button onClick={onCreateIndex}>
                       Create index
@@ -81,21 +80,18 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                 </div>
                 <div style={{ width: '1px', backgroundColor: '#e9ebed', margin: '0 24px' }} />
                 <div style={{ flex: 1, paddingLeft: '24px', display: 'flex', gap: '16px' }}>
-                  <div style={{ width: '120px', height: '80px', backgroundColor: '#1a2b3c', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                    <img src="/Illustration.svg" alt="OpenSearch Application" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ width: '120px', height: '80px', borderRadius: '4px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid #0972d3' }}>
+                    <img src="/ObservabilityGetStarted.svg" alt="OpenSearch Application" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <SpaceBetween size="s">
                     <Box variant="awsui-key-label">Start using OpenSearch application</Box>
                     <Box variant="p">
-                      • Create visualizations and dashboards<br />
-                      • Set up workspaces for team collaboration
+                      Create an OpenSearch application to visualize and analyze your data. Set up workspaces for team collaboration.
                     </Box>
                     <Button 
-                      iconName="external" 
-                      iconAlign="right"
                       onClick={() => window.open('https://future.playground.opensearch.org/app/login?', '_blank')}
                     >
-                      OpenSearch application
+                      Create OpenSearch application
                     </Button>
                   </SpaceBetween>
                 </div>
@@ -120,106 +116,97 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
       >
         <div style={{ marginTop: '-20px' }}>
           {activeTabId === 'overview' && (
-            <SpaceBetween size="m">
             <Container header={<Header variant="h2">General information</Header>}>
-              <ColumnLayout columns={4} variant="text-grid">
+              <SpaceBetween size="l">
                 <div>
-                  <Box variant="awsui-key-label">Collection ID</Box>
-                  <div>abc123xyz789</div>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">Status</Box>
-                  <StatusIndicator type="success">Active</StatusIndicator>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">Collection type</Box>
-                  <div>Timeseries</div>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">Serverless version</Box>
-                  <div>Serverless v2</div>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">ARN</Box>
-                  <div>arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789</div>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">Creation date</Box>
-                  <div>October 30, 2025, 10:19 (UTC-07:00)</div>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">Collection group</Box>
-                  <Link>serverless_v2_27121</Link>
-                </div>
-                <div>
-                  <Box variant="awsui-key-label">OpenSearch Application</Box>
-                  <Link>opensearchui-1769533298515</Link>
-                </div>
-              </ColumnLayout>
-            </Container>
-            <Container header={<Header variant="h2">Endpoints</Header>}>
-              <ColumnLayout columns={2} variant="text-grid">
-                <div>
-                  <Box variant="awsui-key-label">OpenSearch endpoint</Box>
-                  <Box fontWeight="normal">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('https://abc123xyz789.us-east-1.aoss.amazonaws.com')}>
-                        <Icon name="copy" size="small" />
-                      </span>
-                      <span>https://abc123xyz789.us-east-1.aoss.amazonaws.com</span>
+                  <ColumnLayout columns={4} variant="text-grid">
+                    <div>
+                      <Box variant="awsui-key-label">Collection ID</Box>
+                      <div>abc123xyz789</div>
                     </div>
-                  </Box>
+                    <div>
+                      <Box variant="awsui-key-label">Status</Box>
+                      <StatusIndicator type="success">Active</StatusIndicator>
+                    </div>
+                    <div>
+                      <Box variant="awsui-key-label">Collection type</Box>
+                      <div>Search</div>
+                    </div>
+                    <div>
+                      <Box variant="awsui-key-label">Serverless version</Box>
+                      <div>Serverless v2</div>
+                    </div>
+                    <div>
+                      <Box variant="awsui-key-label">ARN</Box>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789')}>
+                          <Icon name="copy" size="small" />
+                        </span>
+                        <span>arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789</span>
+                      </div>
+                    </div>
+                    <div>
+                      <Box variant="awsui-key-label">Creation date</Box>
+                      <div>October 30, 2025, 10:19 (UTC-07:00)</div>
+                    </div>
+                    <div>
+                      <Box variant="awsui-key-label">Collection group</Box>
+                      <Link>serverless_v2_27121</Link>
+                    </div>
+                  </ColumnLayout>
                 </div>
-                <div>
-                  <Box variant="awsui-key-label">OpenSearch application URL</Box>
-                  <Box fontWeight="normal">
-                    <Link external>
-                      https://abc123xyz789.us-east-1.aoss.amazonaws.com/_dashboards
-                    </Link>
-                  </Box>
-                </div>
-              </ColumnLayout>
-            </Container>
 
-            <Container header={<Header variant="h2">Encryption</Header>}>
-              <ColumnLayout columns={2} variant="text-grid">
                 <div>
-                  <Box variant="awsui-key-label">Encryption type</Box>
-                  <div>AWS owned key</div>
+                  <Box variant="h3" padding={{ bottom: 's' }}>Endpoints</Box>
+                  <ColumnLayout columns={2} variant="text-grid">
+                    <div>
+                      <Box variant="awsui-key-label">OpenSearch endpoint</Box>
+                      <Box fontWeight="normal">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('https://abc123xyz789.us-east-1.aoss.amazonaws.com')}>
+                            <Icon name="copy" size="small" />
+                          </span>
+                          <span>https://abc123xyz789.us-east-1.aoss.amazonaws.com</span>
+                        </div>
+                      </Box>
+                    </div>
+                  </ColumnLayout>
                 </div>
-                <div>
-                  <Box variant="awsui-key-label">KMS key ARN</Box>
-                  <div>-</div>
-                </div>
-              </ColumnLayout>
-            </Container>
 
-            <Container header={<Header variant="h2">Network access</Header>}>
-              <ColumnLayout columns={2} variant="text-grid">
                 <div>
-                  <Box variant="awsui-key-label">Access type</Box>
-                  <div>Public</div>
+                  <Box variant="h3" padding={{ bottom: 's' }}>Encryption</Box>
+                  <ColumnLayout columns={2} variant="text-grid">
+                    <div>
+                      <Box variant="awsui-key-label">Encryption type</Box>
+                      <div>AWS owned key</div>
+                    </div>
+                  </ColumnLayout>
                 </div>
-              </ColumnLayout>
-            </Container>
 
-            <Container 
-              header={
-                <Header 
-                  variant="h2"
-                  description="Data access policies apply to collections and indexes, and control a user's access to the data in these resource."
-                  actions={<Button>Manage data access</Button>}
-                >
-                  Data access
-                </Header>
-              }
-            >
-              <div>
-                <Box variant="awsui-key-label">Associated policy</Box>
-                <Link external>easy-aws62718</Link>
-              </div>
+                <div>
+                  <Box variant="h3" padding={{ bottom: 's' }}>Network access</Box>
+                  <ColumnLayout columns={2} variant="text-grid">
+                    <div>
+                      <Box variant="awsui-key-label">Access type</Box>
+                      <div>Public</div>
+                    </div>
+                  </ColumnLayout>
+                </div>
+
+                <div>
+                  <SpaceBetween size="xs">
+                    <div>
+                      <Box variant="h3">Data access</Box>
+                      <Box variant="small" color="text-body-secondary">Data access policies apply to collections and indexes, and control a user's access to the data in these resource.</Box>
+                    </div>
+                    <div style={{ marginTop: '8px' }}>
+                      <Box variant="awsui-key-label">Associated policy</Box>
+                      <Link external>easy-aws62718</Link>
+                    </div>
+                  </SpaceBetween>
+                </div>
+              </SpaceBetween>
             </Container>
-          </SpaceBetween>
         )}
 
         {activeTabId === 'monitor' && (
@@ -260,20 +247,6 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
                   ),
                   sortingField: 'name',
                   minWidth: 180
-                },
-                {
-                  id: 'hotStorageRetention',
-                  header: 'Hot storage retention',
-                  cell: item => item.hotStorageRetention,
-                  sortingField: 'hotStorageRetention',
-                  minWidth: 180
-                },
-                {
-                  id: 'dataRetention',
-                  header: 'Data retention',
-                  cell: item => item.dataRetention,
-                  sortingField: 'dataRetention',
-                  minWidth: 150
                 },
                 {
                   id: 'size',

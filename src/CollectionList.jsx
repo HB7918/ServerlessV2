@@ -10,7 +10,8 @@ import {
   Header,
   Pagination,
   CollectionPreferences,
-  Flashbar,
+  ExpandableSection,
+  Container,
   HelpPanel,
   Icon
 } from '@cloudscape-design/components';
@@ -315,22 +316,8 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
     wrapLines: false
   });
 
-  const [flashbarItems, setFlashbarItems] = useState([
-    {
-      type: 'info',
-      dismissible: true,
-      dismissLabel: 'Dismiss',
-      onDismiss: () => setFlashbarItems([]),
-      header: 'Introducing Serverless v2 for Amazon OpenSearch Serverless',
-      content: (
-        <>
-          Experience instant autoscaling from zero to hundreds of requests in seconds, scale-to-zero when idle for up to 40% cost savings, and near-instant data freshness with newly indexed data searchable in seconds. Serverless v2 supports search, time-series, and vector workloads with the same APIs you're already using. <Link external variant="primary" href="#">Learn more</Link>
-        </>
-      ),
-      action: <Button onClick={onCreateClick}>Create collection</Button>,
-      id: 'serverless-v2-announcement'
-    }
-  ]);
+  const [flashbarItems, setFlashbarItems] = useState([]);
+  const [promoExpanded, setPromoExpanded] = useState(true);
 
   // Filter items based on search text
   const filteredItems = ALL_ITEMS.filter(item => {
@@ -410,7 +397,24 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
       }
     >
       <SpaceBetween size="l">
-        {flashbarItems.length > 0 && <Flashbar items={flashbarItems} />}
+        <ExpandableSection
+          headerText="Introducing Serverless v2 for Amazon OpenSearch Serverless"
+          variant="container"
+          expanded={promoExpanded}
+          onChange={({ detail }) => setPromoExpanded(detail.expanded)}
+        >
+          <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+            <div style={{ flexShrink: 0 }}>
+              <img src="/Search 1.svg" alt="Serverless v2" style={{ width: '200px', height: 'auto', borderRadius: '8px', border: '1px solid #0972d3' }} />
+            </div>
+            <SpaceBetween size="xs">
+              <Box><Box variant="strong" display="inline">Instant scaling</Box> — Scale from zero to hundreds of requests in seconds, not minutes. Scale to zero when idle.</Box>
+              <Box><Box variant="strong" display="inline">Up to 40% cost savings</Box> — Pay only for the capacity you consume. No minimum capacity requirements.</Box>
+              <Box><Box variant="strong" display="inline">Near-instant data freshness</Box> — Newly indexed data becomes searchable in seconds for real-time insights.</Box>
+            </SpaceBetween>
+          </div>
+        </ExpandableSection>
+        <Container>
         <Table
         columnDefinitions={COLUMN_DEFINITIONS}
         items={paginatedItems}
@@ -506,11 +510,12 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
         }
         resizableColumns
         stickyHeader
-        variant="full-page"
+        variant="embedded"
         contentDensity={preferences.contentDensity}
         stripedRows={preferences.stripedRows}
         wrapLines={preferences.wrapLines}
       />
+      </Container>
       </SpaceBetween>
       <CommentsPanel screenName="Collections" />
     </AWSLayout>

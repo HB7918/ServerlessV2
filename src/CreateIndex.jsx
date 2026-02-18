@@ -106,67 +106,6 @@ function CreateIndex({ collectionName, onCancel, onIndexCreated }) {
                   placeholder="Enter index name"
                 />
               </FormField>
-
-              <FormField
-                label="Hot storage retention"
-                description="Input must be an integer number from 24 to 87600 hours, or 1 to 3650 days"
-              >
-                <ColumnLayout columns={2}>
-                  <Input
-                    value={hotStorageValue}
-                    onChange={({ detail }) => setHotStorageValue(detail.value)}
-                    placeholder="Input value"
-                    type="number"
-                  />
-                  <Select
-                    selectedOption={{ label: hotStorageUnit === 'hours' ? 'Hour(s)' : 'Day(s)', value: hotStorageUnit }}
-                    onChange={({ detail }) => setHotStorageUnit(detail.selectedOption.value)}
-                    options={[
-                      { label: 'Hour(s)', value: 'hours' },
-                      { label: 'Day(s)', value: 'days' }
-                    ]}
-                  />
-                </ColumnLayout>
-              </FormField>
-
-              <FormField
-                label="Data lifecycle"
-                info={<Link variant="info">Info</Link>}
-                description="You can customize for this index or use the collection default."
-              >
-                <RadioGroup
-                  value={dataLifecycle}
-                  onChange={({ detail }) => setDataLifecycle(detail.value)}
-                  items={[
-                    { value: 'indefinite', label: 'Keep data indefinitely (Never delete)' },
-                    { value: 'custom', label: 'Set custom retention period' }
-                  ]}
-                />
-              </FormField>
-
-              {dataLifecycle === 'custom' && (
-                <FormField
-                  label="Data retention"
-                  description="Input must be an integer number from 24 to 87600 hours, or 1 to 3650 days"
-                >
-                  <ColumnLayout columns={2}>
-                    <Input
-                      value={retentionValue}
-                      onChange={({ detail }) => setRetentionValue(detail.value)}
-                      placeholder="Input value"
-                      type="number"
-                    />
-                    <Select
-                      selectedOption={{ label: retentionUnit === 'days' ? 'Day(s)' : 'Hour(s)', value: retentionUnit }}
-                      onChange={({ detail }) => setRetentionUnit(detail.selectedOption.value)}
-                      options={[
-                        { label: 'Day(s)', value: 'days' },
-                        { label: 'Hour(s)', value: 'hours' }
-                      ]}
-                    />
-                  </ColumnLayout>
-                </FormField>
-              )}
             </SpaceBetween>
           </Container>
 

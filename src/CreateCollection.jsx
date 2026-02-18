@@ -30,7 +30,7 @@ import CommentsPanel from './components/CommentsPanel';
 function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
   const [formData, setFormData] = useState({
     collectionName: '',
-    collectionType: 'timeseries',
+    collectionType: 'search',
     customizeEncryption: false,
     kmsKey: '',
     accessType: 'public',
@@ -228,14 +228,11 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
       <ContentLayout
         header={
           <SpaceBetween size="s">
-            <Alert type="info">
-              You're creating a Serverless v2 collection with instant auto-scaling and scale-to-zero for cost optimization. Serverless v2 offers up to 40% cost savings, scales in seconds (vs. 2-30 minutes), and makes newly indexed data searchable instantly. <Link href="#" external>Learn more</Link>. Or you can switch to <Link onFollow={() => onNavigateToV1()}>Serverless v1 collection creation</Link>.
-            </Alert>
             <Header
               variant="h1"
               description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
             >
-              Create collection
+              Create Serverless v2 collection
             </Header>
           </SpaceBetween>
         }
@@ -259,7 +256,11 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
 
               <FormField
                 label="Serverless version"
-                description="Creating latest generation of Amazon OpenSearch Serverless with instant auto scaling and scale-to-zero for cost optimization."
+                description={
+                  <>
+                    Creating latest generation of Amazon OpenSearch Serverless with instant auto scaling and scale-to-zero for cost optimization. <Link onFollow={() => onNavigateToV1()}>Switch to Serverless v1</Link>
+                  </>
+                }
                 info={<Link variant="info">Info</Link>}
               >
                 <Box>Serverless v2</Box>
@@ -275,8 +276,9 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
                   items={[
                     {
                       label: 'Time series',
-                      description: 'Use for analyzing large volumes of semi-structured, machine-generated data and events.',
-                      value: 'timeseries'
+                      description: 'Use for analyzing large volumes of semi-structured, machine-generated data and events. Not supported for beta release.',
+                      value: 'timeseries',
+                      disabled: true
                     },
                     {
                       label: 'Search',
