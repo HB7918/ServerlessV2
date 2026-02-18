@@ -398,7 +398,7 @@ function CollectionList({ onCreateClick, onViewCollection, onNavigate }) {
     >
       <SpaceBetween size="l">
         <ExpandableSection
-          headerText="Introducing Serverless v2 for Amazon OpenSearch Serverless"
+          headerText={<>Introducing Serverless v2 for Amazon OpenSearch Serverless - <em>Beta</em></>}
           variant="container"
           expanded={promoExpanded}
           onChange={({ detail }) => setPromoExpanded(detail.expanded)}

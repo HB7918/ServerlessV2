@@ -232,7 +232,7 @@ function CreateCollection({ onCancel, onNavigateToV1, onCollectionCreated }) {
               variant="h1"
               description="A collection is a logical group of indexes that work together to support your workloads. You cannot change the collection name, collection type, and encryption settings after the collection is created."
             >
-              Create Serverless v2 collection
+              Create Serverless v2 collection - <em>Beta</em>
             </Header>
           </SpaceBetween>
         }
