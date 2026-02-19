@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import CollectionList from './CollectionList'
 import CreateCollection from './CreateCollection'
 import CreateCollectionV1 from './CreateCollectionV1'
+import CreateCollectionDay1 from './CreateCollectionDay1'
 import CollectionDetails from './CollectionDetails'
 import CreateIndex from './CreateIndex'
 import IndexDetails from './IndexDetails'
@@ -15,6 +16,8 @@ function App() {
     const hash = window.location.hash;
     if (hash === '#/collection-groups') return 'collection-groups';
     if (hash === '#/create-collection-group') return 'create-collection-group';
+    if (hash === '#/create-collection-day1') return 'create-day1';
+    if (hash === '#/create-collection') return 'create';
     if (hash === '#/collections') return 'list';
     return 'list';
   };
@@ -31,6 +34,8 @@ function App() {
       const hash = window.location.hash;
       if (hash === '#/collection-groups') setCurrentView('collection-groups');
       else if (hash === '#/create-collection-group') setCurrentView('create-collection-group');
+      else if (hash === '#/create-collection-day1') setCurrentView('create-day1');
+      else if (hash === '#/create-collection') setCurrentView('create');
       else if (hash === '#/collections') setCurrentView('list');
     };
 
@@ -117,6 +122,13 @@ function App() {
         <CreateCollectionV1 
           onCancel={() => setCurrentView('list')}
           onNavigateToV2={() => setCurrentView('create')}
+          onCollectionCreated={handleViewCollection}
+        />
+      )}
+      {currentView === 'create-day1' && (
+        <CreateCollectionDay1 
+          onCancel={() => setCurrentView('list')}
+          onNavigateToV1={() => setCurrentView('create-v1')}
           onCollectionCreated={handleViewCollection}
         />
       )}
