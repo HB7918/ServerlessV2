@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   SpaceBetween,
@@ -94,7 +94,7 @@ function CreateCollectionDay1({ onCancel, onNavigateToV1, onCollectionCreated })
   // Data access policy settings
   const [dataAccessSettings, setDataAccessSettings] = useState({
     policyOption: 'create-new',
-    policyName: 'easy-weffsc',
+    policyName: formData.collectionName ? `easy-${formData.collectionName}` : 'easy-',
     description: '',
     definitionMethod: 'visual',
     selectedExistingPolicy: null,
@@ -136,6 +136,16 @@ function CreateCollectionDay1({ onCancel, onNavigateToV1, onCollectionCreated })
     { label: '80', value: '80', description: '480 GB RAM' },
     { label: '96', value: '96', description: '576 GB RAM' }
   ];
+
+  // Update policy name when collection name changes
+  useEffect(() => {
+    if (formData.collectionName) {
+      setDataAccessSettings(prev => ({
+        ...prev,
+        policyName: `easy-${formData.collectionName}`
+      }));
+    }
+  }, [formData.collectionName]);
 
   const handleSubmit = () => {
     console.log('Collection created:', formData);
@@ -220,7 +230,7 @@ function CreateCollectionDay1({ onCancel, onNavigateToV1, onCollectionCreated })
     { configuration: 'Network access', value: 'Public', editable: 'Yes', isSection: true },
     { configuration: 'Data access', value: 'New policy', editable: 'Yes', isSection: true, isDataAccess: true },
     { configuration: 'Principals', value: 'arn:aws:iam::478031150999:role/Admin', editable: 'Yes', indent: true },
-    { configuration: 'Policy name', value: 'easy-weffsc', editable: 'Yes', indent: true },
+    { configuration: 'Policy name', value: dataAccessSettings.policyName, editable: 'Yes', indent: true },
     { configuration: 'Permissions', value: ['aoss:CreateCollectionItems', 'aoss:DeleteCollectionItems', 'aoss:UpdateCollectionItems', 'aoss:DescribeCollectionItems', 'aoss:CreateIndex', 'aoss:DeleteIndex', 'aoss:UpdateIndex', 'aoss:DescribeIndex', 'aoss:ReadDocument', 'aoss:WriteDocument', 'aoss:DescribeMLResource', 'aoss:CreateMLResource', 'aoss:UpdateMLResource', 'aoss:DeleteMLResource', 'aoss:ExecuteMLResource'], editable: 'Yes', indent: true, isPermissions: true }
   ];
 

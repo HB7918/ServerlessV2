@@ -15,7 +15,8 @@ import {
   TextFilter,
   Pagination,
   Icon,
-  ExpandableSection
+  ExpandableSection,
+  KeyValuePairs
 } from '@cloudscape-design/components';
 import AWSLayout from './components/AWSLayout';
 import CommentsPanel from './components/CommentsPanel';
@@ -113,94 +114,142 @@ function CollectionDetails({ collectionName, onBack, onCreateIndex, onViewIndex,
       >
         <div style={{ marginTop: '-20px' }}>
           {activeTabId === 'overview' && (
-            <Container header={<Header variant="h2">General information</Header>}>
+            <Container>
               <SpaceBetween size="l">
                 <div>
-                  <ColumnLayout columns={4} variant="text-grid">
-                    <div>
-                      <Box variant="awsui-key-label">Collection ID</Box>
-                      <div>abc123xyz789</div>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">Status</Box>
-                      <StatusIndicator type="success">Active</StatusIndicator>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">Collection type</Box>
-                      <div>Search</div>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">Serverless version</Box>
-                      <div>Serverless v2</div>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">ARN</Box>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789')}>
-                          <Icon name="copy" size="small" />
-                        </span>
-                        <span>arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789</span>
-                      </div>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">Creation date</Box>
-                      <div>October 30, 2025, 10:19 (UTC-07:00)</div>
-                    </div>
-                    <div>
-                      <Box variant="awsui-key-label">Collection group</Box>
-                      <Link>serverless_v2_27121</Link>
-                    </div>
-                  </ColumnLayout>
+                  <Box variant="h2" padding={{ bottom: 's' }}>General information</Box>
+                  <KeyValuePairs
+                    columns={4}
+                    items={[
+                      {
+                        type: 'group',
+                        items: [
+                          {
+                            label: 'Status',
+                            value: <StatusIndicator type="success">Active</StatusIndicator>
+                          },
+                          {
+                            label: 'ARN',
+                            value: (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789')}>
+                                  <Icon name="copy" size="small" />
+                                </span>
+                                <span>arn:aws:aoss:us-east-1:123456789012:collection/abc123xyz789</span>
+                              </div>
+                            )
+                          }
+                        ]
+                      },
+                      {
+                        type: 'group',
+                        items: [
+                          {
+                            label: 'Collection type',
+                            value: 'Search'
+                          },
+                          {
+                            label: 'Serverless version',
+                            value: 'Serverless v2'
+                          },
+                          {
+                            label: 'Creation date',
+                            value: 'October 30, 2025, 10:19 (UTC-07:00)'
+                          }
+                        ]
+                      },
+                      {
+                        type: 'group',
+                        items: [
+                          {
+                            label: 'Total size',
+                            value: '0B'
+                          },
+                          {
+                            label: 'Indexes',
+                            value: '0'
+                          }
+                        ]
+                      },
+                      {
+                        type: 'group',
+                        items: [
+                          {
+                            label: 'Collection group',
+                            value: <Link>serverless_v2_27121</Link>
+                          },
+                          {
+                            label: 'OpenSearch application',
+                            value: '-'
+                          }
+                        ]
+                      }
+                    ]}
+                  />
                 </div>
 
                 <div>
-                  <Box variant="h3" padding={{ bottom: 's' }}>Endpoints</Box>
-                  <ColumnLayout columns={2} variant="text-grid">
-                    <div>
-                      <Box variant="awsui-key-label">OpenSearch endpoint</Box>
-                      <Box fontWeight="normal">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('https://abc123xyz789.us-east-1.aoss.amazonaws.com')}>
-                            <Icon name="copy" size="small" />
-                          </span>
-                          <span>https://abc123xyz789.us-east-1.aoss.amazonaws.com</span>
-                        </div>
-                      </Box>
-                    </div>
-                  </ColumnLayout>
+                  <Box variant="h2" padding={{ bottom: 's' }}>Endpoints</Box>
+                  <KeyValuePairs
+                    columns={4}
+                    items={[
+                      {
+                        label: 'OpenSearch endpoint',
+                        value: (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ cursor: 'pointer', color: '#5f6b7a' }} onClick={() => navigator.clipboard.writeText('https://abc123xyz789.us-east-1.aoss.amazonaws.com')}>
+                              <Icon name="copy" size="small" />
+                            </span>
+                            <span>https://abc123xyz789.us-east-1.aoss.amazonaws.com</span>
+                          </div>
+                        )
+                      }
+                    ]}
+                  />
                 </div>
 
                 <div>
-                  <Box variant="h3" padding={{ bottom: 's' }}>Encryption</Box>
-                  <ColumnLayout columns={2} variant="text-grid">
-                    <div>
-                      <Box variant="awsui-key-label">Encryption type</Box>
-                      <div>AWS owned key</div>
-                    </div>
-                  </ColumnLayout>
+                  <Box variant="h2" padding={{ bottom: 's' }}>Encryption</Box>
+                  <KeyValuePairs
+                    columns={4}
+                    items={[
+                      {
+                        label: 'Encryption type',
+                        value: 'AWS owned key'
+                      }
+                    ]}
+                  />
                 </div>
 
                 <div>
-                  <Box variant="h3" padding={{ bottom: 's' }}>Network access</Box>
-                  <ColumnLayout columns={2} variant="text-grid">
-                    <div>
-                      <Box variant="awsui-key-label">Access type</Box>
-                      <div>Public</div>
-                    </div>
-                  </ColumnLayout>
+                  <Box variant="h2" padding={{ bottom: 's' }}>Network access</Box>
+                  <KeyValuePairs
+                    columns={4}
+                    items={[
+                      {
+                        label: 'Associated network access policy',
+                        value: <Link external>easy-{collectionName}</Link>
+                      },
+                      {
+                        label: 'Access type',
+                        value: 'Public'
+                      }
+                    ]}
+                  />
                 </div>
 
                 <div>
-                  <SpaceBetween size="xs">
-                    <div>
-                      <Box variant="h3">Data access</Box>
-                      <Box variant="small" color="text-body-secondary">Data access policies apply to collections and indexes, and control a user's access to the data in these resource.</Box>
-                    </div>
-                    <div style={{ marginTop: '8px' }}>
-                      <Box variant="awsui-key-label">Associated policy</Box>
-                      <Link external>easy-aws62718</Link>
-                    </div>
-                  </SpaceBetween>
+                  <Box variant="h2">Data access</Box>
+                  <Box variant="small" color="text-body-secondary" padding={{ bottom: 's' }}>Data access policies apply to collections and indexes, and control a user's access to the data in these resource.</Box>
+                  <KeyValuePairs
+                    columns={4}
+                    items={[
+                      {
+                        label: 'Associated data access policy',
+                        value: <Link external>easy-{collectionName}</Link>
+                      }
+                    ]}
+                  />
                 </div>
               </SpaceBetween>
             </Container>
